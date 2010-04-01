@@ -1,7 +1,3 @@
-//////////////////////////////// OS Neutral Headers ////////////////
-//Define this to make OIS use dynamic linking imports:
-//#define OIS_DYNAMIC_LIB
-
 #include "OIS.h"
 
 #include <math.h>
@@ -13,7 +9,6 @@
 #include <vector>
 
 using namespace std;
-
 
 ////////////////////////////////////Needed Windows Headers////////////
 #if defined OIS_WIN32_PLATFORM
