@@ -28,9 +28,18 @@
 
 namespace OIS
 {
+	struct AxisInfo
+	{
+		int min;
+		int max;
+		
+		AxisInfo(int min, int max)
+			: min(min), max(max) {}
+	};
+	
 	typedef struct cookie_struct 
 	{ 
-		std::vector<IOHIDElementCookie> axisCookies; 			
+		std::map<IOHIDElementCookie, AxisInfo> axisCookies; 			
 		std::vector<IOHIDElementCookie> buttonCookies; 
 	} cookie_struct_t; 
 	
@@ -39,7 +48,7 @@ namespace OIS
 	class MacJoyStick : public JoyStick
 	{
 	public:
-		MacJoyStick(const std::string& vendor, bool buffered, HidInfo* info, InputManager* creator);
+		MacJoyStick(const std::string& vendor, bool buffered, HidInfo* info, InputManager* creator, int devID);
 		
 		virtual ~MacJoyStick();
 		

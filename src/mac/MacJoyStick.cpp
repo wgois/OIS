@@ -32,8 +32,8 @@
 using namespace OIS;
 
 //--------------------------------------------------------------------------------------------------//
-MacJoyStick::MacJoyStick(const std::string &vendor, bool buffered, HidInfo* info, InputManager* creator) : 
-JoyStick(vendor, buffered, 0 /*device id*/, creator), mInfo(info)
+MacJoyStick::MacJoyStick(const std::string &vendor, bool buffered, HidInfo* info, InputManager* creator, int devID) : 
+JoyStick(vendor, buffered, devID, creator), mInfo(info)
 {
 	
 }
@@ -75,6 +75,18 @@ void MacJoyStick::_initialize()
 	mQueue = _createQueue();
 }
 
+class FindAxisCookie : public std::unary_function<std::pair<IOHIDElementCookie, AxisInfo>&, bool>
+{
+public:
+	FindAxisCookie(IOHIDElementCookie cookie) : m_Cookie(cookie) {}
+	bool operator()(const std::pair<IOHIDElementCookie, AxisInfo>& pair) const
+	{
+		return pair.first == m_Cookie;
+	}
+private:
+	IOHIDElementCookie m_Cookie;
+};
+
 //--------------------------------------------------------------------------------------------------//
 void MacJoyStick::capture()
 {
@@ -106,8 +118,15 @@ void MacJoyStick::capture()
 			case kIOHIDElementTypeInput_Misc:
 				//TODO: It's an axis! - kind of - for gamepads - or should this be a pov?
 			case kIOHIDElementTypeInput_Axis:
-				mState.mAxes[(int)event.elementCookie].abs = event.value;
-				if(mBuffered && mListener) mListener->axisMoved(JoyStickEvent(this, mState), (int)event.elementCookie);
+				std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(mCookies.axisCookies.begin(), mCookies.axisCookies.end(), FindAxisCookie(event.elementCookie));
+				int axis = std::distance(mCookies.axisCookies.begin(), axisIt);
+				
+				//Copied from LinuxJoyStickEvents.cpp, line 149
+				const AxisInfo& axisInfo = axisIt->second;
+				float proportion = (float) (event.value - axisInfo.max) / (float) (axisInfo.min - axisInfo.max);
+				mState.mAxes[axis].abs = -JoyStick::MIN_AXIS - (JoyStick::MAX_AXIS * 2 * proportion);
+				
+				if(mBuffered && mListener) mListener->axisMoved(JoyStickEvent(this, mState), axis);
 				break;
 		}
 		
@@ -143,7 +162,9 @@ void MacJoyStick::_enumerateCookies()
 	long                                    number; 
 	IOHIDElementCookie                      cookie; 
 	long                                    usage; 
-	long                                    usagePage; 
+	long                                    usagePage;
+	int										min;
+	int										max;
 
 	CFDictionaryRef                         element; 
 	
@@ -181,6 +202,25 @@ void MacJoyStick::_enumerateCookies()
 				continue; 
 			usage = number; 
 			
+			//Get min
+			object = CFDictionaryGetValue(element,
+										  CFSTR(kIOHIDElementMinKey)); // kIOHIDElementMinKey or kIOHIDElementScaledMinKey?, no idea ...
+			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID())
+				continue;
+			if (!CFNumberGetValue((CFNumberRef) object, kCFNumberIntType,
+								  &number))
+				continue;
+			min = number;
+			
+			//Get max
+			object = CFDictionaryGetValue(element,
+										  CFSTR(kIOHIDElementMaxKey)); // kIOHIDElementMaxKey or kIOHIDElementScaledMaxKey?, no idea ...
+			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID())
+				continue;
+			if (!CFNumberGetValue((CFNumberRef) object, kCFNumberIntType,
+								  &number))
+				continue;
+			max = number;			
 			
 			//Get usage page 
 			object = CFDictionaryGetValue(element, 
@@ -207,7 +247,7 @@ void MacJoyStick::_enumerateCookies()
 					case kHIDUsage_GD_Rx:
 					case kHIDUsage_GD_Ry:
 					case kHIDUsage_GD_Rz:
-						mCookies.axisCookies.push_back(cookie);
+						mCookies.axisCookies.insert(std::make_pair(cookie, AxisInfo(min, max)));
 						break;
 					case kHIDUsage_GD_Slider:
 					case kHIDUsage_GD_Dial:
@@ -250,17 +290,17 @@ IOHIDQueueInterface** MacJoyStick::_createQueue(unsigned int depth)
 		if(result == kIOReturnSuccess)
 		{		
 			//add elements to the queue
-			std::vector<IOHIDElementCookie>::iterator it = mCookies.axisCookies.begin();
-			for(; it != mCookies.axisCookies.end(); ++it)
+			std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = mCookies.axisCookies.begin();
+			for(; axisIt != mCookies.axisCookies.end(); ++axisIt)
 			{
-				result = (*queue)->addElement(queue, (*it), 0); 
+				result = (*queue)->addElement(queue, axisIt->first, 0);
 			}
 			
-			it = mCookies.buttonCookies.begin();
-			for(; it != mCookies.buttonCookies.end(); ++it)
+			std::vector<IOHIDElementCookie>::iterator buttonIt = mCookies.buttonCookies.begin();
+			for(; buttonIt != mCookies.buttonCookies.end(); ++buttonIt)
 			{
-				result = (*queue)->addElement(queue, (*it), 0); 
-			}			
+				result = (*queue)->addElement(queue, (*buttonIt), 0);
+			}
 
 			//start data delivery to queue 
 			result = (*queue)->start(queue); 
