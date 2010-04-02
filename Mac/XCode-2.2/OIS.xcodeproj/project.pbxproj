@@ -215,7 +215,7 @@
 		0082F2880C827BF500E926BE /* OISConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISConsole.cpp; path = ../../demos/OISConsole.cpp; sourceTree = SOURCE_ROOT; };
 		249631C31066333900EFD0E1 /* MacJoyStick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MacJoyStick.cpp; path = ../../src/mac/MacJoyStick.cpp; sourceTree = SOURCE_ROOT; };
 		4A04E1A70CEF6B6B00E2B94E /* OISFactoryCreator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISFactoryCreator.h; path = ../../includes/OISFactoryCreator.h; sourceTree = SOURCE_ROOT; };
-		4A852C41112256D400A0BC84 /* OISMultiTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OISMultiTouch.h; sourceTree = SOURCE_ROOT; };
+		4A852C41112256D400A0BC84 /* OISMultiTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OISMultiTouch.h; path = ../../includes/OISMultiTouch.h; sourceTree = SOURCE_ROOT; };
 		4AC4C3930CDD840500603F93 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		4ACD7A520CEF903600D72CD9 /* OISException.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISException.cpp; path = ../../src/OISException.cpp; sourceTree = SOURCE_ROOT; };
 		4ADFD2650CDE7322006031E4 /* MacHIDManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacHIDManager.h; path = ../../includes/mac/MacHIDManager.h; sourceTree = SOURCE_ROOT; };
