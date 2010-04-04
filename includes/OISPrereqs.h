@@ -100,9 +100,9 @@ restrictions:
 
 //-------------- Common Classes, Enums, and Typdef's -------------------------//
 #define OIS_VERSION_MAJOR 1
-#define OIS_VERSION_MINOR 2 
+#define OIS_VERSION_MINOR 4
 #define OIS_VERSION_PATCH 0
-#define OIS_VERSION_NAME "Smash"
+#define OIS_VERSION_NAME "1.4.0"
 
 #define OIS_VERSION ((OIS_VERSION_MAJOR << 16) | (OIS_VERSION_MINOR << 8) | OIS_VERSION_PATCH)
 

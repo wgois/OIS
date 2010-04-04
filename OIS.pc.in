@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: OIS
-Description: Crossplatform C++ Input Framework
+Description: Cross platform C++ Input Framework
 Version: @VERSION@
 Libs: -L${libdir} -lOIS
 Cflags: -I${includedir}/@PACKAGE@ -I${includedir}
