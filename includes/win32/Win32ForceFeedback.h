@@ -25,7 +25,7 @@ restrictions:
 
 #include "OISPrereqs.h"
 #include "OISForceFeedback.h"
-#include "Win32/Win32Prereqs.h"
+#include "win32/Win32Prereqs.h"
 
 namespace OIS
 {

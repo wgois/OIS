@@ -20,10 +20,10 @@ restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
 */
-#include "Win32/Win32InputManager.h"
-#include "Win32/Win32Keyboard.h"
-#include "Win32/Win32Mouse.h"
-#include "Win32/Win32JoyStick.h"
+#include "win32/Win32InputManager.h"
+#include "win32/Win32KeyBoard.h"
+#include "win32/Win32Mouse.h"
+#include "win32/Win32JoyStick.h"
 #include "OISException.h"
 
 using namespace OIS;

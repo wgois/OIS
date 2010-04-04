@@ -20,9 +20,9 @@ restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
 */
-#include "Win32/Win32ForceFeedback.h"
+#include "win32/Win32ForceFeedback.h"
 #include "OISException.h"
-#include <Math.h>
+#include <math.h>
 
 // 0 = No trace; 1 = Important traces; 2 = Debug traces
 #define OIS_WIN32_JOYFF_DEBUG 1

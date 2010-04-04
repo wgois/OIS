@@ -24,7 +24,7 @@ restrictions:
 #define _WIN32_MOUSE_H_EADER_
 
 #include "OISMouse.h"
-#include "Win32/Win32Prereqs.h"
+#include "win32/Win32Prereqs.h"
 
 namespace OIS
 {

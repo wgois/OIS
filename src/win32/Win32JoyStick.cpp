@@ -20,9 +20,9 @@ restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
 */
-#include "Win32/Win32JoyStick.h"
-#include "Win32/Win32InputManager.h"
-#include "Win32/Win32ForceFeedback.h"
+#include "win32/Win32JoyStick.h"
+#include "win32/Win32InputManager.h"
+#include "win32/Win32ForceFeedback.h"
 #include "OISEvents.h"
 #include "OISException.h"
 
