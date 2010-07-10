@@ -183,7 +183,7 @@ namespace OIS
 	class _OISExport KeyEvent : public EventArg
 	{
 	public:
-		KeyEvent( Object* obj, KeyCode kc, unsigned int txt ) : EventArg(obj), key(kc), text(txt) {}
+		KeyEvent(Object* obj, KeyCode kc, unsigned int txt) : EventArg(obj), key(kc), text(txt) {}
 		virtual ~KeyEvent() {}
 
 		//! KeyCode of event
@@ -200,8 +200,8 @@ namespace OIS
 	{
 	public:
 		virtual ~KeyListener() {}
-		virtual bool keyPressed( const KeyEvent &arg ) = 0;
-		virtual bool keyReleased( const KeyEvent &arg ) = 0;		
+		virtual bool keyPressed(const KeyEvent &arg) = 0;
+		virtual bool keyReleased(const KeyEvent &arg) = 0;		
 	};
 
 	/**
@@ -219,7 +219,7 @@ namespace OIS
 		@param key
 			A KeyCode to check
 		*/
-		virtual bool isKeyDown( KeyCode key ) const = 0;
+		virtual bool isKeyDown(KeyCode key) const = 0;
 
 		/**
 		@remarks
@@ -228,7 +228,7 @@ namespace OIS
 		@param keyListener
 			Send a pointer to a class derived from KeyListener or 0 to clear the callback
 		*/
-		virtual void setEventCallback( KeyListener *keyListener ) { mListener = keyListener;}
+		virtual void setEventCallback(KeyListener *keyListener) { mListener = keyListener;}
 
 		/**
 		@remarks
@@ -253,7 +253,7 @@ namespace OIS
 		@param mode
 			Off, Unicode, Ascii
 		*/
-		virtual void setTextTranslation( TextTranslationMode mode );
+		virtual void setTextTranslation(TextTranslationMode mode);
 
 		/**
 		@remarks
@@ -271,7 +271,7 @@ namespace OIS
 		@returns
 			The string as determined from the current locale
 		*/
-		virtual const std::string& getAsString( KeyCode kc ) = 0;
+		virtual const std::string& getAsString(KeyCode kc) = 0;
 
 		//! Enum of bit position of modifer
 		enum Modifier
@@ -285,14 +285,14 @@ namespace OIS
 		@remarks
 			Check modifier status
 		*/
-		bool isModifierDown( Modifier mod ) const;
+		bool isModifierDown(Modifier mod) const;
 
 		/**
 		@remarks
 			Copies the state of the keys into the sent buffer
 			(in the form of 1 is down and 0 is up)
 		*/
-		virtual void copyKeyStates( char keys[256] ) const = 0;
+		virtual void copyKeyStates(char keys[256]) const = 0;
 		
 	protected:
 		Keyboard(const std::string &vendor, bool buffered, int devID, InputManager* creator)
