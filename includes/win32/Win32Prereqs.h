@@ -27,6 +27,7 @@ restrictions:
 #define DIRECTINPUT_VERSION 0x0800
 #include <windows.h>
 #include <dinput.h>
+#include <XInput.h>
 
 //Max number of elements to collect from buffered DirectInput
 #define KEYBOARD_DX_BUFFERSIZE 17
@@ -54,10 +55,13 @@ namespace OIS
 	public:
 		int devId;
 		GUID deviceID;
+		GUID productGuid;
 		std::string vendor;
+        bool isXInput;
+		int xInputDev;
 	};
 
-	typedef std::vector< JoyStickInfo > JoyStickInfoList;
+	typedef std::vector<JoyStickInfo> JoyStickInfoList;
 }
 
 #endif //_WIN32_INPUTSYSTEM_PREREQS_H

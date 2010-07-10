@@ -4,7 +4,7 @@
 
 The zlib/libpng License
 
-Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
 This software is provided 'as-is', without any express or implied warranty. In no 
 event will the authors be held liable for any damages arising from the use of this 
@@ -45,21 +45,16 @@ compatiable with many systems and operating systems
 
 Win32/
 	Contains Visual Studio .Net Solution Files
-	Contains CodeBlocks + MinGW + StlPort project files for OIS
+	Contains CodeBlocks project files for OIS
 	
 	---- Dependencies ------------------------------------------------------
 	DirectInput 8
-	Ogre & CEGUI 0.4.0 If building CEGUIOgre OIS Demo
 
-	SDL/
-		A test bed for an OIS InputManager with SDL as the backend. Not recommended;
-		however, useful for platforms with non-native OIS ports for temporary use.
 
 Linux/
 	---- Dependencies ------------------------------------------------------
 	X11
-	Ogre (GLX Platform) & CEGUI 0.4.0 If building CEGUIOgre OIS Demo
-        Newer Linux Kernel (2.6+ ?) for Event API - else, use --disable-joyevents
+        Newer Linux Kernel (2.6+ ?) for Event API
 
 	Steps to build on Linux:
 	./bootstrap
@@ -68,9 +63,7 @@ Linux/
 
 	---- Configure build options --------------------------------------------
 	./configure --help              --- List all configure options
-	./configure --disable-ogre      --- Disables CEGUIOgre ActionMapping Demo
-	./configure --disable-joyevents --- Uses /dev/input/jsX instead of 
-	                                    /dev/input/eventX
+
 
 LinuxCB/
         Contains CodeBlock files for building OIS and Demos with codeblocks
@@ -79,9 +72,5 @@ LinuxCB/
         settings. It also installs libOIS to ~/libs
 
 Mac/
-	
-	XCode-1.5/
-		Non-complete native OIS port.
-
 	XCode-2.2/
-		Working, complete, OIS port to OSX using SDL as a backend.
+		Working, mostly complete OSX vackend.

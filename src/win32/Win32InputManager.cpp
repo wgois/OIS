@@ -74,7 +74,7 @@ void Win32InputManager::_initialize( ParamList &paramList )
 
 	hInst = GetModuleHandle(0);
 
-	//Create the input system
+	//Create the device
 	hr = DirectInput8Create( hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&mDirectInput, NULL );
     if (FAILED(hr))	
 		OIS_EXCEPT( E_General, "Win32InputManager::Win32InputManager >> Not able to init DirectX8 Input!");
@@ -117,7 +117,19 @@ void Win32InputManager::_parseConfigSettings( ParamList &paramList )
 void Win32InputManager::_enumerateDevices()
 {
 	//Enumerate all attached devices
-	mDirectInput->EnumDevices(NULL , _DIEnumDevCallback, this, DIEDFL_ATTACHEDONLY); 
+	mDirectInput->EnumDevices(NULL, _DIEnumDevCallback, this, DIEDFL_ATTACHEDONLY);
+
+	int xinputControllers = 0;
+	//let's check how many possible XInput devices we may have (max 4)... 
+	for(int i = 0; i < 3; ++i)
+	{
+		XINPUT_STATE state;
+		if(XInputGetState(i, &state) != ERROR_DEVICE_NOT_CONNECTED)
+		{	//Once we found 1, just check our whole list against devices
+			Win32JoyStick::CheckXInputDevices(unusedJoyStickList);
+			break;
+		}
+	}
 }
 
 //--------------------------------------------------------------------------------//
@@ -133,6 +145,8 @@ BOOL CALLBACK Win32InputManager::_DIEnumDevCallback(LPCDIDEVICEINSTANCE lpddi, L
 		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_FLIGHT)
 	{
 		JoyStickInfo jsInfo;
+		jsInfo.isXInput = false;
+		jsInfo.productGuid = lpddi->guidProduct;
 		jsInfo.deviceID = lpddi->guidInstance;
 		jsInfo.vendor = lpddi->tszInstanceName;
 		jsInfo.devId = _this_->joySticks;

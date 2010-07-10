@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ois_static_d.lib"
+				AdditionalDependencies="ois_static_d.lib xinput.lib"
 				OutputFile="$(OutDir)/DemoFFTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib;..\..\src\win32\extras\WiiMote"
@@ -146,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ois_static.lib"
+				AdditionalDependencies="ois_static.lib  xinput.lib"
 				OutputFile="$(OutDir)/DemoFFTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib;..\..\src\win32\extras\WiiMote"

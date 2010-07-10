@@ -46,6 +46,14 @@ namespace OIS
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
 
+		/**
+		@remarks
+			Enum each PNP device using WMI and check each device ID to see if it contains 
+			"IG_" (ex. "VID_045E&PID_028E&IG_00").  If it does, then it's an XInput device
+			Unfortunately this information can not be found by just using DirectInput 
+		*/
+		static void CheckXInputDevices(JoyStickInfoList &joys);
+
 	protected:
 		//! Enumerates all things
 		void _enumerate();
@@ -60,12 +68,12 @@ namespace OIS
 		IDirectInput8* mDirectInput;
 		IDirectInputDevice8* mJoyStick;
 		DIDEVCAPS mDIJoyCaps;
-
 		DWORD coopSetting;
-		GUID deviceGuid;
+
+        JoyStickInfo mJoyInfo;
 
 		//! A force feedback device
-		Win32ForceFeedback* ff_device;
+		Win32ForceFeedback* mFfDevice;
 
 		//! Mapping
 		int _AxisNumber;
