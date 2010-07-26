@@ -172,15 +172,17 @@ void LinuxMouse::_processXEvents()
 			}
 
 			//Compute this frames Relative X & Y motion
-			mState.X.rel = event.xmotion.x - oldXMouseX;
-			mState.Y.rel = event.xmotion.y - oldXMouseY;
+			int dx = event.xmotion.x - oldXMouseX;
+			int dy = event.xmotion.y - oldXMouseY;
 		
 			//Store old values for next time to compute relative motion
 			oldXMouseX = event.xmotion.x;
 			oldXMouseY = event.xmotion.y;
 
-			mState.X.abs += mState.X.rel;
-			mState.Y.abs += mState.Y.rel;
+			mState.X.abs += dx;
+			mState.Y.abs += dy;
+			mState.X.rel += dx;
+			mState.Y.rel += dy;
 
 			//Check to see if we are grabbing the mouse to the window (requires clipping and warping)
 			if( grabMouse )
