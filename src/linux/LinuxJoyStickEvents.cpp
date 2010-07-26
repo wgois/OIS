@@ -95,106 +95,109 @@ void LinuxJoyStick::capture()
 
 	//We are in non blocking mode - we just read once, and try to fill up buffer
 	input_event js[JOY_BUFFERSIZE];
-	int ret = read(mJoyStick, &js, sizeof(struct input_event) * JOY_BUFFERSIZE);
-	if( ret <= 0 )
-		return;
-
-	//Determine how many whole events re read up
-	ret /= sizeof(struct input_event);
-	for(int i = 0; i < ret; ++i)
+	while(true)
 	{
-		switch(js[i].type)
-		{
-		case EV_KEY:  //Button
-		{
-			int button = mButtonMap[js[i].code];
-
-			#ifdef OIS_LINUX_JOY_DEBUG
-			  cout << "\nButton Code: " << js[i].code << ", OIS Value: " << button << endl;
-			#endif
-
-			//Check to see whether push or released event...
-			if(js[i].value)
-			{
-				mState.mButtons[button] = true;
-				if( mBuffered && mListener )
-					if(!mListener->buttonPressed(JoyStickEvent(this,mState), button)) return;
-			}
-			else
-			{
-				mState.mButtons[button] = false;
-				if( mBuffered && mListener )
-					if(!mListener->buttonReleased(JoyStickEvent(this,mState), button)) return;
-			}
+		int ret = read(mJoyStick, &js, sizeof(struct input_event) * JOY_BUFFERSIZE);
+        if( ret < 0 )
 			break;
-		}
 
-		case EV_ABS:  //Absolute Axis
+		//Determine how many whole events re read up
+		ret /= sizeof(struct input_event);
+		for(int i = 0; i < ret; ++i)
 		{
-			//A Stick (BrakeDefine is the highest possible Axis)
-			if( js[i].code <= ABS_BRAKE )
+			switch(js[i].type)
 			{
-				int axis = mAxisMap[js[i].code];
-				assert( axis < 32 && "Too many axes (Max supported is 32). Report this to OIS forums!" );
+			case EV_KEY:  //Button
+			{
+				int button = mButtonMap[js[i].code];
 
-				axisMoved[axis] = true;
+				#ifdef OIS_LINUX_JOY_DEBUG
+				  cout << "\nButton Code: " << js[i].code << ", OIS Value: " << button << endl;
+				#endif
 
-				//check for rescaling:
-				if( mRanges[axis].min == JoyStick::MIN_AXIS && mRanges[axis].max != JoyStick::MAX_AXIS )
-				{	//Scale is perfect
-					mState.mAxes[axis].abs = js[i].value;
+				//Check to see whether push or released event...
+				if(js[i].value)
+				{
+					mState.mButtons[button] = true;
+					if( mBuffered && mListener )
+						if(!mListener->buttonPressed(JoyStickEvent(this,mState), button)) return;
 				}
 				else
-				{	//Rescale
-					float proportion = (float)(js[i].value-mRanges[axis].max)/(float)(mRanges[axis].min-mRanges[axis].max);
-					mState.mAxes[axis].abs = (int)(32767.0f - (65535.0f * proportion));
+				{
+					mState.mButtons[button] = false;
+					if( mBuffered && mListener )
+						if(!mListener->buttonReleased(JoyStickEvent(this,mState), button)) return;
 				}
+				break;
 			}
-			else if( js[i].code <= ABS_HAT3Y ) //A POV - Max four POVs allowed
+
+			case EV_ABS:  //Absolute Axis
 			{
-				//Normalise the POV to between 0-7
-				//Even is X Axis, Odd is Y Axis
-				unsigned char LinuxPovNumber = js[i].code - 16;
-				short OIS_POVIndex = POV_MASK[LinuxPovNumber];
-
-				//Handle X Axis first (Even) (left right)
-				if((LinuxPovNumber & 0x0001) == 0)
+				//A Stick (BrakeDefine is the highest possible Axis)
+				if( js[i].code <= ABS_BRAKE )
 				{
-					//Why do this? Because, we use a bit field, and when this axis is east,
-					//it can't possibly be west too. So clear out the two X axes, then refil
-					//it in with the new direction bit.
-					//Clear the East/West Bit Flags first
-					mState.mPOV[OIS_POVIndex].direction &= 0x11110011;
-					if( js[i].value == -1 )	//Left
-						mState.mPOV[OIS_POVIndex].direction |= Pov::West;
-					else if( js[i].value == 1 ) //Right
-						mState.mPOV[OIS_POVIndex].direction |= Pov::East;
-				}
-				//Handle Y Axis (Odd) (up down)
-				else
-				{
-					//Clear the North/South Bit Flags first
-					mState.mPOV[OIS_POVIndex].direction &= 0x11111100;
-					if( js[i].value == -1 )	//Up
-						mState.mPOV[OIS_POVIndex].direction |= Pov::North;
-					else if( js[i].value == 1 ) //Down
-						mState.mPOV[OIS_POVIndex].direction |= Pov::South;
-				}
+					int axis = mAxisMap[js[i].code];
+					assert( axis < 32 && "Too many axes (Max supported is 32). Report this to OIS forums!" );
 
-				if( mBuffered && mListener )
-					if( mListener->povMoved( JoyStickEvent(this,mState), OIS_POVIndex) == false )
-						return;
+					axisMoved[axis] = true;
+
+					//check for rescaling:
+					if( mRanges[axis].min == JoyStick::MIN_AXIS && mRanges[axis].max != JoyStick::MAX_AXIS )
+					{	//Scale is perfect
+						mState.mAxes[axis].abs = js[i].value;
+					}
+					else
+					{	//Rescale
+						float proportion = (float)(js[i].value-mRanges[axis].max)/(float)(mRanges[axis].min-mRanges[axis].max);
+						mState.mAxes[axis].abs = (int)(32767.0f - (65535.0f * proportion));
+					}
+				}
+				else if( js[i].code <= ABS_HAT3Y ) //A POV - Max four POVs allowed
+				{
+					//Normalise the POV to between 0-7
+					//Even is X Axis, Odd is Y Axis
+					unsigned char LinuxPovNumber = js[i].code - 16;
+					short OIS_POVIndex = POV_MASK[LinuxPovNumber];
+
+					//Handle X Axis first (Even) (left right)
+					if((LinuxPovNumber & 0x0001) == 0)
+					{
+						//Why do this? Because, we use a bit field, and when this axis is east,
+						//it can't possibly be west too. So clear out the two X axes, then refil
+						//it in with the new direction bit.
+						//Clear the East/West Bit Flags first
+						mState.mPOV[OIS_POVIndex].direction &= 0x11110011;
+						if( js[i].value == -1 )	//Left
+							mState.mPOV[OIS_POVIndex].direction |= Pov::West;
+						else if( js[i].value == 1 ) //Right
+							mState.mPOV[OIS_POVIndex].direction |= Pov::East;
+					}
+					//Handle Y Axis (Odd) (up down)
+					else
+					{
+						//Clear the North/South Bit Flags first
+						mState.mPOV[OIS_POVIndex].direction &= 0x11111100;
+						if( js[i].value == -1 )	//Up
+							mState.mPOV[OIS_POVIndex].direction |= Pov::North;
+						else if( js[i].value == 1 ) //Down
+							mState.mPOV[OIS_POVIndex].direction |= Pov::South;
+					}
+
+					if( mBuffered && mListener )
+						if( mListener->povMoved( JoyStickEvent(this,mState), OIS_POVIndex) == false )
+							return;
+				}
+				break;
 			}
-			break;
-		}
 
-		
-		case EV_REL: //Relative Axes (Do any joystick actually have a relative axis?)
-#ifdef OIS_LINUX_JOY_DEBUG
-		    cout << "\nWarning: Relatives axes not supported yet" << endl;
-#endif
-			break;
-		default: break;
+			
+			case EV_REL: //Relative Axes (Do any joystick actually have a relative axis?)
+	#ifdef OIS_LINUX_JOY_DEBUG
+				cout << "\nWarning: Relatives axes not supported yet" << endl;
+	#endif
+				break;
+			default: break;
+			}
 		}
 	}
 

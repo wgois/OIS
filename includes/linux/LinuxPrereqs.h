@@ -31,7 +31,7 @@ restrictions:
 #include "OISPrereqs.h"
 
 //! Max number of elements to collect from buffered input
-#define JOY_BUFFERSIZE 10
+#define JOY_BUFFERSIZE 64
 
 namespace OIS
 {
