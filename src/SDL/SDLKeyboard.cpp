@@ -20,7 +20,7 @@ restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL/SDLKeyBoard.h"
+#include "SDL/SDLKeyboard.h"
 #include "SDL/SDLInputManager.h"
 #include "OISException.h"
 #include "OISEvents.h"
