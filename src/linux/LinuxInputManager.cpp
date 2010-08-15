@@ -39,7 +39,6 @@ LinuxInputManager::LinuxInputManager() : InputManager("X11InputManager")
 	grabKeyboard = true;
 	hideMouse = true;
 	mGrabs = true;
-	useXRepeat = false;
 	keyboardUsed = mouseUsed = false;
 
 	//Setup our internal factories
@@ -73,11 +72,6 @@ void LinuxInputManager::_parseConfigSettings( ParamList &paramList )
 	window  = strtoul(i->second.c_str(), 0, 10);
 
 	//--------- Keyboard Settings ------------//
-	i = paramList.find("XAutoRepeatOn");
-	if( i != paramList.end() )
-		if( i->second == "true" )
-			useXRepeat = true;
-
 	i = paramList.find("x11_keyboard_grab");
 	if( i != paramList.end() )
 		if( i->second == "false" )
@@ -171,7 +165,7 @@ Object* LinuxInputManager::createObject(InputManager *creator, Type iType, bool 
 	case OISKeyboard:
 	{
 		if( keyboardUsed == false )
-			obj = new LinuxKeyboard(this, bufferMode, grabKeyboard, useXRepeat);
+			obj = new LinuxKeyboard(this, bufferMode, grabKeyboard);
 		break;
 	}
 	case OISMouse:

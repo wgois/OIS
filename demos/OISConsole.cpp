@@ -78,6 +78,7 @@ public:
 	bool keyReleased( const KeyEvent &arg ) {
 		if( arg.key == KC_ESCAPE || arg.key == KC_Q )
 			appRunning = false;
+		std::cout << "KeyReleased {" << ((Keyboard*)(arg.device))->getAsString(arg.key) << "}\n";
 		return true;
 	}
 	bool mouseMoved( const MouseEvent &arg ) {
