@@ -250,86 +250,55 @@ void Win32JoyStick::capture()
             memset(&inputState, 0, sizeof(inputState));
 
         //Sticks and triggers
+		int value;
         bool axisMoved[XINPUT_TRANSLATED_AXIS_COUNT] = {false,false,false,false,false,false};
-        if (std::abs(inputState.Gamepad.sThumbLY) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-        {
-            int value = -(int)inputState.Gamepad.sThumbLY;
-            mState.mAxes[0].rel = value - mState.mAxes[0].abs;
-            mState.mAxes[0].abs = value;
-            axisMoved[0] = mState.mAxes[0].rel != 0;
-        }
-        else
-        {
-            mState.mAxes[0].rel = 0;
-            mState.mAxes[0].abs = 0;
-        }
 
-        if (std::abs(inputState.Gamepad.sThumbLX) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-        {
-            mState.mAxes[1].rel = inputState.Gamepad.sThumbLX - mState.mAxes[1].abs;
-            mState.mAxes[1].abs = inputState.Gamepad.sThumbLX;
-            axisMoved[1] = mState.mAxes[1].rel != 0;
-        }
-        else
-        {
-            mState.mAxes[1].rel = 0;
-            mState.mAxes[1].abs = 0;
-        }
+		//LeftY
+		value = -(int)inputState.Gamepad.sThumbLY;
+		mState.mAxes[0].rel = value - mState.mAxes[0].abs;
+		mState.mAxes[0].abs = value;
+		if(mState.mAxes[0].rel != 0)
+            axisMoved[0] = true;
 
-        if (std::abs(inputState.Gamepad.sThumbRY) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
-        {
-            int value = -(int)inputState.Gamepad.sThumbRY;
-            mState.mAxes[2].rel = value - mState.mAxes[2].abs;
-            mState.mAxes[2].abs = value;
-            axisMoved[2] = mState.mAxes[2].rel != 0;
-        }
-        else
-        {
-            mState.mAxes[2].rel = 0;
-            mState.mAxes[2].abs = 0;
-        }
+		//LeftX
+        mState.mAxes[1].rel = inputState.Gamepad.sThumbLX - mState.mAxes[1].abs;
+        mState.mAxes[1].abs = inputState.Gamepad.sThumbLX;
 
-        if (std::abs(inputState.Gamepad.sThumbRX) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
-        {
-            mState.mAxes[3].rel = inputState.Gamepad.sThumbRX - mState.mAxes[3].abs;
-            mState.mAxes[3].abs = inputState.Gamepad.sThumbRX;
-            axisMoved[3] = mState.mAxes[3].rel != 0;
-        }
-        else
-        {
-            mState.mAxes[3].rel = 0;
-            mState.mAxes[3].abs = 0;
-        }
+		if(mState.mAxes[1].rel != 0)
+            axisMoved[1] = true;
 
-        if (inputState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
-        {
-            int value = (int)inputState.Gamepad.bLeftTrigger * 128;
-            if (value > 0)
-                value = min(value + 128, 32767);
-            mState.mAxes[4].rel = value - mState.mAxes[4].abs;
-            mState.mAxes[4].abs = value;
-            axisMoved[4] = mState.mAxes[4].rel != 0;
-        }
-        else
-        {
-            mState.mAxes[4].rel = 0;
-            mState.mAxes[4].abs = 0;
-        }
+		//RightY
+		value = -(int)inputState.Gamepad.sThumbRY;           
+        mState.mAxes[2].rel = value - mState.mAxes[2].abs;
+        mState.mAxes[2].abs = value;
+		if(mState.mAxes[2].rel != 0)
+            axisMoved[2] = true;
 
-        if (inputState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
-        {
-            int value = (int)inputState.Gamepad.bRightTrigger * 128;
-            if (value > 0)
-                value = min(value + 128, 32767);
-            mState.mAxes[5].rel = value - mState.mAxes[5].abs;
-            mState.mAxes[5].abs = value;
-            axisMoved[5] = mState.mAxes[5].rel != 0;
-        }
-        else
-        {
-            mState.mAxes[5].rel = 0;
-            mState.mAxes[5].abs = 0;
-        }
+		//RightX
+        mState.mAxes[3].rel = inputState.Gamepad.sThumbRX - mState.mAxes[3].abs;
+        mState.mAxes[3].abs = inputState.Gamepad.sThumbRX;
+		if(mState.mAxes[3].rel != 0)
+			axisMoved[3] = true;
+
+		//Left trigger
+        value = inputState.Gamepad.bLeftTrigger * 129;
+		if(value > JoyStick::MAX_AXIS)
+			value = JoyStick::MAX_AXIS;
+
+        mState.mAxes[4].rel = value - mState.mAxes[4].abs;
+        mState.mAxes[4].abs = value;
+		if(mState.mAxes[4].rel != 0)
+			axisMoved[4] = true;
+
+		//Right trigger
+        value = (int)inputState.Gamepad.bRightTrigger * 129;
+		if(value > JoyStick::MAX_AXIS)
+			value = JoyStick::MAX_AXIS;
+
+		mState.mAxes[5].rel = value - mState.mAxes[5].abs;
+        mState.mAxes[5].abs = value;
+		if(mState.mAxes[5].rel != 0)
+			axisMoved[5] = true;
         
         //POV
         int previousPov = mState.mPOV[0].direction;        
