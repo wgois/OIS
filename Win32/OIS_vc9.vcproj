@@ -69,7 +69,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="dxguid.lib dinput8.lib xinput.lib"
+				AdditionalDependencies="dxguid.lib dinput8.lib"
 				OutputFile="$(OutDir)/OIS_static_d.lib"
 				AdditionalLibraryDirectories="..\src\win32\extras\WiiMote"
 			/>
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="dxguid.lib dinput8.lib xinput.lib"
+				AdditionalDependencies="dxguid.lib dinput8.lib"
 				OutputFile="$(OutDir)/OIS_static.lib"
 				AdditionalLibraryDirectories="..\src\win32\extras\WiiMote"
 			/>
@@ -215,7 +215,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib dinput8.lib xinput.lib"
+				AdditionalDependencies="dxguid.lib dinput8.lib"
 				AdditionalLibraryDirectories="..\src\win32\extras\WiiMote\"
 				GenerateDebugInformation="false"
 				OptimizeReferences="2"
@@ -298,7 +298,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib dinput8.lib xinput.lib"
+				AdditionalDependencies="dxguid.lib dinput8.lib"
 				OutputFile="$(OutDir)/OIS_d.dll"
 				AdditionalLibraryDirectories="..\src\win32\extras\WiiMote\"
 				GenerateDebugInformation="true"

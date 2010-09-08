@@ -69,9 +69,7 @@ restrictions:
 /**
 @remarks
 	Build in support for Win32 XInput (Xbox 360 Controller)
-@notes
-	Not Yet Implemented
 */
-//#define OIS_WIN32_XINPUT_SUPPORT
+#define OIS_WIN32_XINPUT_SUPPORT
 
 #endif

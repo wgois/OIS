@@ -40,6 +40,9 @@ namespace OIS
 		/** @copydoc Object::capture */
 		virtual void capture();
 
+		//! hanlde xinput
+		void captureXInput();
+
 		/** @copydoc Object::queryInterface */
 		virtual Interface* queryInterface(Interface::IType type);
 

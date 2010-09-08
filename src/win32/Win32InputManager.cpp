@@ -119,7 +119,7 @@ void Win32InputManager::_enumerateDevices()
 	//Enumerate all attached devices
 	mDirectInput->EnumDevices(NULL, _DIEnumDevCallback, this, DIEDFL_ATTACHEDONLY);
 
-	int xinputControllers = 0;
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	//let's check how many possible XInput devices we may have (max 4)... 
 	for(int i = 0; i < 3; ++i)
 	{
@@ -130,6 +130,7 @@ void Win32InputManager::_enumerateDevices()
 			break;
 		}
 	}
+#endif
 }
 
 //--------------------------------------------------------------------------------//
