@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\oisb\include\OISB.h" />
+    <ClInclude Include="..\oisb\include\OISBAction.h" />
+    <ClInclude Include="..\oisb\include\OISBActionSchema.h" />
+    <ClInclude Include="..\oisb\include\OISBAnalogAxisAction.h" />
+    <ClInclude Include="..\oisb\include\OISBAnalogAxisState.h" />
+    <ClInclude Include="..\oisb\include\OISBBindable.h" />
+    <ClInclude Include="..\oisb\include\OISBBinding.h" />
+    <ClInclude Include="..\oisb\include\OISBDevice.h" />
+    <ClInclude Include="..\oisb\include\OISBDigitalState.h" />
+    <ClInclude Include="..\oisb\include\OISBGlobal.h" />
+    <ClInclude Include="..\oisb\include\OISBKeyboard.h" />
+    <ClInclude Include="..\oisb\include\OISBMouse.h" />
+    <ClInclude Include="..\oisb\include\OISBSequenceAction.h" />
+    <ClInclude Include="..\oisb\include\OISBState.h" />
+    <ClInclude Include="..\oisb\include\OISBString.h" />
+    <ClInclude Include="..\oisb\include\OISBSystem.h" />
+    <ClInclude Include="..\oisb\include\OISBTriggerAction.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\oisb\src\OISBAction.cpp" />
+    <ClCompile Include="..\oisb\src\OISBActionSchema.cpp" />
+    <ClCompile Include="..\oisb\src\OISBAnalogAxisAction.cpp" />
+    <ClCompile Include="..\oisb\src\OISBAnalogAxisState.cpp" />
+    <ClCompile Include="..\oisb\src\OISBBindable.cpp" />
+    <ClCompile Include="..\oisb\src\OISBBinding.cpp" />
+    <ClCompile Include="..\oisb\src\OISBDevice.cpp" />
+    <ClCompile Include="..\oisb\src\OISBDigitalState.cpp" />
+    <ClCompile Include="..\oisb\src\OISBKeyboard.cpp" />
+    <ClCompile Include="..\oisb\src\OISBMouse.cpp" />
+    <ClCompile Include="..\oisb\src\OISBSequenceAction.cpp" />
+    <ClCompile Include="..\oisb\src\OISBState.cpp" />
+    <ClCompile Include="..\oisb\src\OISBSystem.cpp" />
+    <ClCompile Include="..\oisb\src\OISBTriggerAction.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FEFF536E-F5EF-466E-B947-E6D5B96A09EB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>oisb</RootNamespace>
+    <ProjectName>OISB</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\Build\bin\release\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OISB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OISB_EXPORTS;OISB_NONCLIENT_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../includes;../oisb/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Build\lib\release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)\Build\lib\release\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
