@@ -94,6 +94,7 @@ namespace OISB
     class Bindable;
     class BindableListener;
     class Binding;
+    class DebugBindableListener;
     class DigitalState;
 	class Device;
 	class Keyboard;

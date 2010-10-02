@@ -299,6 +299,50 @@ namespace OISB
         // nothing was found, return 0
         return 0;
     }
+
+    void System::addListenerToAllStates(BindableListener* listener)
+    {
+        for (DeviceMap::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
+        {
+            it->second->addListenerToAllStates(listener);
+        }
+    }
+
+    void System::removeListenerFromAllStates(BindableListener* listener)
+    {
+        for (DeviceMap::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
+        {
+            it->second->removeListenerFromAllStates(listener);
+        }
+    }
+
+    void System::addListenerToAllActions(BindableListener* listener)
+    {
+        for (ActionSchemaMap::const_iterator it = mActionSchemas.begin(); it != mActionSchemas.end(); ++it)
+        {
+            it->second->addListenerToAllActions(listener);
+        }
+    }
+
+    void System::removeListenerFromAllActions(BindableListener* listener)
+    {
+        for (ActionSchemaMap::const_iterator it = mActionSchemas.begin(); it != mActionSchemas.end(); ++it)
+        {
+            it->second->removeListenerFromAllActions(listener);
+        }
+    }
+
+    void System::addListenerToAllBindables(BindableListener* listener)
+    {
+        addListenerToAllStates(listener);
+        addListenerToAllActions(listener);
+    }
+
+    void System::removeListenerFromAllBindables(BindableListener* listener)
+    {
+        removeListenerFromAllActions(listener);
+        removeListenerFromAllStates(listener);
+    }
 	
 	void System::addDevice(Device* device)
 	{

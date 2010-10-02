@@ -191,6 +191,39 @@ namespace OISB
              */
             Bindable* lookupBindable(const String& name) const;
 
+            /**
+             * @brief adds a listener to all input states in all devices
+             *
+             * @note this is especially useful when you want to do ingame controls setup or similar,
+             *       you just listen to all states and pick up the ones activated
+             */
+            void addListenerToAllStates(BindableListener* listener);
+
+            /**
+             * @brief removes previously added listener from all input states in all devices
+             */
+            void removeListenerFromAllStates(BindableListener* listener);
+
+            /**
+             * @brief adds a listener to all actions in all schemas
+             */
+            void addListenerToAllActions(BindableListener* listener);
+
+            /**
+             * @brief removes previously added listener from all actions in all schemas
+             */
+            void removeListenerFromAllActions(BindableListener* listener);
+
+            /**
+             * @brief adds a listener to all bindables (states & actions)
+             */
+            void addListenerToAllBindables(BindableListener* listener);
+
+            /**
+             * @brief removes previously added listener from all bindables (states & actions)
+             */
+            void removeListenerFromAllBindables(BindableListener* listener);
+
 		private:
             /// singleton implementation pointer
             static System* msSingleton;

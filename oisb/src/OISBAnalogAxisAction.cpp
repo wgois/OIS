@@ -155,7 +155,7 @@ namespace OISB
         mAbsoluteValue = std::min(mMaximumValue, mAbsoluteValue);
         mAbsoluteValue = std::max(mMinimumValue, mAbsoluteValue);
 
-        return mDeltaValue != 0.0f;
+        return fabs(mDeltaValue) < std::numeric_limits<Real>::epsilon();
     }
 
     void AnalogAxisAction::impl_processEmulation(Real delta, DigitalState* dec, DigitalState* inc)

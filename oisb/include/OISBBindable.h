@@ -45,7 +45,7 @@ namespace OISB
     /**
      * @brief lightweight and simple listener base class
      */
-    class _OISExport BindableListener
+    class _OISBExport BindableListener
     {
         public:
             /// @brief destructor
@@ -59,6 +59,26 @@ namespace OISB
 
             /// called when any bindable this is attached to is updated
             virtual void bindableProcessed(Bindable* bindable);
+    };
+
+    /**
+     * @brief helper little debug listener, reports every (de)activation of everything it catches
+     *
+     * @par
+     * Call OISB::System::addListenerToAllStates(new OISB::DebugBindableListener()) to debug states and
+     * OISB::System::addListenerToAllActions(new OISB::DebugBindableListener()) to debug actions
+     */
+    class _OISBExport DebugBindableListener : public BindableListener
+    {
+        public:
+            /// @brief destructor
+            virtual ~DebugBindableListener();
+
+            /// @copydoc BindableListener::bindableActivated
+            virtual void bindableActivated(Bindable* bindable);
+
+            /// @copydoc BindableListener::bindableDeactivated
+            virtual void bindableDeactivated(Bindable* bindable);
     };
 
     /**

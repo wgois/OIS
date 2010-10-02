@@ -97,9 +97,25 @@ namespace OISB
 			 */
 			void destroyAction(Action* action);
 
+            /**
+             * @brief retrieves action by given name
+             */
             Action* getAction(const String& name) const;
 
+            /**
+             * @brief checks whether action with given name is contained in this schema
+             */
             bool hasAction(const String& name) const;
+
+            /**
+             * @brief adds listener to all actions within this schema
+             */
+            void addListenerToAllActions(BindableListener* listener);
+
+            /**
+             * @brief removes previously added listener from all actions within this schema
+             */
+            void removeListenerFromAllActions(BindableListener* listener);
 			
 			/**
 			 * @brief inactivate all actions of this schema

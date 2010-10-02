@@ -70,6 +70,16 @@ namespace OISB
 			 */
             bool hasState(const String& name) const;
 			
+            /**
+             * @brief adds listener to all states within this device
+             */
+            void addListenerToAllStates(BindableListener* listener);
+
+            /**
+             * @brief removes previously added listener from all states within this device
+             */
+            void removeListenerFromAllStates(BindableListener* listener);
+
 			/**
 			 * @brief updates all input states of this device
 			 */

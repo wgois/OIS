@@ -25,6 +25,7 @@ restrictions:
 #include "OISException.h"
 
 #include <algorithm>
+#include <iostream>
 
 namespace OISB
 {
@@ -44,6 +45,19 @@ namespace OISB
     void BindableListener::bindableProcessed(Bindable* /*bindable*/)
     {
         // default behaviour is to do nothing
+    }
+
+    DebugBindableListener::~DebugBindableListener()
+    {}
+
+    void DebugBindableListener::bindableActivated(Bindable* bindable)
+    {
+        std::cout << "DEBUG: activated '" + bindable->getBindableName() + "'" << std::endl;
+    }
+
+    void DebugBindableListener::bindableDeactivated(Bindable* bindable)
+    {
+        std::cout << "DEBUG: deactivated '" + bindable->getBindableName() + "'" << std::endl;
     }
 
     Bindable::~Bindable()

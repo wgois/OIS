@@ -121,6 +121,22 @@ namespace OISB
 		return it != mActions.end();
     }
 
+    void ActionSchema::addListenerToAllActions(BindableListener* listener)
+    {
+        for (ActionMap::const_iterator it = mActions.begin(); it != mActions.end(); ++it)
+		{
+			it->second->addListener(listener);
+		}
+    }
+
+    void ActionSchema::removeListenerFromAllActions(BindableListener* listener)
+    {
+        for (ActionMap::const_iterator it = mActions.begin(); it != mActions.end(); ++it)
+		{
+			it->second->removeListener(listener);
+		}
+    }
+
 	void ActionSchema::process(Real delta)
 	{
 		for (ActionMap::const_iterator it = mActions.begin(); it != mActions.end(); ++it)

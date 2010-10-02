@@ -54,6 +54,22 @@ namespace OISB
 
         return true;
     }
+
+    void Device::addListenerToAllStates(BindableListener* listener)
+    {
+        for (StateMap::const_iterator it = mStates.begin(); it != mStates.end(); ++it)
+		{
+			it->second->addListener(listener);
+		}
+    }
+
+    void Device::removeListenerFromAllStates(BindableListener* listener)
+    {
+        for (StateMap::const_iterator it = mStates.begin(); it != mStates.end(); ++it)
+		{
+			it->second->removeListener(listener);
+		}
+    }
 	
 	void Device::addState(State* state)
 	{

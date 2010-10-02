@@ -62,7 +62,7 @@ namespace OISB
 		value += mOffset;
 		mDeltaValue = (value - mAbsoluteValue) * mSensitivity;
 		
-		if (mDeltaValue != 0.0)
+		if (fabs(mDeltaValue) > std::numeric_limits<Real>::epsilon())
 		{
 			mAbsoluteValue += mDeltaValue;
 			
@@ -73,6 +73,7 @@ namespace OISB
 		}
 
         mChanged = willBeActive != mIsActive;
+
         if (willBeActive && !mIsActive)
         {
             activate();
