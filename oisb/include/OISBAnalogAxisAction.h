@@ -56,8 +56,24 @@ namespace OISB
 
             void setEmulationSpeed(Real speed);
 
+            void setEmulationDecreaseReturnSpeed(Real speed);
+            void setEmulationIncreaseReturnSpeed(Real speed);
+
+            void setEmulationReturnSpeed(Real speed);
+
             void setMinimumValue(Real min);
+
+            inline Real getMinimumValue() const
+            {
+                return mMinimumValue;
+            }
+
             void setMaximumValue(Real max);
+
+            inline Real getMaximumValue() const
+            {
+                return mMaximumValue;
+            }
 
             inline Real getAbsoluteValue() const
             {
@@ -67,6 +83,13 @@ namespace OISB
             inline Real getDeltaValue() const
             {
                 return mDeltaValue;
+            }
+
+            void setPivotValue(Real pivot);
+
+            inline Real getPivotValue()
+            {
+                return mPivotValue;
             }
 
         protected:
@@ -85,6 +108,10 @@ namespace OISB
             Real mEmulationDecreaseSpeed;
             /// increasing speed
             Real mEmulationIncreaseSpeed;
+            /// return from decrease speed
+            Real mEmulationDecreaseReturnSpeed;
+            /// return from decrease speed
+            Real mEmulationIncreaseReturnSpeed;
 
             /// if true, this action takes the absolute values of the analog states (if any)
             bool mUseAbsoluteValues;
@@ -98,6 +125,8 @@ namespace OISB
 			Real mMinimumValue;
 			/// calibration clamping maximum value
 			Real mMaximumValue;
+            /// pivot value, only used for emulation return code
+            Real mPivotValue;
 			/// calibration sensitivity
 			Real mSensitivity;
 	};

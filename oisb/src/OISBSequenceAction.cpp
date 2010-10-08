@@ -74,6 +74,13 @@ namespace OISB
             Binding* binding = *it;
             BindingState& bstate = *sit;
 
+            if (binding->getNumBindables() == 0)
+            {
+                // it's empty, so the result is not active!
+                ++it; ++sit;
+                continue;
+            }
+
             if (bstate.position > 0)
             {
                 bstate.timeout -= delta;

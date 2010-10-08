@@ -36,6 +36,8 @@ namespace OISB
         mAllowEmulation(true),
         mEmulationDecreaseSpeed(1),
         mEmulationIncreaseSpeed(1),
+        mEmulationDecreaseReturnSpeed(1),
+        mEmulationIncreaseReturnSpeed(1),
 
         mUseAbsoluteValues(false),
 
@@ -44,6 +46,7 @@ namespace OISB
 
         mMinimumValue(-1.0f),
         mMaximumValue(1.0f),
+        mPivotValue(0.0f),
         mSensitivity(1.0f)
 	{}
 	
@@ -71,6 +74,22 @@ namespace OISB
         setEmulationIncreaseSpeed(speed);
     }
 
+    void AnalogAxisAction::setEmulationDecreaseReturnSpeed(Real speed)
+    {
+        mEmulationDecreaseReturnSpeed = speed;
+    }
+
+    void AnalogAxisAction::setEmulationIncreaseReturnSpeed(Real speed)
+    {
+        mEmulationIncreaseReturnSpeed = speed;
+    }
+
+    void AnalogAxisAction::setEmulationReturnSpeed(Real speed)
+    {
+        setEmulationDecreaseReturnSpeed(speed);
+        setEmulationIncreaseReturnSpeed(speed);
+    }
+
     void AnalogAxisAction::setMinimumValue(Real min)
     {
         mMinimumValue = min;
@@ -79,6 +98,11 @@ namespace OISB
     void AnalogAxisAction::setMaximumValue(Real max)
     {
         mMaximumValue = max;
+    }
+
+    void AnalogAxisAction::setPivotValue(Real pivot)
+    {
+        mPivotValue = pivot;
     }
 	
     bool AnalogAxisAction::impl_process(Real delta)
@@ -211,6 +235,21 @@ namespace OISB
                 // increase is pressed
                         
                 mDeltaValue = ((+1.0f) * mEmulationIncreaseSpeed * delta) * mSensitivity;
+                mAbsoluteValue += mDeltaValue;
+            }
+
+            if (!inc->isActive() && !dec->isActive())
+            {
+                // we have to do returning to the starting point there
+                if (mPivotValue > mAbsoluteValue)
+                {
+                    mDeltaValue = ((+1.0f) * mEmulationDecreaseReturnSpeed * delta) * mSensitivity;
+                }
+                else if (mPivotValue < mAbsoluteValue)
+                {
+                    mDeltaValue = ((-1.0f) * mEmulationIncreaseReturnSpeed * delta) * mSensitivity;
+                }
+
                 mAbsoluteValue += mDeltaValue;
             }
         }

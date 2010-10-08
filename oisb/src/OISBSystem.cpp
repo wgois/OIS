@@ -45,7 +45,9 @@ namespace OISB
 		mOISMouse(0),
 		mOISKeyboard(0),
 		mMouse(0),
-		mKeyboard(0)
+		mKeyboard(0),
+
+        mDefaultActionSchema(0)
 	{
 		 msSingleton = this;
 	}

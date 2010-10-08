@@ -29,6 +29,7 @@ restrictions:
 
 namespace OISB
 {
+    /// @brief enumerates possible action types, serves as a simple RTTI
     enum ActionType
     {
         /// simplest form of action, all active states in at least one binding activate this
@@ -41,7 +42,11 @@ namespace OISB
     };
 
 	/**
-	 * @brief action gets invoked when certain input state changes
+	 * @brief abstract element that bindables can be bound to
+     *
+     * @par
+     * By using actions instead of states for your input, you can allow users to
+     * remap keys or even map analog input devices to your actions!
 	 */
 	class _OISBExport Action : public Bindable
 	{
