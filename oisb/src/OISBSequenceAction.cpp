@@ -27,6 +27,8 @@ restrictions:
 
 namespace OISB
 {
+    ActionType SequenceAction::ACTION_TYPE = AT_SEQUENCE;
+
 	SequenceAction::SequenceAction(ActionSchema* parent, const String& name):
 		Action(parent, name),
 

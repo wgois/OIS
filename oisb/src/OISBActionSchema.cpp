@@ -53,7 +53,7 @@ namespace OISB
 		mIsEnabled = enabled;
 	}
 	
-	Action* ActionSchema::createAction(const String& name, ActionType type)
+	Action* ActionSchema::createAction(ActionType type, const String& name)
 	{
 		ActionMap::const_iterator it = mActions.find(name);
 		

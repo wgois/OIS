@@ -35,6 +35,9 @@ namespace OISB
 	class _OISBExport AnalogAxisAction : public Action
 	{
 		public:
+            /// static action type (for use in templates)
+            static ActionType ACTION_TYPE;
+
 			/**
 			 * @brief constructor
 			 * 

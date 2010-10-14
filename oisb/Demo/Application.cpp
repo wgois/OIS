@@ -84,8 +84,8 @@ void Application::run()
 void Application::initializeOgre()
 {
     mOgreRoot = new Ogre::Root("OgrePlugins.cfg", "OgreConfig.cfg", "Ogre.log");
-    //mOgreRoot->addResourceLocation("../../../Data/OISBDemo", "FileSystem");
-    mOgreRoot->addResourceLocation("Data", "FileSystem");
+    mOgreRoot->addResourceLocation("../../../Data/OISBDemo", "FileSystem");
+    //mOgreRoot->addResourceLocation("Data", "FileSystem");
     mOgreRoot->showConfigDialog();
     mOgreWindow = mOgreRoot->initialise(true, "OISB demo");
 
@@ -100,45 +100,46 @@ void Application::initializeOgre()
 void Application::defineActions()
 {
     mDefaultSchema = OISB::System::getSingleton().getDefaultActionSchemaAutoCreate();
-    mExitAction = mDefaultSchema->createAction("Exit", OISB::AT_TRIGGER);
+    mExitAction = mDefaultSchema->createAction(OISB::AT_TRIGGER, "Exit");
 
     mExitAction->bind("Keyboard/Esc");
     mExitAction->bind("Keyboard/Ctrl", "Keyboard/Q");
 
     mChopterSchema = OISB::System::getSingleton().createActionSchema("Chopter", false);
 
-    mThrottle = static_cast<OISB::AnalogAxisAction*>(mChopterSchema->createAction("Throttle", OISB::AT_ANALOG_AXIS));
+    mThrottle = mChopterSchema->createAction<OISB::AnalogAxisAction>("Throttle");
     mThrottle->setMinimumValue(0.0f);
     mThrottle->setPivotValue(9.0f);
     mThrottle->setMaximumValue(15.0f);
     mThrottle->setEmulationSpeed(10.0f);
     mThrottle->setEmulationReturnSpeed(10.0f);
     mThrottle->bind("Keyboard/S", "Keyboard/W");
+    //mThrottle->bind("Mouse/Y Axis");
 
-    mSteering = static_cast<OISB::AnalogAxisAction*>(mChopterSchema->createAction("Steering", OISB::AT_ANALOG_AXIS));
+    mSteering = mChopterSchema->createAction<OISB::AnalogAxisAction>("Steering");
     mSteering->setMinimumValue(-50.0f);
     mSteering->setMaximumValue(50.0f);
     mSteering->setEmulationSpeed(50.0f);
     mSteering->setEmulationReturnSpeed(50.0f);
     mSteering->bind("Keyboard/A", "Keyboard/D");
-    mSteering->bind("Mouse/X Axis");
+    //mSteering->bind("Mouse/X Axis");
 
-    mTilting = static_cast<OISB::AnalogAxisAction*>(mChopterSchema->createAction("Tilting", OISB::AT_ANALOG_AXIS));
+    mTilting = mChopterSchema->createAction<OISB::AnalogAxisAction>("Tilting");
     mTilting->setMinimumValue(-50.0f);
     mTilting->setMaximumValue(50.0f);
     mTilting->setEmulationSpeed(50.0f);
     mTilting->setEmulationReturnSpeed(50.0f);
     mTilting->bind("Keyboard/Up", "Keyboard/Down");
-    mTilting->bind("Mouse/Y Axis");
+    //mTilting->bind("Mouse/Y Axis");
 
-    mLeaning = static_cast<OISB::AnalogAxisAction*>(mChopterSchema->createAction("Leaning", OISB::AT_ANALOG_AXIS));
+    mLeaning = mChopterSchema->createAction<OISB::AnalogAxisAction>("Leaning");
     mLeaning->setMinimumValue(-50.0f);
     mLeaning->setMaximumValue(50.0f);
     mLeaning->setEmulationSpeed(50.0f);
     mLeaning->setEmulationReturnSpeed(50.0f);
     mLeaning->bind("Keyboard/Left", "Keyboard/Right");
 
-    mBoostCheat = static_cast<OISB::SequenceAction*>(mChopterSchema->createAction("Boost cheat!", OISB::AT_SEQUENCE));
+    mBoostCheat = mChopterSchema->createAction<OISB::SequenceAction>("Boost cheat!");
     OISB::Binding* b = mBoostCheat->createBinding();
     b->bind("Keyboard/I");
     b->bind("Keyboard/D");
@@ -326,7 +327,7 @@ void Application::runOneFrame(Ogre::Real delta)
 
     if (!mOgreRoot->renderOneFrame())
     {
-	    mRunning = false;
+	    //mRunning = false;
     }
 
     checkDefaultActions();

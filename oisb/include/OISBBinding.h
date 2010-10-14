@@ -197,7 +197,6 @@ namespace OISB
             /// true if this binding is active (means that it activated the parent action)
             bool mIsActive;
 
-            typedef std::vector<std::pair<String, Bindable*> > BindableList;
             /// stores bounds states/actions of this binding
             BindableList mBindables;
 	};

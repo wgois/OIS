@@ -28,8 +28,13 @@ restrictions:
 
 #include "OISException.h"
 
+#include <cmath>
+#include <limits>
+
 namespace OISB
 {
+    ActionType AnalogAxisAction::ACTION_TYPE = AT_ANALOG_AXIS;
+
 	AnalogAxisAction::AnalogAxisAction(ActionSchema* parent, const String& name):
 		Action(parent, name),
 

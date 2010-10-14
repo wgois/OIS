@@ -86,7 +86,6 @@ namespace OISB
     typedef float Real;
 
 	class Action;
-	enum ActionBindType;
 	class ActionSchema;
     class AnalogAxisState;
     class AnalogAxisAction;

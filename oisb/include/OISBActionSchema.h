@@ -77,11 +77,26 @@ namespace OISB
 			/**
 			 * @brief creates a new action
 			 * 
+             * @param type type of action
 			 * @param name name of the new action
-			 * @param type type of action
 			 * @return pointer to the newly created action
 			 */
-			Action* createAction(const String& name, ActionType type);
+			Action* createAction(ActionType type, const String& name);
+
+             /**
+             * @brief creates a new action and casts it to the specified action type.
+             * 
+             * @tparam T type of action
+             * @param name name of the new action
+             * @return pointer to the newly created action
+             */
+            template<class T>
+            inline T* createAction(const String& name)
+            {
+                return static_cast<T*>(
+                    createAction(T::ACTION_TYPE, name)
+                );
+            }
 			
 			/**
 			 * @brief destroys previously created action

@@ -35,6 +35,9 @@ namespace OISB
 	class _OISBExport SequenceAction : public Action
 	{
 		public:
+            /// static action type (for use in templates)
+            static ActionType ACTION_TYPE;
+
 			/**
 			 * @brief constructor
 			 * 
