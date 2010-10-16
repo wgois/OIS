@@ -104,8 +104,17 @@ namespace OISB
 			 * @return input type
 			 */
 			virtual StateType getStateType() const = 0;
+
+            /// @copydoc PropertySet::listProperties
+            virtual void listProperties(PropertyList& list);
+
+        protected:
+            /// @copydoc PropertySet::impl_setProperty
+            virtual void impl_setProperty(const String& name, const String& value);
+
+            /// @copydoc PropertySet::impl_getProperty
+            virtual String impl_getProperty(const String& name) const;
 			
-		protected:
             /// internal method, sets mIsActive to true and notifies listeners
             void activate();
             /// internal method, sets mIsActive to false and notifies listeners

@@ -23,6 +23,7 @@ restrictions:
 
 #include "OISBState.h"
 #include "OISBDevice.h"
+#include "OISException.h"
 
 namespace OISB
 {
@@ -61,6 +62,49 @@ namespace OISB
 	{
 		return mParent->getName() + "/" + getName();
 	}
+
+    void State::listProperties(PropertyList& list)
+    {
+        Bindable::listProperties(list);
+
+        list.push_back("StateName");
+        list.push_back("ParentDeviceName");
+    }
+
+    void State::impl_setProperty(const String& name, const String& value)
+    {
+        if (name == "StateName")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'StateName' is a read only, you can't set it!");
+        }
+        else if (name == "ParentDeviceName")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'ParentDeviceName' is a read only, you can't set it!");
+        }
+        else
+        {
+            // nothing matched, delegate up
+            Bindable::impl_setProperty(name, value);
+        }
+    }
+
+    String State::impl_getProperty(const String& name) const
+    {
+        if (name == "StateName")
+        {
+            return getName();
+        }
+        else if (name == "ParentDeviceName")
+        {
+            // no need to check, every state must have a valid parent
+            return mParent->getName();
+        }
+        else
+        {
+            // nothing matched, delegate up
+            return Bindable::impl_getProperty(name);
+        }
+    }
 
     void State::activate()
     {

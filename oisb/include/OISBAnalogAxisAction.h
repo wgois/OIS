@@ -53,16 +53,23 @@ namespace OISB
 
             /// @copydoc Action::getActionType
             virtual ActionType getActionType() const;
+            
+            void setUseAbsoluteValues(bool use);
 
-            void setEmulationDecreaseSpeed(Real speed);
-            void setEmulationIncreaseSpeed(Real speed);
+            inline bool getUseAbsoluteValues() const
+            {
+                return mUseAbsoluteValues;
+            }
 
-            void setEmulationSpeed(Real speed);
+            inline Real getAbsoluteValue() const
+            {
+                return mAbsoluteValue;
+            }
 
-            void setEmulationDecreaseReturnSpeed(Real speed);
-            void setEmulationIncreaseReturnSpeed(Real speed);
-
-            void setEmulationReturnSpeed(Real speed);
+            inline Real getDeltaValue() const
+            {
+                return mDeltaValue;
+            }
 
             void setMinimumValue(Real min);
 
@@ -78,44 +85,34 @@ namespace OISB
                 return mMaximumValue;
             }
 
-            inline Real getAbsoluteValue() const
+            void setSensitivity(Real sensitivity);
+
+            inline Real getSensitivity() const
             {
-                return mAbsoluteValue;
+                return mSensitivity;
             }
 
-            inline Real getDeltaValue() const
+            void setAnalogEmulator(AnalogEmulator* emulator);
+
+            inline AnalogEmulator* getAnalogEmulator() const
             {
-                return mDeltaValue;
+                return mAnalogEmulator;
             }
 
-            void setPivotValue(Real pivot);
-
-            inline Real getPivotValue()
-            {
-                return mPivotValue;
-            }
-
+            /// @copydoc PropertySet::listProperties
+            virtual void listProperties(PropertyList& list);
+        
         protected:
+            /// @copydoc PropertySet::impl_setProperty
+            virtual void impl_setProperty(const String& name, const String& value);
+
+            /// @copydoc PropertySet::getProperty
+            virtual String impl_getProperty(const String& name) const;
+
             /// @copydoc Action::impl_process
             virtual bool impl_process(Real delta);
 
         private:
-            /// internal function, takes over impl_process in case we do digital analog emulation
-            void impl_processEmulation(Real delta, DigitalState* dec, DigitalState* inc);
-            /// internal function, takes over impl_process in case we do native analog analog
-            void impl_processNative(Real delta, AnalogAxisState* state);
-
-            /// allows digital states to be bound to this action, analog is emulated then
-            bool mAllowEmulation;
-            /// decreasing speed
-            Real mEmulationDecreaseSpeed;
-            /// increasing speed
-            Real mEmulationIncreaseSpeed;
-            /// return from decrease speed
-            Real mEmulationDecreaseReturnSpeed;
-            /// return from decrease speed
-            Real mEmulationIncreaseReturnSpeed;
-
             /// if true, this action takes the absolute values of the analog states (if any)
             bool mUseAbsoluteValues;
 
@@ -128,10 +125,11 @@ namespace OISB
 			Real mMinimumValue;
 			/// calibration clamping maximum value
 			Real mMaximumValue;
-            /// pivot value, only used for emulation return code
-            Real mPivotValue;
 			/// calibration sensitivity
 			Real mSensitivity;
+
+            /// class providing analog emulation, if 0, emulation is disabled
+            AnalogEmulator* mAnalogEmulator;
 	};
 }
 

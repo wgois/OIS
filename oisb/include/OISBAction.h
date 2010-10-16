@@ -159,8 +159,17 @@ namespace OISB
              * @brief nasty but handy, this destroys the action using parent action schema
              */
 			void destroyItself();
-			
+
+            /// @copydoc PropertySet::listProperties
+            virtual void listProperties(PropertyList& list);
+        
         protected:
+            /// @copydoc PropertySet::setProperty
+            virtual void impl_setProperty(const String& name, const String& value);
+
+            /// @copydoc PropertySet::getProperty
+            virtual String impl_getProperty(const String& name) const;
+			
             /// internal method that activates this action
             void activate();
             /// internal method that deactivates this action

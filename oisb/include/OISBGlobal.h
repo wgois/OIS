@@ -85,22 +85,25 @@ namespace OISB
 {
     typedef float Real;
 
-	class Action;
-	class ActionSchema;
+    class Action;
+    class ActionSchema;
     class AnalogAxisState;
     class AnalogAxisAction;
+    class AnalogEmulator;
     class AnalogPlaneAction;
     class Bindable;
     class BindableListener;
     class Binding;
     class DebugBindableListener;
     class DigitalState;
-	class Device;
-	class Keyboard;
-	class Mouse;
+    class Device;
+    class Keyboard;
+    class LinearAnalogEmulator;
+    class Mouse;
+    class PropertySet;
     class SequenceAction;
-	class System;
-	class State;
+    class System;
+    class State;
     class TriggerAction;
 }
 

@@ -88,6 +88,66 @@ namespace OISB
         mListeners.erase(it);
     }
 
+    void Bindable::listProperties(PropertyList& list)
+    {
+        PropertySet::listProperties(list);
+
+        list.push_back("BindableType");
+        list.push_back("BindableName");
+        list.push_back("Active");
+        list.push_back("Changed");
+    }
+
+    void Bindable::impl_setProperty(const String& name, const String& value)
+    {
+        if (name == "BindableType")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'BindableType' is a read only, you can't set it!");
+        }
+        else if (name == "BindableName")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'BindableName' is a read only, you can't set it!");
+        }
+        else if (name == "Active")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'Active' is a read only, you can't set it!");
+        }
+        else if (name == "Changed")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'Changed' is a read only, you can't set it!");
+        }
+        else
+        {
+            // it didn't get matched, delegate up
+            PropertySet::impl_setProperty(name, value);
+        }
+    }
+
+    String Bindable::impl_getProperty(const String& name) const
+    {
+        if (name == "BindableType")
+        {
+            return getBindableType() == BT_STATE ? "State" : "Action";
+        }
+        else if (name == "BindableName")
+        {
+            return getBindableName();
+        }
+        else if (name == "Active")
+        {
+            return toString(isActive());
+        }
+        else if (name == "Changed")
+        {
+            return toString(hasChanged());
+        }
+        else
+        {
+            // it didn't get matched, delegate up
+            return PropertySet::impl_getProperty(name);
+        }
+    }
+
 	void Bindable::notifyActivated()
     {
         for (ListenerList::const_iterator it = mListeners.begin(); it != mListeners.end(); ++it)

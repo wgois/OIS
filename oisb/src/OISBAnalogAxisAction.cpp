@@ -22,6 +22,7 @@ restrictions:
 */
 
 #include "OISBAnalogAxisAction.h"
+#include "OISBAnalogEmulation.h"
 #include "OISBBinding.h"
 #include "OISBDigitalState.h"
 #include "OISBAnalogAxisState.h"
@@ -38,12 +39,6 @@ namespace OISB
 	AnalogAxisAction::AnalogAxisAction(ActionSchema* parent, const String& name):
 		Action(parent, name),
 
-        mAllowEmulation(true),
-        mEmulationDecreaseSpeed(1),
-        mEmulationIncreaseSpeed(1),
-        mEmulationDecreaseReturnSpeed(1),
-        mEmulationIncreaseReturnSpeed(1),
-
         mUseAbsoluteValues(false),
 
         mAbsoluteValue(0.0f),
@@ -51,48 +46,30 @@ namespace OISB
 
         mMinimumValue(-1.0f),
         mMaximumValue(1.0f),
-        mPivotValue(0.0f),
-        mSensitivity(1.0f)
-	{}
+        mSensitivity(1.0f),
+
+        mAnalogEmulator(0)
+	{
+        setAnalogEmulator(new LinearAnalogEmulator());
+    }
 	
 	AnalogAxisAction::~AnalogAxisAction()
-	{}
+	{
+        // mAnalogEmulator is owned by this class, we should handle it's deletion
+        if (mAnalogEmulator)
+        {
+            delete mAnalogEmulator;
+        }
+    }
 	
 	ActionType AnalogAxisAction::getActionType() const
     {
         return AT_ANALOG_AXIS;
     }
 
-    void AnalogAxisAction::setEmulationDecreaseSpeed(Real speed)
+    void AnalogAxisAction::setUseAbsoluteValues(bool use)
     {
-        mEmulationDecreaseSpeed = speed;
-    }
-
-    void AnalogAxisAction::setEmulationIncreaseSpeed(Real speed)
-    {
-        mEmulationIncreaseSpeed = speed;
-    }
-
-    void AnalogAxisAction::setEmulationSpeed(Real speed)
-    {
-        setEmulationDecreaseSpeed(speed);
-        setEmulationIncreaseSpeed(speed);
-    }
-
-    void AnalogAxisAction::setEmulationDecreaseReturnSpeed(Real speed)
-    {
-        mEmulationDecreaseReturnSpeed = speed;
-    }
-
-    void AnalogAxisAction::setEmulationIncreaseReturnSpeed(Real speed)
-    {
-        mEmulationIncreaseReturnSpeed = speed;
-    }
-
-    void AnalogAxisAction::setEmulationReturnSpeed(Real speed)
-    {
-        setEmulationDecreaseReturnSpeed(speed);
-        setEmulationIncreaseReturnSpeed(speed);
+        mUseAbsoluteValues = use;
     }
 
     void AnalogAxisAction::setMinimumValue(Real min)
@@ -105,11 +82,170 @@ namespace OISB
         mMaximumValue = max;
     }
 
-    void AnalogAxisAction::setPivotValue(Real pivot)
+    void AnalogAxisAction::setSensitivity(Real sensitivity)
     {
-        mPivotValue = pivot;
+        mSensitivity = sensitivity;
     }
-	
+
+    void AnalogAxisAction::setAnalogEmulator(AnalogEmulator* emulator)
+    {
+        if (mAnalogEmulator)
+        {
+            // mAnalogEmulator is owned by this class, we should handle it's deletion
+            delete mAnalogEmulator;
+        }
+
+        mAnalogEmulator = emulator;
+
+        if (mAnalogEmulator)
+        {
+            mAnalogEmulator->setTarget(this);
+        }
+    }
+
+    void AnalogAxisAction::listProperties(PropertyList& list)
+    {
+        Bindable::listProperties(list);
+
+        list.push_back("UseAbsoluteValues");
+
+        list.push_back("AbsoluteValue");
+        list.push_back("DeltaValue");
+
+        list.push_back("MinimumValue");
+        list.push_back("MaximumValue");
+        list.push_back("Sensitivity");
+
+        list.push_back("AnalogEmulator");
+
+        if (mAnalogEmulator)
+        {
+            // inherit the emulator properties
+            mAnalogEmulator->listProperties(list);
+        }
+    }
+
+    void AnalogAxisAction::impl_setProperty(const String& name, const String& value)
+    {
+        if (name == "UseAbsoluteValues")
+        {
+            setUseAbsoluteValues(fromString<bool>(value));
+        }
+
+        else if (name == "AbsoluteValue")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'AbsoluteValue' is a read only, you can't set it!");
+        }
+        else if (name == "DeltaValue")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'AbsoluteValue' is a read only, you can't set it!");
+        }
+
+        else if (name == "MinimumValue")
+        {
+            setMinimumValue(fromString<Real>(value));
+        }
+        else if (name == "MaximumValue")
+        {
+            setMaximumValue(fromString<Real>(value));
+        }
+        else if (name == "Sensitivity")
+        {
+            setSensitivity(fromString<Real>(value));
+        }
+
+        else if (name == "AnalogEmulator")
+        {
+            if (value == "")
+            {
+                setAnalogEmulator(0);
+            }
+            if (value == "Linear")
+            {
+                setAnalogEmulator(new LinearAnalogEmulator());
+            }
+            else
+            {
+                OIS_EXCEPT(OIS::E_InvalidParam, "Invalid value for 'AnalogEmulator'!");
+            }
+        }
+        else
+        {
+            if (mAnalogEmulator)
+            {
+                try
+                {
+                    mAnalogEmulator->setProperty(name, value);
+                }
+                catch (const OIS::Exception&)
+                {
+                    // nothing matched, delegate up
+                    Action::impl_setProperty(name, value);
+                }
+            }
+            else
+            {
+                // nothing matched, delegate up
+                Action::impl_setProperty(name, value);
+            }
+        }
+    }
+
+    String AnalogAxisAction::impl_getProperty(const String& name) const
+    {
+        if (name == "UseAbsoluteValues")
+        {
+            return toString(getUseAbsoluteValues());
+        }
+
+        else if (name == "AbsoluteValue")
+        {
+            return toString(getAbsoluteValue());
+        }
+        else if (name == "DeltaValue")
+        {
+            return toString(getDeltaValue());
+        }
+
+        else if (name == "MinimumValue")
+        {
+            return toString(getMinimumValue());
+        }
+        else if (name == "MaximumValue")
+        {
+            return toString(getMaximumValue());
+        }
+        else if (name == "Sensitivity")
+        {
+            return toString(getSensitivity());
+        }
+
+        if (name == "AnalogEmulator")
+        {
+            return mAnalogEmulator ? mAnalogEmulator->getType() : "";
+        }
+        else
+        {
+            if (mAnalogEmulator)
+            {
+                try
+                {
+                    return mAnalogEmulator->getProperty<String>(name);
+                }
+                catch (const OIS::Exception&)
+                {
+                    // nothing matched, delegate up
+                    return Action::impl_getProperty(name);
+                }
+            }
+            else
+            {
+                // nothing matched, delegate up
+                return Action::impl_getProperty(name);
+            }
+        }
+    }
+    	
     bool AnalogAxisAction::impl_process(Real delta)
     {
         mDeltaValue = 0.0f;
@@ -126,55 +262,49 @@ namespace OISB
 
             const Real mOldDeltaValue = mDeltaValue;
 
-            if (mAllowEmulation && binding->getNumBindables() == 2)
+            if (mAnalogEmulator && mAnalogEmulator->checkBinding(binding))
             {
-                // emulation is enabled and there are 2 states in the binding
-                State* decrease = 0;
-                State* increase = 0;
-
-                // first check for roles
-                if (binding->isBound("decrease") &&
-                    binding->isBound("increase"))
+                if (mUseAbsoluteValues)
                 {
-                    decrease = binding->getState("decrease");
-                    increase = binding->getState("increase");
+                    const Real abs = mAnalogEmulator->emulateAbsolute(binding, delta);
+                    mDeltaValue = abs - mAbsoluteValue;
+                    mAbsoluteValue = abs;
                 }
-                // otherwise the first will decrease the value
-                // and the second (and last) will increase the value
                 else
                 {
-                    decrease = binding->getState(0);
-                    increase = binding->getState(1);
+                    const Real rel = mAnalogEmulator->emulateRelative(binding, delta);
+                    mDeltaValue = rel;
+                    mAbsoluteValue += mDeltaValue;
                 }
-
-                // now that we have found the states, let's check that they are digital
-                if (decrease->getStateType() != ST_DIGITAL ||
-                    increase->getStateType() != ST_DIGITAL)
-                {
-                    OIS_EXCEPT(OIS::E_General, String("Assuming digital analog emulation mode but one of the states "
-                        "isn't digital!").c_str());
-                }
-
-                impl_processEmulation(delta,
-                    static_cast<DigitalState*>(decrease),
-                    static_cast<DigitalState*>(increase));
             }
             else
             {
                 if (binding->getNumBindables() > 1)
                 {
                     OIS_EXCEPT(OIS::E_General, String("Having multiple states in a binding "
-                        "is only allowed for emulation (which is disabled!)").c_str());
+                        "is only allowed for emulation (analog emulator is not set or didn't "
+                        "approve of the binding as well!)").c_str());
                 }
 
-                State* state = binding->getState(0);
-                if (state->getStateType() != ST_ANALOG_AXIS)
+                State* st = binding->getState(0);
+                if (st->getStateType() != ST_ANALOG_AXIS)
                 {
                     OIS_EXCEPT(OIS::E_General, String("There is only one state bound and "
                         "it is not analog axis state!").c_str());
                 }
 
-                impl_processNative(delta, static_cast<AnalogAxisState*>(state));
+                AnalogAxisState* state = static_cast<AnalogAxisState*>(st);
+
+                if (mUseAbsoluteValues)
+                {
+                    mDeltaValue = state->getAbsoluteValue() - mAbsoluteValue;
+                    mAbsoluteValue = state->getAbsoluteValue();
+                }
+                else
+                {
+                    mDeltaValue = state->getDeltaValue() * mSensitivity;
+                    mAbsoluteValue += mDeltaValue;
+                }
             }
 
             binding->_setActive(mOldDeltaValue != mDeltaValue);
@@ -185,92 +315,5 @@ namespace OISB
         mAbsoluteValue = std::max(mMinimumValue, mAbsoluteValue);
 
         return fabs(mDeltaValue) < std::numeric_limits<Real>::epsilon();
-    }
-
-    void AnalogAxisAction::impl_processEmulation(Real delta, DigitalState* dec, DigitalState* inc)
-    {
-        if (mUseAbsoluteValues)
-        {
-            // both are pressed
-            if (dec->isActive() && inc->isActive())
-            {
-                // bigger speed wins
-                if (mEmulationDecreaseSpeed > mEmulationIncreaseSpeed)
-                {
-                    mDeltaValue = mMinimumValue - mAbsoluteValue;
-                    mAbsoluteValue = mMinimumValue;
-                }
-                else if (mEmulationDecreaseSpeed < mEmulationIncreaseSpeed)
-                {
-                    mDeltaValue = mMaximumValue - mAbsoluteValue;
-                    mAbsoluteValue = mMaximumValue;
-                }
-                else
-                {
-                    const Real avg = (mMinimumValue + mMaximumValue) * 0.5f;
-
-                    mDeltaValue = avg - mAbsoluteValue;
-                    mAbsoluteValue = avg;
-                }
-            }
-            else if (dec->isActive())
-            {
-                mDeltaValue = mMinimumValue - mAbsoluteValue;
-                mAbsoluteValue = mMinimumValue;
-            }
-            else if (inc->isActive())
-            {
-                mDeltaValue = mMaximumValue - mAbsoluteValue;
-                mAbsoluteValue = mMaximumValue;
-            }
-            // the only remaining case is that nothing is pressed
-            // in that case, there is nothing to do
-        }
-        else
-        {
-            if (dec->isActive())
-            {
-                // decrease is pressed
-                        
-                mDeltaValue = ((-1.0f) * mEmulationDecreaseSpeed * delta) * mSensitivity;
-                mAbsoluteValue += mDeltaValue;
-            }
-            if (inc->isActive())
-            {
-                // increase is pressed
-                        
-                mDeltaValue = ((+1.0f) * mEmulationIncreaseSpeed * delta) * mSensitivity;
-                mAbsoluteValue += mDeltaValue;
-            }
-
-            if (!inc->isActive() && !dec->isActive())
-            {
-                // we have to do returning to the starting point there
-                if (mPivotValue > mAbsoluteValue)
-                {
-                    mDeltaValue = ((+1.0f) * mEmulationDecreaseReturnSpeed * delta) * mSensitivity;
-                }
-                else if (mPivotValue < mAbsoluteValue)
-                {
-                    mDeltaValue = ((-1.0f) * mEmulationIncreaseReturnSpeed * delta) * mSensitivity;
-                }
-
-                mAbsoluteValue += mDeltaValue;
-            }
-        }
-    }
-
-    void AnalogAxisAction::impl_processNative(Real delta, AnalogAxisState* state)
-    {
-        if (mUseAbsoluteValues)
-        {
-            mDeltaValue = state->getAbsoluteValue() - mAbsoluteValue;
-            mAbsoluteValue = state->getAbsoluteValue();
-        }
-        else
-        {
-            mDeltaValue = state->getDeltaValue() * mSensitivity;
-            mAbsoluteValue += mDeltaValue;
-        }
     }
 }

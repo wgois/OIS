@@ -108,35 +108,35 @@ void Application::defineActions()
     mChopterSchema = OISB::System::getSingleton().createActionSchema("Chopter", false);
 
     mThrottle = mChopterSchema->createAction<OISB::AnalogAxisAction>("Throttle");
-    mThrottle->setMinimumValue(0.0f);
-    mThrottle->setPivotValue(9.0f);
-    mThrottle->setMaximumValue(15.0f);
-    mThrottle->setEmulationSpeed(10.0f);
-    mThrottle->setEmulationReturnSpeed(10.0f);
+    mThrottle->setProperty("MinimumValue", 0.0f);
+    mThrottle->setProperty("EmulationReturnValue", 9.0f);
+    mThrottle->setProperty("MaximumValue", 15.0f);
+    mThrottle->setProperty("EmulationSpeed", 10.0f);
+    mThrottle->setProperty("EmulationReturnSpeed", 10.0);
     mThrottle->bind("Keyboard/S", "Keyboard/W");
     //mThrottle->bind("Mouse/Y Axis");
 
     mSteering = mChopterSchema->createAction<OISB::AnalogAxisAction>("Steering");
-    mSteering->setMinimumValue(-50.0f);
-    mSteering->setMaximumValue(50.0f);
-    mSteering->setEmulationSpeed(50.0f);
-    mSteering->setEmulationReturnSpeed(50.0f);
+    mSteering->setProperty("MinimumValue", -50.0f);
+    mSteering->setProperty("MaximumValue", 50.0f);
+    mSteering->setProperty("EmulationSpeed", 50.0f);
+    mSteering->setProperty("EmulationReturnSpeed", 50.0f);
     mSteering->bind("Keyboard/A", "Keyboard/D");
     //mSteering->bind("Mouse/X Axis");
 
     mTilting = mChopterSchema->createAction<OISB::AnalogAxisAction>("Tilting");
-    mTilting->setMinimumValue(-50.0f);
-    mTilting->setMaximumValue(50.0f);
-    mTilting->setEmulationSpeed(50.0f);
-    mTilting->setEmulationReturnSpeed(50.0f);
+    mTilting->setProperty("MinimumValue", -50.0f);
+    mTilting->setProperty("MaximumValue", 50.0f);
+    mTilting->setProperty("EmulationSpeed", 50.0f);
+    mTilting->setProperty("EmulationReturnSpeed", 50.0f);
     mTilting->bind("Keyboard/Up", "Keyboard/Down");
     //mTilting->bind("Mouse/Y Axis");
 
     mLeaning = mChopterSchema->createAction<OISB::AnalogAxisAction>("Leaning");
-    mLeaning->setMinimumValue(-50.0f);
-    mLeaning->setMaximumValue(50.0f);
-    mLeaning->setEmulationSpeed(50.0f);
-    mLeaning->setEmulationReturnSpeed(50.0f);
+    mLeaning->setProperty("MinimumValue", -50.0f);
+    mLeaning->setProperty("MaximumValue", 50.0f);
+    mLeaning->setProperty("EmulationSpeed", 50.0f);
+    mLeaning->setProperty("EmulationReturnSpeed", 50.0f);
     mLeaning->bind("Keyboard/Left", "Keyboard/Right");
 
     mBoostCheat = mChopterSchema->createAction<OISB::SequenceAction>("Boost cheat!");
@@ -174,6 +174,9 @@ void Application::initializeOISB()
 
 void Application::initializeCEGUI()
 {
+    Ogre::Timer timer;
+    timer.reset();
+
     CEGUI::OgreRenderer::bootstrapSystem(*mOgreWindow);
 
     mUIRoot = static_cast<CEGUI::GUISheet*>(CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "Root"));
@@ -192,6 +195,11 @@ void Application::initializeCEGUI()
     mUIHUDThrottle = static_cast<CEGUI::ProgressBar*>(CEGUI::WindowManager::getSingleton().getWindow("HUD/Throttle"));
     mUIHUDVelocity = CEGUI::WindowManager::getSingleton().getWindow("HUD/Velocity");
     mUIHUDAltitude = CEGUI::WindowManager::getSingleton().getWindow("HUD/Altitude");
+
+    std::stringstream sstr;
+    sstr << timer.getMicroseconds();
+
+    CEGUI::Logger::getSingleton().logEvent("Time to start CEGUI: " + sstr.str());
 }
 
 void Application::initialize()
@@ -267,8 +275,8 @@ void Application::checkChopterActions(Ogre::Real delta)
     const Ogre::Vector3 acceleration = (mOgreChopterNode->getOrientation() * Ogre::Vector3(0.0f, 1.0f, -0.3f)) *
         mThrottle->getAbsoluteValue();
 
-    mUIHUDThrottle->setProgress((mThrottle->getAbsoluteValue() - mThrottle->getPivotValue() + 1.0f) /
-        (mThrottle->getMaximumValue() - mThrottle->getPivotValue() + 1.0f));
+    mUIHUDThrottle->setProgress((mThrottle->getAbsoluteValue() - mThrottle->getProperty<float>("EmulationReturnValue") + 1.0f) /
+        (mThrottle->getMaximumValue() - mThrottle->getProperty<float>("EmulationReturnValue") + 1.0f));
 
     mVelocity += acceleration * delta;
     // newtonian gravity
@@ -312,8 +320,8 @@ void Application::checkChopterActions(Ogre::Real delta)
         // pimp my heli!
         mThrottle->setMaximumValue(50.0f);
         // crazy throttle action as a bonus for keyboarders!
-        mThrottle->setEmulationSpeed(200.0f);
-        mThrottle->setEmulationReturnSpeed(1000.0f);
+        //mThrottle->setEmulationSpeed(200.0f);
+        //mThrottle->setEmulationReturnSpeed(1000.0f);
     }
 }
 

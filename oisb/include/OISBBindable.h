@@ -25,7 +25,7 @@ restrictions:
 #define __OISB_BINDABLE_H__
 
 #include "OISBGlobal.h"
-#include "OISBString.h"
+#include "OISBPropertySet.h"
 
 #include <vector>
 
@@ -86,7 +86,7 @@ namespace OISB
      *
      * This is the parent class of State and Action
      */
-	class _OISBExport Bindable
+	class _OISBExport Bindable : public PropertySet
 	{
 		public:
 			/**
@@ -128,7 +128,16 @@ namespace OISB
              */
             void removeListener(BindableListener* listener);
 
+            /// @copydoc PropertySet::listProperties
+            virtual void listProperties(PropertyList& list);
+
         protected:
+            /// @copydoc PropertySet::impl_setProperty
+            virtual void impl_setProperty(const String& name, const String& value);
+
+            /// @copydoc PropertySet::impl_getProperty
+            virtual String impl_getProperty(const String& name) const;
+
             /// internal method, notifies attached listeners that this bindable has been activated
             void notifyActivated();
             /// internal method, notifies attached listeners that this bindable has been deactivated

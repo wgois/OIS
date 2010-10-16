@@ -179,6 +179,49 @@ namespace OISB
 		getParent()->destroyAction(this);
 	}
 
+    void Action::listProperties(PropertyList& list)
+    {
+        Bindable::listProperties(list);
+
+        list.push_back("ActionName");
+        list.push_back("ParentActionSchemaName");
+    }
+
+    void Action::impl_setProperty(const String& name, const String& value)
+    {
+        if (name == "ActionName")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'ActionName' is a read only, you can't set it!");
+        }
+        else if (name == "ParentActionSchemaName")
+        {
+            OIS_EXCEPT(OIS::E_InvalidParam, "'ParentActionSchemaName' is a read only, you can't set it!");
+        }
+        else
+        {
+            // nothing matched, delegate up
+            Bindable::impl_setProperty(name, value);
+        }
+    }
+
+    String Action::impl_getProperty(const String& name) const
+    {
+        if (name == "ActionName")
+        {
+            return getName();
+        }
+        else if (name == "ParentActionSchemaName")
+        {
+            // no need to check, every action must have a valid parent
+            return mParent->getName();
+        }
+        else
+        {
+            // nothing matched, delegate up
+            return Bindable::impl_getProperty(name);
+        }
+    }
+
     void Action::activate()
     {
         mIsActive = true;
