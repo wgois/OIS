@@ -29,7 +29,7 @@ namespace OISB
 		State(parent, name),
 		
 		mAbsoluteValue(0),
-		mDeltaValue(0),
+		mRelativeValue(0),
 		
 		mOffset(0),
 		mMinimumValue(-1),
@@ -60,11 +60,11 @@ namespace OISB
         bool willBeActive = false;
 
 		value += mOffset;
-		mDeltaValue = (value - mAbsoluteValue) * mSensitivity;
+		mRelativeValue = (value - mAbsoluteValue) * mSensitivity;
 		
-		if (fabs(mDeltaValue) > std::numeric_limits<Real>::epsilon())
+		if (fabs(mRelativeValue) > std::numeric_limits<Real>::epsilon())
 		{
-			mAbsoluteValue += mDeltaValue;
+			mAbsoluteValue += mRelativeValue;
 			
             mAbsoluteValue = std::min(mMaximumValue, mAbsoluteValue);
             mAbsoluteValue = std::max(mMinimumValue, mAbsoluteValue);

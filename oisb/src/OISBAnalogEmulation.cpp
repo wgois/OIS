@@ -88,7 +88,7 @@ namespace OISB
             ret = ((+1.0f) * mIncreaseSpeed * delta) * mTarget->getSensitivity();
         }
 
-        if (!increase->isActive() && !decrease->isActive())
+        if (mReturnEnabled && (!increase->isActive() && !decrease->isActive()))
         {
             // we have to do returning to the starting point there
             if (mReturnValue > mTarget->getAbsoluteValue())

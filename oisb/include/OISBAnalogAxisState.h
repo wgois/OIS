@@ -69,7 +69,7 @@ namespace OISB
 			 * 
 			 * @param delta delta value
 			 */
-			inline void _setDeltaValue(Real delta)
+			inline void _setRelativeValue(Real delta)
 			{
 				_setAbsoluteValue(mAbsoluteValue + delta);
 			}
@@ -89,16 +89,16 @@ namespace OISB
 			 * 
 			 * @return delta value (since last update) of this input state
 			 */
-			inline Real getDeltaValue() const
+			inline Real getRelativeValue() const
 			{
-				return mDeltaValue;
+				return mRelativeValue;
 			}
 			
 		protected:
 			/// stores current value of this state - should be updated in update() virtual method
 			Real mAbsoluteValue;
 			/// delta since last update
-			Real mDeltaValue;
+			Real mRelativeValue;
 			
 			/// calibration offset
 			Real mOffset;

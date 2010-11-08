@@ -66,9 +66,9 @@ namespace OISB
                 return mAbsoluteValue;
             }
 
-            inline Real getDeltaValue() const
+            inline Real getRelativeValue() const
             {
-                return mDeltaValue;
+                return mRelativeValue;
             }
 
             void setMinimumValue(Real min);
@@ -119,7 +119,7 @@ namespace OISB
             /// stores current value of this action
 			Real mAbsoluteValue;
 			/// delta since last processing
-			Real mDeltaValue;
+			Real mRelativeValue;
 			
 			/// calibration clamping minimum value
 			Real mMinimumValue;

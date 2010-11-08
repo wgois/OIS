@@ -42,7 +42,7 @@ namespace OISB
         mUseAbsoluteValues(false),
 
         mAbsoluteValue(0.0f),
-        mDeltaValue(0.0f),
+        mRelativeValue(0.0f),
 
         mMinimumValue(-1.0f),
         mMaximumValue(1.0f),
@@ -110,7 +110,7 @@ namespace OISB
         list.push_back("UseAbsoluteValues");
 
         list.push_back("AbsoluteValue");
-        list.push_back("DeltaValue");
+        list.push_back("RelativeValue");
 
         list.push_back("MinimumValue");
         list.push_back("MaximumValue");
@@ -136,7 +136,7 @@ namespace OISB
         {
             OIS_EXCEPT(OIS::E_InvalidParam, "'AbsoluteValue' is a read only, you can't set it!");
         }
-        else if (name == "DeltaValue")
+        else if (name == "RelativeValue")
         {
             OIS_EXCEPT(OIS::E_InvalidParam, "'AbsoluteValue' is a read only, you can't set it!");
         }
@@ -202,9 +202,9 @@ namespace OISB
         {
             return toString(getAbsoluteValue());
         }
-        else if (name == "DeltaValue")
+        else if (name == "RelativeValue")
         {
-            return toString(getDeltaValue());
+            return toString(getRelativeValue());
         }
 
         else if (name == "MinimumValue")
@@ -248,7 +248,7 @@ namespace OISB
     	
     bool AnalogAxisAction::impl_process(Real delta)
     {
-        mDeltaValue = 0.0f;
+        mRelativeValue = 0.0f;
 
         if (mUseAbsoluteValues && mBindings.size() > 1)
         {
@@ -260,21 +260,21 @@ namespace OISB
         {
             Binding* binding = *it;
 
-            const Real mOldDeltaValue = mDeltaValue;
+            const Real mOldRelativeValue = mRelativeValue;
 
             if (mAnalogEmulator && mAnalogEmulator->checkBinding(binding))
             {
                 if (mUseAbsoluteValues)
                 {
                     const Real abs = mAnalogEmulator->emulateAbsolute(binding, delta);
-                    mDeltaValue = abs - mAbsoluteValue;
+                    mRelativeValue = abs - mAbsoluteValue;
                     mAbsoluteValue = abs;
                 }
                 else
                 {
                     const Real rel = mAnalogEmulator->emulateRelative(binding, delta);
-                    mDeltaValue = rel;
-                    mAbsoluteValue += mDeltaValue;
+                    mRelativeValue = rel;
+                    mAbsoluteValue += mRelativeValue;
                 }
             }
             else
@@ -297,23 +297,23 @@ namespace OISB
 
                 if (mUseAbsoluteValues)
                 {
-                    mDeltaValue = state->getAbsoluteValue() - mAbsoluteValue;
+                    mRelativeValue = state->getAbsoluteValue() - mAbsoluteValue;
                     mAbsoluteValue = state->getAbsoluteValue();
                 }
                 else
                 {
-                    mDeltaValue = state->getDeltaValue() * mSensitivity;
-                    mAbsoluteValue += mDeltaValue;
+                    mRelativeValue = state->getRelativeValue() * mSensitivity;
+                    mAbsoluteValue += mRelativeValue;
                 }
             }
 
-            binding->_setActive(mOldDeltaValue != mDeltaValue);
+            binding->_setActive(mOldRelativeValue != mRelativeValue);
         }
 
         // clamp the value to limits
         mAbsoluteValue = std::min(mMaximumValue, mAbsoluteValue);
         mAbsoluteValue = std::max(mMinimumValue, mAbsoluteValue);
 
-        return fabs(mDeltaValue) < std::numeric_limits<Real>::epsilon();
+        return fabs(mRelativeValue) < std::numeric_limits<Real>::epsilon();
     }
 }

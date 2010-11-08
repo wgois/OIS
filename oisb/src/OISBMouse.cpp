@@ -109,9 +109,9 @@ namespace OISB
 	{
 		const OIS::MouseState& state = mMouse->getMouseState();
 
-		mXAxis->_setDeltaValue(static_cast<Real>(state.X.rel));
-		mYAxis->_setDeltaValue(static_cast<Real>(state.Y.rel));
-		mWheel->_setDeltaValue(static_cast<Real>(state.Z.rel));
+		mXAxis->_setRelativeValue(static_cast<Real>(state.X.rel));
+		mYAxis->_setRelativeValue(static_cast<Real>(state.Y.rel));
+		mWheel->_setRelativeValue(static_cast<Real>(state.Z.rel));
 
 		mLeftButton->_setValue(state.buttonDown(OIS::MB_Left));
 		mRightButton->_setValue(state.buttonDown(OIS::MB_Right));
