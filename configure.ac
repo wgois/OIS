@@ -1,10 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.50)
-AC_INIT( [OIS], 1.3.0 )
+AC_INIT( [OIS], 1.4.0 )
 
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE( [OIS], 1.3.0 )
+AM_INIT_AUTOMAKE( [OIS], 1.4.0 )
 AM_CONFIG_HEADER([includes/config.h])
 
 dnl Check for programs
@@ -22,7 +22,7 @@ CXXFLAGS="$CXXFLAGS"
 LIBS="$LIBS"
 
 dnl Detect X11
-AC_CHECK_HEADERS([X11/Xaw/Command.h],, [AC_MSG_ERROR("libxaw headers not found")])
+AC_CHECK_HEADERS([X11/Xlib.h],, [AC_MSG_ERROR("Xlib.h not found - libx11-dev")])
 
 dnl Added for BSD's
 AC_PROG_LIBTOOL
