@@ -26,6 +26,7 @@ restrictions:
 #include "linux/LinuxMouse.h"
 #include "OISException.h"
 #include <cstdlib>
+#include <stdio.h>
 
 using namespace OIS;
 
@@ -66,10 +67,12 @@ void LinuxInputManager::_parseConfigSettings( ParamList &paramList )
 {
 	ParamList::iterator i = paramList.find("WINDOW");
 	if( i == paramList.end() ) 
-		OIS_EXCEPT( E_InvalidParam, "LinuxInputManager >> No WINDOW!" );
+		{
+			printf("OIS: No Window specified... Not using x11 keyboard/mouse\n");
+			return;
+		}
 
-	//TODO 64 bit proof this little conversion xxx wip
-	window  = strtoul(i->second.c_str(), 0, 10);
+		window = strtoull(i->second.c_str(), 0, 10);
 
 	//--------- Keyboard Settings ------------//
 	i = paramList.find("x11_keyboard_grab");
@@ -102,11 +105,14 @@ DeviceList LinuxInputManager::freeDeviceList()
 {
 	DeviceList ret;
 
-	if( keyboardUsed == false )
-		ret.insert(std::make_pair(OISKeyboard, mInputSystemName));
+	if(window)
+	{
+		if(keyboardUsed == false)
+			ret.insert(std::make_pair(OISKeyboard, mInputSystemName));
 
-	if( mouseUsed == false )
-		ret.insert(std::make_pair(OISMouse, mInputSystemName));
+		if(mouseUsed == false)
+			ret.insert(std::make_pair(OISMouse, mInputSystemName));
+	}
 
 	for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
 		ret.insert(std::make_pair(OISJoyStick, i->vendor));
@@ -119,8 +125,8 @@ int LinuxInputManager::totalDevices(Type iType)
 {
 	switch(iType)
 	{
-	case OISKeyboard: return 1;
-	case OISMouse: return 1;
+	case OISKeyboard: return window ? 1 : 0;
+	case OISMouse: return window ? 1 : 0;
 	case OISJoyStick: return joySticks;
 	default: return 0;
 	}
@@ -131,8 +137,8 @@ int LinuxInputManager::freeDevices(Type iType)
 {
 	switch(iType)
 	{
-	case OISKeyboard: return keyboardUsed ? 0 : 1;
-	case OISMouse: return mouseUsed ? 0 : 1;
+	case OISKeyboard: return window ? (keyboardUsed ? 0 : 1) : 0;
+	case OISMouse: return window ? (mouseUsed ? 0 : 1) : 0;
 	case OISJoyStick: return (int)unusedJoyStickList.size();
 	default: return 0;
 	}
@@ -141,9 +147,9 @@ int LinuxInputManager::freeDevices(Type iType)
 //----------------------------------------------------------------------------//
 bool LinuxInputManager::vendorExist(Type iType, const std::string & vendor)
 {
-	if( (iType == OISKeyboard || iType == OISMouse) && vendor == mInputSystemName )
+	if((iType == OISKeyboard || iType == OISMouse) && vendor == mInputSystemName)
 	{
-		return true;
+		return window ? true : false;
 	}
 	else if( iType == OISJoyStick )
 	{
@@ -164,14 +170,16 @@ Object* LinuxInputManager::createObject(InputManager *creator, Type iType, bool 
 	{
 	case OISKeyboard:
 	{
-		if( keyboardUsed == false )
+		if(window && keyboardUsed == false)
 			obj = new LinuxKeyboard(this, bufferMode, grabKeyboard);
+
 		break;
 	}
 	case OISMouse:
 	{
-		if( mouseUsed == false )
+		if(window && mouseUsed == false)
 			obj = new LinuxMouse(this, bufferMode, grabMouse, hideMouse);
+
 		break;
 	}
 	case OISJoyStick:
@@ -191,7 +199,7 @@ Object* LinuxInputManager::createObject(InputManager *creator, Type iType, bool 
 		break;
 	}
 
-	if( obj == 0 )
+	if(obj == 0)
 		OIS_EXCEPT(E_InputDeviceNonExistant, "No devices match requested type.");
 
 	return obj;
@@ -200,9 +208,9 @@ Object* LinuxInputManager::createObject(InputManager *creator, Type iType, bool 
 //----------------------------------------------------------------------------//
 void LinuxInputManager::destroyObject( Object* obj )
 {
-	if( obj )
+	if(obj)
 	{
-		if( obj->type() == OISJoyStick )
+		if(obj->type() == OISJoyStick)
 		{
 			unusedJoyStickList.push_back( ((LinuxJoyStick*)obj)->_getJoyInfo() );
 		}

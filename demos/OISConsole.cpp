@@ -15,23 +15,24 @@
 
 ////////////////////////////////////Needed Windows Headers////////////
 #if defined OIS_WIN32_PLATFORM
-#  define WIN32_LEAN_AND_MEAN
-#  include "windows.h"
-#  ifdef min
-#    undef min
-#  endif
-#  include "resource.h"
-   LRESULT DlgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"
+#ifdef min
+#undef min
+#endif
+#include "resource.h"
+LRESULT DlgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 //////////////////////////////////////////////////////////////////////
 ////////////////////////////////////Needed Linux Headers//////////////
 #elif defined OIS_LINUX_PLATFORM
-#  include <X11/Xlib.h>
-   void checkX11Events();
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+void checkX11Events();
 //////////////////////////////////////////////////////////////////////
 ////////////////////////////////////Needed Mac Headers//////////////
 #elif defined OIS_APPLE_PLATFORM
-#  include <Carbon/Carbon.h>
-   void checkMacEvents();
+#include <Carbon/Carbon.h>
+void checkMacEvents();
 #endif
 //////////////////////////////////////////////////////////////////////
 using namespace OIS;
@@ -221,6 +222,7 @@ int main()
 	}
 
 	//Destroying the manager will cleanup unfreed devices
+	std::cout << "Cleaning up...\n";
 	if( g_InputManager )
 		InputManager::destroyInputSystem(g_InputManager);
 
@@ -230,7 +232,7 @@ int main()
 	XCloseDisplay(xDisp);
 #endif
 
-	std::cout << "\n\nGoodbye\n\n";
+	std::cout << "\nGoodbye!\n";
 	return 0;
 }
 
@@ -259,11 +261,15 @@ void doStartup()
 	if( !(xDisp = XOpenDisplay(0)) )
 		OIS_EXCEPT(E_General, "Error opening X!");
 	//Create a window
-	xWin = XCreateSimpleWindow(xDisp,DefaultRootWindow(xDisp), 0,0, 100,100, 0, 0, 0);
+	xWin = XCreateSimpleWindow(xDisp, DefaultRootWindow(xDisp), 0, 0, 100, 100, 0, 0, 0);
 	//bind our connection to that window
 	XMapWindow(xDisp, xWin);
+	// XInternAtom
 	//Select what events we want to listen to locally
-	XSelectInput(xDisp, xWin, StructureNotifyMask);
+	XSelectInput(xDisp, xWin, StructureNotifyMask | SubstructureNotifyMask);
+	Atom wmProto = XInternAtom(xDisp, "WM_PROTOCOLS", False);
+	Atom wmDelete = XInternAtom(xDisp, "WM_DELETE_WINDOW", False);
+	XChangeProperty(xDisp, xWin, wmProto, XA_ATOM, 32, 0, (const unsigned char*)&wmDelete, 1);
 	XEvent evtent;
 	do
 	{
@@ -414,29 +420,34 @@ LRESULT DlgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 //This is just here to show that you still recieve x11 events, as the lib only needs mouse/key events
 void checkX11Events()
 {
+	if(!appRunning)
+		return;
+
 	XEvent event;
 
-	//Poll x11 for events (keyboard and mouse events are caught here)
-	while( XPending(xDisp) > 0 )
+	while(XPending(xDisp) > 0)
 	{
 		XNextEvent(xDisp, &event);
 		//Handle Resize events
-		if( event.type == ConfigureNotify )
+		if(event.type == ConfigureNotify)
 		{
-			if( g_m )
+			if(g_m)
 			{
 				const MouseState &ms = g_m->getMouseState();
 				ms.width = event.xconfigure.width;
 				ms.height = event.xconfigure.height;
 			}
 		}
-		else if( event.type == DestroyNotify )
-		{
+		else if(event.type == ClientMessage || event.type == DestroyNotify)
+		{	// We only get DestroyNotify for child windows. However, we regeistered earlier to receive WM_DELETE_MESSAGEs
 			std::cout << "Exiting...\n";
 			appRunning = false;
+			return;
 		}
 		else
+		{
 			std::cout << "\nUnknown X Event: " << event.type << std::endl;
+		}
 	}
 }
 #endif
