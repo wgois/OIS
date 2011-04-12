@@ -649,6 +649,7 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
 						{
 							i->isXInput = true;
 							i->xInputDev = xDevice;
+							++xDevice;
 						}
 					}
 

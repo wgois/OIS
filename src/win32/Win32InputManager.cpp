@@ -61,13 +61,15 @@ void Win32InputManager::_initialize( ParamList &paramList )
 	HINSTANCE hInst = 0;
 	HRESULT hr;
 
-	//TODO 64 bit proof this little conversion xxx wip
+
 	//First of all, get the Windows Handle and Instance
 	ParamList::iterator i = paramList.find("WINDOW");
 	if( i == paramList.end() ) 
 		OIS_EXCEPT( E_InvalidParam, "Win32InputManager::Win32InputManager >> No HWND found!" );
 
-	hWnd  = (HWND)strtoul(i->second.c_str(), 0, 10);
+	// Get number as 64 bit and then convert. Handles the case of 32 or 64 bit HWND
+	unsigned __int64 handle = _strtoui64(i->second.c_str(), 0, 10);
+	hWnd  = (HWND)handle;
 
 	if( IsWindow(hWnd) == 0 )
 		OIS_EXCEPT( E_General, "Win32InputManager::Win32InputManager >> The sent HWND is not valid!");
