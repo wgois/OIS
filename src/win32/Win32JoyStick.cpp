@@ -645,7 +645,7 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
                     DWORD dwVidPid = MAKELONG(dwVid, dwPid);
 					for(JoyStickInfoList::iterator i = joys.begin(); i != joys.end(); ++i)
 					{
-						if(dwVidPid == i->productGuid.Data1)
+						if(!i->isXInput && dwVidPid == i->productGuid.Data1)
 						{
 							i->isXInput = true;
 							i->xInputDev = xDevice;
