@@ -27,6 +27,9 @@ restrictions:
 #include "OISException.h"
 
 #include <cassert>
+
+// Only if xinput support is enabled
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 #include <wbemidl.h>
 #include <oleauto.h>
 //#include <wmsstd.h>
@@ -39,8 +42,7 @@ restrictions:
    }
 #endif
 
-#ifdef OIS_WIN32_XINPUT_SUPPORT
-#	pragma comment(lib, "xinput.lib")
+#pragma comment(lib, "xinput.lib")
 #endif
 
 //DX Only defines macros for the JOYSTICK not JOYSTICK2, so fix it
@@ -559,6 +561,7 @@ Interface* Win32JoyStick::queryInterface(Interface::IType type)
 }
 
 //--------------------------------------------------------------------------------------------------//
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
 {
     IWbemLocator*           pIWbemLocator  = NULL;
@@ -682,3 +685,4 @@ LCleanup:
     if(bCleanupCOM)
         CoUninitialize();
 }
+#endif

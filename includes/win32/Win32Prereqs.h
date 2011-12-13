@@ -23,6 +23,7 @@ restrictions:
 #ifndef _WIN32_INPUTSYSTEM_PREREQS_H
 #define _WIN32_INPUTSYSTEM_PREREQS_H
 
+#include <cstddef>
 #define WIN32_LEAN_AND_MEAN
 #define DIRECTINPUT_VERSION 0x0800
 #include <windows.h>
