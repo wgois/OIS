@@ -145,7 +145,8 @@ BOOL CALLBACK Win32InputManager::_DIEnumDevCallback(LPCDIDEVICEINSTANCE lpddi, L
 		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_GAMEPAD ||
 		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_1STPERSON ||
 		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_DRIVING ||
-		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_FLIGHT)
+		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_FLIGHT ||
+		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_SUPPLEMENTAL)
 	{
 		JoyStickInfo jsInfo;
 		jsInfo.isXInput = false;
