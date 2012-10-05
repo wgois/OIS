@@ -51,7 +51,7 @@ namespace OIS
 	class _OISExport Exception : public std::exception
 	{
 		//! Hidden default
-		Exception() : eType(E_General), eLine(0), eFile(0) {}
+		Exception() : eType(E_General), eLine(0), eFile(0), eText(0) {}
 	public:
 		//! Creates exception object
 		Exception( OIS_ERROR err, const char* str, int line, const char *file )
@@ -74,5 +74,7 @@ namespace OIS
 
 //! Use this macro to handle exceptions easily
 #define OIS_EXCEPT( err, str ) throw( OIS::Exception(err, str, __LINE__, __FILE__) )
+//#define OIS_WARN( err, str ) throw( OIS::Exception(err, str, __LINE__, __FILE__) )
+#define OIS_WARN( err, str ) do {} while(0)
 
 #endif //_OIS_EXCEPTION_HEADER_
