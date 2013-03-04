@@ -3,9 +3,11 @@
 AC_PREREQ(2.50)
 AC_INIT( [OIS], 1.4.0 )
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE( [OIS], 1.4.0 )
-AM_CONFIG_HEADER([includes/config.h])
+AC_CONFIG_HEADERS([includes/config.h])
 
 dnl Check for programs
 AC_PROG_CC
