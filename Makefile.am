@@ -1,3 +1,5 @@
+ACLOAL_AMFLAGS="-I m4"
+
 SUBDIRS =  src includes demos
 
 pkgconfigdir = $(libdir)/pkgconfig

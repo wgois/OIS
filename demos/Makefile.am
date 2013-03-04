@@ -1,4 +1,4 @@
-INCLUDES = $(STLPORT_CFLAGS) -I$(top_srcdir)/includes $(CFLAGS) -I/usr/X11R6/include
+AM_CPPFLAGS = $(STLPORT_CFLAGS) -I$(top_srcdir)/includes $(CFLAGS) -I/usr/X11R6/include
 
 noinst_PROGRAMS = ConsoleApp FFConsoleTest
 
