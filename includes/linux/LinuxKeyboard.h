@@ -68,7 +68,6 @@ namespace OIS
 			XPeekEvent(display, &e);
 			if(e.type == KeyPress && e.xkey.keycode == event.xkey.keycode && (e.xkey.time - event.xkey.time) < 2)
 			{
-				XNextEvent(display, &e);
 				return true;
 			}
 
