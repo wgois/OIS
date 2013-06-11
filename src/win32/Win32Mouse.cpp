@@ -70,6 +70,8 @@ void Win32Mouse::_initialize()
 	HRESULT hr = mMouse->Acquire();
 	if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
 		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to aquire mouse!" );
+
+    mMouse->SetDataFormat(&c_dfDIMouse2);
 }
 
 //--------------------------------------------------------------------------------------------------//
@@ -91,17 +93,17 @@ void Win32Mouse::capture()
 	//Clear old relative values
 	mState.X.rel = mState.Y.rel = mState.Z.rel = 0;
 
-	DIDEVICEOBJECTDATA diBuff[MOUSE_DX_BUFFERSIZE];
 	DWORD entries = MOUSE_DX_BUFFERSIZE;
+    DIMOUSESTATE2 mouseState;
 
-	HRESULT hr = mMouse->GetDeviceData( sizeof(DIDEVICEOBJECTDATA), diBuff, &entries, 0 );
+    HRESULT hr = mMouse->GetDeviceState( sizeof(DIMOUSESTATE2), &mouseState);
 	if( hr != DI_OK )
 	{
 		hr = mMouse->Acquire();
 		while( hr == DIERR_INPUTLOST ) 
 			hr = mMouse->Acquire();
 
-		hr = mMouse->GetDeviceData( sizeof(DIDEVICEOBJECTDATA), diBuff, &entries, 0 );
+        hr = mMouse->GetDeviceState( sizeof(DIMOUSESTATE2), &mouseState);
 		
 		//Perhaps the user just tabbed away, and coop settings
 		//are nonexclusive..so just ignore
@@ -109,52 +111,13 @@ void Win32Mouse::capture()
 			return;
 	}
 
-	bool axesMoved = false;
-	//Accumulate all axis movements for one axesMove message..
-	//Buttons are fired off as they are found
-	for(unsigned int i = 0; i < entries; ++i )
-	{
-		switch( diBuff[i].dwOfs )
-		{
-			case DIMOFS_BUTTON0:
-				if(!_doMouseClick(0, diBuff[i])) return;
-				break;
-			case DIMOFS_BUTTON1:
-				if(!_doMouseClick(1, diBuff[i])) return;
-				break;
-			case DIMOFS_BUTTON2:
-				if(!_doMouseClick(2, diBuff[i])) return;
-				break;
-			case DIMOFS_BUTTON3:
-				if(!_doMouseClick(3, diBuff[i])) return;
-				break;
-			case DIMOFS_BUTTON4:
-				if(!_doMouseClick(4, diBuff[i])) return;
-				break;	
-			case DIMOFS_BUTTON5:
-				if(!_doMouseClick(5, diBuff[i])) return;
-				break;
-			case DIMOFS_BUTTON6:
-				if(!_doMouseClick(6, diBuff[i])) return;
-				break;
-			case DIMOFS_BUTTON7:
-				if(!_doMouseClick(7, diBuff[i])) return;
-				break;
-			case DIMOFS_X:
-				mState.X.rel += diBuff[i].dwData;
-				axesMoved = true;
-				break;
-			case DIMOFS_Y:
-				mState.Y.rel += diBuff[i].dwData;
-				axesMoved = true;
-				break;
-			case DIMOFS_Z:
-				mState.Z.rel += diBuff[i].dwData;
-				axesMoved = true;
-				break;
-			default: break;
-		} //end switch
-	}//end for
+    mState.X.rel = mouseState.lX;
+    mState.Y.rel = mouseState.lY;
+    mState.Z.rel = mouseState.lZ;
+    for (unsigned int i=0;i<8;i++)
+        if(!_doMouseClick(i, mouseState.rgbButtons[i])) return;
+
+    bool axesMoved = mouseState.lX != 0 || mouseState.lY != 0 || mouseState.lZ != 0;
 
 	if( axesMoved )
 	{
@@ -191,15 +154,15 @@ void Win32Mouse::capture()
 }
 
 //--------------------------------------------------------------------------------------------------//
-bool Win32Mouse::_doMouseClick( int mouseButton, DIDEVICEOBJECTDATA& di )
+bool Win32Mouse::_doMouseClick( int mouseButton, unsigned char di )
 {
-	if( di.dwData & 0x80 )
+    if( di & 0x80 && !mState.buttonDown((MouseButtonID)mouseButton) )
 	{
 		mState.buttons |= 1 << mouseButton; //turn the bit flag on
 		if( mListener && mBuffered )
 			return mListener->mousePressed( MouseEvent( this, mState ), (MouseButtonID)mouseButton );
 	}
-	else
+    else if (!(di & 0x80) && mState.buttonDown((MouseButtonID)mouseButton))
 	{
 		mState.buttons &= ~(1 << mouseButton); //turn the bit flag off
 		if( mListener && mBuffered )
