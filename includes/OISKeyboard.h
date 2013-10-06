@@ -187,7 +187,7 @@ namespace OIS
 		virtual ~KeyEvent() {}
 
 		//! KeyCode of event
-		const KeyCode key;
+		KeyCode key;
 		//! Text character, depends on current TextTranslationMode
 		unsigned int text;
 	};

@@ -55,6 +55,9 @@ namespace OIS
 		Exception( OIS_ERROR err, const char* str, int line, const char *file )
 			: eType(err), eLine(line), eFile(file), eText(str) {}
 
+		Exception(const Exception& other)
+			: eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) {}
+
 		~Exception() throw() {}
 
 		virtual const char* what() const throw();
@@ -67,6 +70,10 @@ namespace OIS
 		const char* eFile;
 		//! A message passed along when the exception was raised
 		const char* eText;
+
+	private:
+		// Unimplemented and unaccessible due to const members.
+		Exception& operator=(Exception);
 	};
 }
 

@@ -119,6 +119,11 @@ namespace OIS
 		virtual ~JoyStickEvent() {}
 
 		const JoyStickState &state;
+
+	private:
+		// Prevent copying.
+		JoyStickEvent(const JoyStickEvent&);
+		JoyStickEvent& operator=(JoyStickEvent);
 	};
 
 	/**

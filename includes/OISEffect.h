@@ -154,6 +154,10 @@ namespace OIS
 		*/
 		mutable int _handle;
 	protected:
+		// Prevent copying.
+		Effect(const Effect&);
+		Effect& operator=(Effect);
+
 		ForceEffect* effect; //Properties depend on EForce
 		short axes;          //Number of axes to use in effect
 	};
