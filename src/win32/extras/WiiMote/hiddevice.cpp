@@ -4,14 +4,14 @@
 //This code is public domain, and comes with no warranty. The user takes full responsibility for anything that happens as a result from using this code.
 //This was based in part on Alan Macek <www.alanmacek.com>'s USB interface library
 
-//Edited for Toshiba Stack support (hopefully also all others) by 
+//Edited for Toshiba Stack support (hopefully also all others) by
 //Sean Stellingwerff (http://sean.stellingwerff.com) using information
-//gathered from http://www.lvr.com/hidpage.htm (Thanks a million! :D) 
+//gathered from http://www.lvr.com/hidpage.htm (Thanks a million! :D)
 
 //#include "stdafx.h"
 #include "hiddevice.h"
 
-extern "C" 
+extern "C"
 {
 	#include "hidsdi.h"
 	#include <Setupapi.h>
@@ -41,7 +41,7 @@ bool cHIDDevice::Disconnect()
 	if (mConnected)
 	{
 		retval = (CloseHandle(mHandle) == TRUE && CloseHandle(mEvent) == TRUE);
-	
+
 		mConnected = false;
 	}
 
@@ -71,7 +71,7 @@ bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, 
 	HIDD_ATTRIBUTES						Attributes;
 	SP_DEVICE_INTERFACE_DATA			devInfoData;
 	bool								LastDevice = FALSE;
-	bool								MyDeviceDetected = FALSE; 
+	bool								MyDeviceDetected = FALSE;
 	int									MemberIndex = 0;
 	int									MembersFound = 0;
 	GUID								HidGuid;
@@ -84,9 +84,9 @@ bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, 
 	detailData = NULL;
 	mHandle=NULL;
 
-	HidD_GetHidGuid(&HidGuid);	
+	HidD_GetHidGuid(&HidGuid);
 	hDevInfo=SetupDiGetClassDevs(&HidGuid, NULL, NULL, DIGCF_PRESENT|DIGCF_INTERFACEDEVICE);
-		
+
 	devInfoData.cbSize = sizeof(devInfoData);
 
 	MemberIndex = 0;
@@ -132,8 +132,8 @@ bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, 
 						mOverlapped.Offset = 0;
 						mOverlapped.OffsetHigh = 0;
 						mOverlapped.hEvent = mEvent;
-					
-					} else { 
+
+					} else {
 						//The Product ID doesn't match.
 						CloseHandle(mHandle);
 					}
@@ -160,7 +160,7 @@ bool cHIDDevice::WriteToDevice(unsigned const char * OutputReport, int num_bytes
 	if (mConnected)
 	{
 		DWORD bytes_written;
-		retval = (WriteFile( WriteHandle, OutputReport, num_bytes, &bytes_written, &mOverlapped) == TRUE); 
+		retval = (WriteFile( WriteHandle, OutputReport, num_bytes, &bytes_written, &mOverlapped) == TRUE);
 		retval = retval && bytes_written == num_bytes;
 	}
 	return retval;
@@ -188,15 +188,15 @@ bool cHIDDevice::ReadFromDevice(unsigned const char * buffer, int max_bytes, int
 	bool retval = false;
 	if (mConnected)
 	{
-		ReadFile( ReadHandle, (LPVOID)buffer,max_bytes,(LPDWORD)&bytes_read,(LPOVERLAPPED) &mOverlapped); 
+		ReadFile( ReadHandle, (LPVOID)buffer,max_bytes,(LPDWORD)&bytes_read,(LPOVERLAPPED) &mOverlapped);
 		DWORD Result = WaitForSingleObject(mEvent, timeout);
-		if (Result == WAIT_OBJECT_0) 
-		{		
+		if (Result == WAIT_OBJECT_0)
+		{
 			retval = true;
 		}
-		else 
+		else
 		{
-			CancelIo(mHandle);			
+			CancelIo(mHandle);
 		}
 		ResetEvent(mEvent);
 	}

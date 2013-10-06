@@ -1,23 +1,23 @@
 /*
  The zlib/libpng License
- 
+
  Copyright (c) 2006 Phillip Castaneda
- 
+
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
- 
- Permission is granted to anyone to use this software for any purpose, including commercial 
+
+ Permission is granted to anyone to use this software for any purpose, including commercial
  applications, and to alter it and redistribute it freely, subject to the following
  restrictions:
- 
- 1. The origin of this software must not be misrepresented; you must not claim that 
- you wrote the original software. If you use this software in a product, 
- an acknowledgment in the product documentation would be appreciated but is 
+
+ 1. The origin of this software must not be misrepresented; you must not claim that
+ you wrote the original software. If you use this software in a product,
+ an acknowledgment in the product documentation would be appreciated but is
  not required.
- 
- 2. Altered source versions must be plainly marked as such, and must not be 
+
+ 2. Altered source versions must be plainly marked as such, and must not be
  misrepresented as being the original software.
- 
+
  3. This notice may not be removed or altered from any source distribution.
  */
 #include "mac/MacHIDManager.h"
@@ -42,7 +42,7 @@ template<>
 CFArrayRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	CFTypeRef temp = CFDictionaryGetValue(dict, OIS_CFString(keyName));
-	
+
 	if(temp && CFGetTypeID(temp) == CFArrayGetTypeID())
 		return (CFArrayRef)temp;
 	else
@@ -53,7 +53,7 @@ template<>
 CFStringRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	CFTypeRef temp = CFDictionaryGetValue(dict, OIS_CFString(keyName));
-	
+
 	if(temp && CFGetTypeID(temp) == CFStringGetTypeID())
 		return (CFStringRef)temp;
 	else
@@ -64,7 +64,7 @@ template<>
 CFNumberRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	CFTypeRef temp = CFDictionaryGetValue(dict, OIS_CFString(keyName));
-	
+
 	if(temp && CFGetTypeID(temp) == CFNumberGetTypeID())
 		return (CFNumberRef)temp;
 	else
@@ -83,7 +83,7 @@ template<>
 CFDictionaryRef getArrayItemAsRef(CFArrayRef array, CFIndex idx)
 {
 	CFTypeRef temp = CFArrayGetValueAtIndex(array, idx);
-	
+
 	if(temp && CFGetTypeID(temp) == CFDictionaryGetTypeID())
 		return (CFDictionaryRef)temp;
 	else
@@ -94,7 +94,7 @@ CFDictionaryRef getArrayItemAsRef(CFArrayRef array, CFIndex idx)
 int getInt32(CFNumberRef ref)
 {
 	int r = 0;
-	if (r) 
+	if (r)
 		CFNumberGetValue(ref, kCFNumberIntType, &r);
 	return r;
 }
@@ -115,16 +115,16 @@ void MacHIDManager::initialize()
 	//Make the search more specific by adding usage flags
 	int usage = kHIDUsage_GD_Joystick;
 	int page = kHIDPage_GenericDesktop;
-	
+
 	io_iterator_t iterator = lookUpDevices(usage, page);
-	
+
 	if(iterator)
 		iterateAndOpenDevices(iterator);
-	
+
 	//Doesn't support multiple usage flags, iterate twice
 	usage = kHIDUsage_GD_GamePad;
 	iterator = lookUpDevices(usage, page);
-	
+
 	if(iterator)
 		iterateAndOpenDevices(iterator);
 }
@@ -135,20 +135,20 @@ io_iterator_t MacHIDManager::lookUpDevices(int usage, int page)
 	CFMutableDictionaryRef deviceLookupMap = IOServiceMatching(kIOHIDDeviceKey);
 	if(!deviceLookupMap)
 		OIS_EXCEPT(E_General, "Could not setup HID device search parameters");
-	
+
 	CFNumberRef usageRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &usage);
 	CFNumberRef pageRef  = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &page);
-	
+
 	CFDictionarySetValue(deviceLookupMap, CFSTR(kIOHIDPrimaryUsageKey), usageRef);
 	CFDictionarySetValue(deviceLookupMap, CFSTR(kIOHIDPrimaryUsagePageKey), pageRef);
-	
+
 	//IOServiceGetMatchingServices consumes the map so we do not have to release it ourself
 	io_iterator_t iterator = 0;
 	IOReturn result = IOServiceGetMatchingServices(kIOMasterPortDefault, deviceLookupMap, &iterator);
-	
+
 	CFRelease(usageRef);
 	CFRelease(pageRef);
-	
+
 	if(result == kIOReturnSuccess)
 	{
 		return iterator;
@@ -172,28 +172,28 @@ void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 		{
 			//Go through device to find all needed info
 			HidInfo* hid = enumerateDeviceProperties(propertyMap);
-			
+
 			if(hid)
 			{
 				//todo - we need to hold an open interface so we do not have to enumerate again later
 				//should be able to watch for device removals also
-				
+
 				// Testing opening / closing interface
 				IOCFPlugInInterface **pluginInterface = NULL;
 				SInt32 score = 0;
 				if (IOCreatePlugInInterfaceForService(hidDevice, kIOHIDDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) == kIOReturnSuccess)
 				{
 					IOHIDDeviceInterface **interface;
-					
+
 					HRESULT pluginResult = (*pluginInterface)->QueryInterface(pluginInterface, CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID), (void **)&(interface));
-					
+
 					if(pluginResult != S_OK)
 						OIS_EXCEPT(E_General, "Not able to create plugin interface");
-					
+
 					IODestroyPlugInInterface(pluginInterface);
-					
+
 					hid->interface = interface;
-					
+
 					//Check for duplicates - some devices have multiple usage
 					if(std::find(mDeviceList.begin(), mDeviceList.end(), hid) == mDeviceList.end())
 						mDeviceList.push_back(hid);
@@ -201,7 +201,7 @@ void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 			}
 		}
 	}
-	
+
 	IOObjectRelease(iterator);
 }
 
@@ -209,25 +209,25 @@ void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 HidInfo* MacHIDManager::enumerateDeviceProperties(CFMutableDictionaryRef propertyMap)
 {
 	HidInfo* info = new HidInfo();
-	
+
 	info->type = OISJoyStick;
-	
+
 	CFStringRef str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDManufacturerKey);
 	if (str)
 		info->vendor = CFStringGetCStringPtr(str, CFStringGetSystemEncoding());
-	
+
 	str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDProductKey);
 	if (str)
 		info->productKey = CFStringGetCStringPtr(str, CFStringGetSystemEncoding());
-	
+
 	info->combinedKey = info->vendor + " " + info->productKey;
-	
+
 	//Go through all items in this device (i.e. buttons, hats, sticks, axes, etc)
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(propertyMap, kIOHIDElementKey);
 	if (array)
 		for (int i = 0; i < CFArrayGetCount(array); i++)
 			parseDeviceProperties(getArrayItemAsRef<CFDictionaryRef>(array, i));
-	
+
 	return info;
 }
 
@@ -236,7 +236,7 @@ void MacHIDManager::parseDeviceProperties(CFDictionaryRef properties)
 {
 	if(!properties)
 		return;
-	
+
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(properties, kIOHIDElementKey);
 	if (array)
 	{
@@ -245,7 +245,7 @@ void MacHIDManager::parseDeviceProperties(CFDictionaryRef properties)
 			CFDictionaryRef element = getArrayItemAsRef<CFDictionaryRef>(array, i);
 			if (element)
 			{
-				if(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementTypeKey)) == kIOHIDElementTypeCollection) 
+				if(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementTypeKey)) == kIOHIDElementTypeCollection)
 				{	//Check if we need to recurse further intoi another collection
 					if(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementUsagePageKey)) == kHIDPage_GenericDesktop)
 						parseDeviceProperties(element);
@@ -294,7 +294,7 @@ void MacHIDManager::parseDevicePropertiesGroup(CFDictionaryRef properties)
 {
 	if(!properties)
 		return;
-	
+
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(properties, kIOHIDElementKey);
 	if(array)
 	{
@@ -344,7 +344,7 @@ DeviceList MacHIDManager::freeDeviceList()
 		if((*it)->inUse == false)
 			ret.insert(std::make_pair((*it)->type, (*it)->combinedKey));
 	}
-	
+
 	return ret;
 }
 
@@ -353,13 +353,13 @@ int MacHIDManager::totalDevices(Type iType)
 {
 	int ret = 0;
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
-	
+
 	for(; it != end; ++it)
 	{
 		if((*it)->type == iType)
 			ret++;
 	}
-	
+
 	return ret;
 }
 
@@ -368,13 +368,13 @@ int MacHIDManager::freeDevices(Type iType)
 {
 	int ret = 0;
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
-	
+
 	for(; it != end; ++it)
 	{
 		if((*it)->inUse == false && (*it)->type == iType)
 			ret++;
 	}
-	
+
 	return ret;
 }
 
@@ -382,22 +382,22 @@ int MacHIDManager::freeDevices(Type iType)
 bool MacHIDManager::vendorExist(Type iType, const std::string & vendor)
 {
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
-	
+
 	for(; it != end; ++it)
 	{
 		if((*it)->type == iType && (*it)->combinedKey == vendor)
 			return true;
 	}
-	
+
 	return false;
 }
 
 //--------------------------------------------------------------------------------//
-Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool bufferMode, 
+Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool bufferMode,
 									const std::string & vendor)
 {
 	Object *obj = 0;
-	
+
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
 	for(; it != end; ++it)
 	{
@@ -409,7 +409,7 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 					int totalDevs = totalDevices(iType);
 					int freeDevs = freeDevices(iType);
 					int devID = totalDevs - freeDevs;
-					
+
 					obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
 					(*it)->inUse = true;
 					return obj;
@@ -421,7 +421,7 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 			}
 		}
 	}
-	
+
 	return obj;
 }
 

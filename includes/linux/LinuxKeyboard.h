@@ -60,7 +60,7 @@ namespace OIS
 	protected:
 		inline bool _isKeyRepeat(XEvent &event)
 		{
-			//When a key is repeated, there will be two events: released, followed by another immediate pressed. So check to see if another pressed is present	
+			//When a key is repeated, there will be two events: released, followed by another immediate pressed. So check to see if another pressed is present
 			if(!XPending(display))
 				return false;
 

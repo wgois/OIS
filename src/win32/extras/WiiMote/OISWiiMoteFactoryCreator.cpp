@@ -8,16 +8,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -61,7 +61,7 @@ WiiMoteFactoryCreator::WiiMoteFactoryCreator() :
 WiiMoteFactoryCreator::~WiiMoteFactoryCreator()
 {
 	//Thread (once all objects destroyed) should be killed off already
-	assert( (mtThreadRunning == false && mtThreadHandler == 0) && 
+	assert( (mtThreadRunning == false && mtThreadHandler == 0) &&
 		"~WiiMoteFactoryCreator(): invalid state.. Some objects left dangling!");
 
 	delete mtWiiMoteListMutex;
@@ -119,7 +119,7 @@ Object* WiiMoteFactoryCreator::createObject(InputManager* creator, Type iType, b
 			mtThreadRunning = true;
 			mtThreadHandler = new boost::thread(boost::bind(&WiiMoteFactoryCreator::_updateWiiMotesThread, this));
 		}
-		
+
 		//Now, add new WiiMote to thread manager for polling
 		{	//Get an auto lock on the list of active wiimotes
 			boost::mutex::scoped_lock arrayLock(*mtWiiMoteListMutex);
@@ -192,7 +192,7 @@ bool WiiMoteFactoryCreator::_updateWiiMotesThread()
 		}
 
 		//ok, we have updated all wiimotes, let us rest a bit
-		//sleep time = 30 / 1000 
+		//sleep time = 30 / 1000
 		//boost::thread::sleep(xtime) todo xxx wip use sleep instead??
 		//boost::thread::yield();
 		boost::xtime_get(&timer, boost::TIME_UTC);

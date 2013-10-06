@@ -207,10 +207,10 @@ namespace OIS
 	public:
 		Vector3() {}
 		Vector3(float _x, float _y, float _z) : Component(OIS_Vector3), x(_x), y(_y), z(_z) {};
-		
+
 		//! X component of vector
 		float x;
-		
+
 		//! Y component of vector
 		float y;
 

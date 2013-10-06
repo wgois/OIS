@@ -72,10 +72,10 @@ short Win32ForceFeedback::getFFAxesNumber()
 //--------------------------------------------------------------//
 unsigned short Win32ForceFeedback::getFFMemoryLoad()
 {
-    DIPROPDWORD dipdw;  // DIPROPDWORD contains a DIPROPHEADER structure. 
-	dipdw.diph.dwSize       = sizeof(DIPROPDWORD); 
-	dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER); 
-	dipdw.diph.dwObj        = 0; // device property 
+    DIPROPDWORD dipdw;  // DIPROPDWORD contains a DIPROPHEADER structure.
+	dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
+	dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+	dipdw.diph.dwObj        = 0; // device property
 	dipdw.diph.dwHow        = DIPH_DEVICE;
 	dipdw.dwData            = 0; // In case of any error.
 
@@ -155,7 +155,7 @@ void Win32ForceFeedback::setMasterGain( float level )
 	DIPropGain.dwData            = gain_level;
 
 #if (OIS_WIN32_JOYFF_DEBUG > 0)
-	cout << "Win32ForceFeedback("<< mJoyStick << ") : Setting master gain to " 
+	cout << "Win32ForceFeedback("<< mJoyStick << ") : Setting master gain to "
 		 << level << " => " << DIPropGain.dwData << endl;
 #endif
 
@@ -178,7 +178,7 @@ void Win32ForceFeedback::setAutoCenterMode( bool auto_on )
 	DIPropAutoCenter.dwData            = (auto_on ? DIPROPAUTOCENTER_ON : DIPROPAUTOCENTER_OFF);
 
 #if (OIS_WIN32_JOYFF_DEBUG > 0)
-	cout << "Win32ForceFeedback("<< mJoyStick << ") : Setting auto-center mode to " 
+	cout << "Win32ForceFeedback("<< mJoyStick << ") : Setting auto-center mode to "
 		 << auto_on << " => " << DIPropAutoCenter.dwData << endl;
 #endif
 
@@ -328,9 +328,9 @@ void Win32ForceFeedback::_setCommonProperties(
 
 #if (OIS_WIN32_JOYFF_DEBUG > 1)
 	cout << "  Trigger :" << endl
-		 << "    Button   : " << effect->trigger_button 
+		 << "    Button   : " << effect->trigger_button
 		 << " => " << diEffect->dwTriggerButton << endl
-		 << "    Interval : " << effect->trigger_interval 
+		 << "    Interval : " << effect->trigger_interval
 		 << " => " << diEffect->dwTriggerRepeatInterval << endl;
 #endif
 
@@ -364,9 +364,9 @@ void Win32ForceFeedback::_setCommonProperties(
 	{
 		cout << "  Enveloppe :" << endl
 			 << "    AttackLen : " << envelope->attackLength
-			 << " => " << diEnvelope->dwAttackTime << endl 
+			 << " => " << diEnvelope->dwAttackTime << endl
 			 << "    AttackLvl : " << envelope->attackLevel
-			 << " => " << diEnvelope->dwAttackLevel << endl 
+			 << " => " << diEnvelope->dwAttackLevel << endl
 			 << "    FadeLen   : " << envelope->fadeLength
 			 << " => " << diEnvelope->dwFadeTime << endl
 			 << "    FadeLvl   : " << envelope->fadeLevel
@@ -380,9 +380,9 @@ void Win32ForceFeedback::_setCommonProperties(
 
 #if (OIS_WIN32_JOYFF_DEBUG > 1)
 	cout << "  Replay :" << endl
-		 << "    Length : " << effect->replay_length 
+		 << "    Length : " << effect->replay_length
 		 << " => " << diEffect->dwDuration << endl
-		 << "    Delay  : " << effect->replay_delay 
+		 << "    Delay  : " << effect->replay_delay
 		 << " => " << diEffect->dwStartDelay << endl;
 #endif
 
@@ -491,7 +491,7 @@ void Win32ForceFeedback::_addEffectSupport( LPCDIEFFECTINFO pdei )
 	    default:
 		    eForce = Effect::UnknownForce;
 #if defined (_DEBUG)
-			cout << "Win32ForceFeedback: DirectInput8 Effect type support not implemented: " 
+			cout << "Win32ForceFeedback: DirectInput8 Effect type support not implemented: "
 				 << "DIEFT_GETTYPE="<< (int)DIEFT_GETTYPE(pdei->dwEffType) << endl;
 #endif
 			return;

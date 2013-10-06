@@ -36,7 +36,7 @@ namespace OIS
 		Represents the state of the multi-touch device
 		All members are valid for both buffered and non buffered mode
 	*/
-    
+
 	//! Touch Event type
 	enum MultiTypeEventTypeID
 	{
@@ -68,7 +68,7 @@ namespace OIS
 		{
 			return ((touchType & ( 1L << touch )) == 0) ? false : true;
 		}
-        
+
 		//! Clear all the values
 		void clear()
 		{
@@ -130,8 +130,8 @@ namespace OIS
 
 		/** @remarks Returns the state of the touch - is valid for both buffered and non buffered mode */
 		std::vector<MultiTouchState> getMultiTouchStates() const { return mStates; }
-        
-        /** @remarks Returns the first n touch states.  Useful if you know your app only needs to 
+
+        /** @remarks Returns the first n touch states.  Useful if you know your app only needs to
                 process n touches.  The return value is a vector to allow random access */
         const std::vector<MultiTouchState> getFirstNTouchStates(int n) {
             std::vector<MultiTouchState> states;
@@ -143,7 +143,7 @@ namespace OIS
             return states;
         }
 
-        /** @remarks Returns the first n touch states.  Useful if you know your app only needs to 
+        /** @remarks Returns the first n touch states.  Useful if you know your app only needs to
          process n touches.  The return value is a vector to allow random access */
         const std::vector<MultiTouchState> getMultiTouchStatesOfType(MultiTypeEventTypeID type) {
             std::vector<MultiTouchState> states;
@@ -154,7 +154,7 @@ namespace OIS
             }
             return states;
         }
-        
+
 	protected:
 		MultiTouch(const std::string &vendor, bool buffered, int devID, InputManager* creator)
 			: Object(vendor, OISMultiTouch, buffered, devID, creator), mListener(0) {}

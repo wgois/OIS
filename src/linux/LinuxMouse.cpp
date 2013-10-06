@@ -6,16 +6,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered friosom any source distribution.
@@ -157,7 +157,7 @@ void LinuxMouse::_processXEvents()
 	XEvent event;
 
 	//Poll x11 for events mouse events
-	while( XPending(display) > 0 ) 
+	while( XPending(display) > 0 )
 	{
 		XNextEvent(display, &event);
 
@@ -174,7 +174,7 @@ void LinuxMouse::_processXEvents()
 			//Compute this frames Relative X & Y motion
 			int dx = event.xmotion.x - oldXMouseX;
 			int dy = event.xmotion.y - oldXMouseY;
-		
+
 			//Store old values for next time to compute relative motion
 			oldXMouseX = event.xmotion.x;
 			oldXMouseY = event.xmotion.y;

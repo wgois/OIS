@@ -137,7 +137,7 @@ void WiiMote::_threadUpdate()
 	newEvent.x /= len;
 	newEvent.y /= len;
 	newEvent.z /= len;
-	
+
 	//Get new angle
 	float angle = acos((newEvent.x * mtLastX) + (newEvent.y * mtLastY) + (newEvent.z * mtLastZ));
 	if( angle > (mVector3Sensitivity * (M_PI / 180.0)) )
@@ -161,7 +161,7 @@ void WiiMote::_threadUpdate()
 
 		mWiiMote.GetCalibratedChuckAcceleration(newEvent.nunChuckx, newEvent.nunChucky, newEvent.nunChuckz);
 		//Normalize new vector (old vector is already normalized)
-		float len = sqrt((newEvent.nunChuckx*newEvent.nunChuckx) + 
+		float len = sqrt((newEvent.nunChuckx*newEvent.nunChuckx) +
 			             (newEvent.nunChucky*newEvent.nunChucky) +
 						 (newEvent.nunChuckz*newEvent.nunChuckz));
 
@@ -169,7 +169,7 @@ void WiiMote::_threadUpdate()
 		newEvent.nunChucky /= len;
 		newEvent.nunChuckz /= len;
 
-		float angle = acos((newEvent.nunChuckx * mtLastNunChuckX) + 
+		float angle = acos((newEvent.nunChuckx * mtLastNunChuckX) +
 			               (newEvent.nunChucky * mtLastNunChuckY) +
 						   (newEvent.nunChuckz * mtLastNunChuckZ));
 
@@ -186,7 +186,7 @@ void WiiMote::_threadUpdate()
 		//Ok, Now check both NunChuck Joystick axes for movement
 		float tempX = 0.0f, tempY = 0.0f;
 		mWiiMote.GetCalibratedChuckStick(tempX, tempY);
-		
+
 		//Convert to int and clip
 		newEvent.nunChuckXAxis = (int)(tempX * JoyStick::MAX_AXIS);
 		if( newEvent.nunChuckXAxis > JoyStick::MAX_AXIS )
@@ -230,7 +230,7 @@ void WiiMote::_threadUpdate()
 void WiiMote::_doButtonCheck(bool new_state, int ois_button, unsigned int &pushed, unsigned int &released)
 {
 	const bool old_state = ((mtLastButtonStates & ( 1L << ois_button )) == 0) ? false : true;
-	
+
 	//Check to see if new state and old state are the same, and hence, need no change
 	if( new_state == old_state )
 		return;
@@ -290,7 +290,7 @@ void WiiMote::capture()
 	WiiMoteEvent events[OIS_WII_EVENT_BUFFER];
 	if( entries > OIS_WII_EVENT_BUFFER )
 		entries = OIS_WII_EVENT_BUFFER;
-	
+
 	mRingBuffer.Read(events, entries);
 
 	//Loop through each event

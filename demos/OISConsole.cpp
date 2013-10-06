@@ -141,7 +141,7 @@ public:
 	{
 		std::cout.precision(2);
 		std::cout.flags(std::ios::fixed | std::ios::right);
-		std::cout << std::endl << arg.device->vendor() << ". Orientation # " << index 
+		std::cout << std::endl << arg.device->vendor() << ". Orientation # " << index
 			<< " X Value: " << arg.state.mVectors[index].x
 			<< " Y Value: " << arg.state.mVectors[index].y
 			<< " Z Value: " << arg.state.mVectors[index].z;
@@ -291,34 +291,34 @@ void doStartup()
     windowRect.top = 0;
     windowRect.right = 300;
     windowRect.bottom = 300;
-    
+
     // set the default attributes for the window
     WindowAttributes windowAttrs = kWindowStandardDocumentAttributes
-        | kWindowStandardHandlerAttribute 
+        | kWindowStandardHandlerAttribute
         | kWindowInWindowMenuAttribute
         | kWindowHideOnFullScreenAttribute;
-    
+
     // Create the window
     CreateNewWindow(kDocumentWindowClass, windowAttrs, &windowRect, &mWin);
-    
+
     // Color the window background black
     SetThemeWindowBackground (mWin, kThemeBrushBlack, true);
-    
+
     // Set the title of our window
     CFStringRef titleRef = CFStringCreateWithCString( kCFAllocatorDefault, "OIS Input", kCFStringEncodingASCII );
     SetWindowTitleWithCFString( mWin, titleRef );
-    
+
     // Center our window on the screen
     RepositionWindow( mWin, NULL, kWindowCenterOnMainScreen );
-    
+
     // Install the event handler for the window
     InstallStandardEventHandler(GetWindowEventTarget(mWin));
-    
+
     // This will give our window focus, and not lock it to the terminal
     ProcessSerialNumber psn = { 0, kCurrentProcess };
     TransformProcessType( &psn, kProcessTransformToForegroundApplication );
 	SetFrontProcess(&psn);
-    
+
     // Display and select our window
     ShowWindow(mWin);
     SelectWindow(mWin);
@@ -454,11 +454,11 @@ void checkX11Events()
 
 #if defined OIS_APPLE_PLATFORM
 void checkMacEvents()
-{	
+{
 	//TODO - Check for window resize events, and then adjust the members of mousestate
 	EventRef event = NULL;
 	EventTargetRef targetWindow = GetEventDispatcherTarget();
-	
+
 	if( ReceiveNextEvent( 0, NULL, kEventDurationNoWait, true, &event ) == noErr )
 	{
 		SendEventToEventTarget(event, targetWindow);

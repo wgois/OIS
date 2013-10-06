@@ -6,16 +6,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -64,7 +64,7 @@ void Win32InputManager::_initialize( ParamList &paramList )
 
 	//First of all, get the Windows Handle and Instance
 	ParamList::iterator i = paramList.find("WINDOW");
-	if( i == paramList.end() ) 
+	if( i == paramList.end() )
 		OIS_EXCEPT( E_InvalidParam, "Win32InputManager::Win32InputManager >> No HWND found!" );
 
 	// Get number as 64 bit and then convert. Handles the case of 32 or 64 bit HWND
@@ -78,7 +78,7 @@ void Win32InputManager::_initialize( ParamList &paramList )
 
 	//Create the device
 	hr = DirectInput8Create( hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&mDirectInput, NULL );
-    if (FAILED(hr))	
+    if (FAILED(hr))
 		OIS_EXCEPT( E_General, "Win32InputManager::Win32InputManager >> Not able to init DirectX8 Input!");
 
 	//Ok, now we have DirectInput, parse whatever extra settings were sent to us
@@ -101,7 +101,7 @@ void Win32InputManager::_parseConfigSettings( ParamList &paramList )
 
 	//Check for pairs: ie. ("w32_keyboard","DISCL_NOWINKEY")("w32_keyboard","DISCL_FOREGROUND")
 	ParamList::iterator i = paramList.begin(), e = paramList.end();
-	for( ; i != e; ++i ) 
+	for( ; i != e; ++i )
 	{
 		if( i->first == "w32_keyboard" )
 				kbSettings |= temp[i->second];
@@ -122,7 +122,7 @@ void Win32InputManager::_enumerateDevices()
 	mDirectInput->EnumDevices(NULL, _DIEnumDevCallback, this, DIEDFL_ATTACHEDONLY);
 
 #ifdef OIS_WIN32_XINPUT_SUPPORT
-	//let's check how many possible XInput devices we may have (max 4)... 
+	//let's check how many possible XInput devices we may have (max 4)...
 	for(int i = 0; i < 3; ++i)
 	{
 		XINPUT_STATE state;
@@ -156,7 +156,7 @@ BOOL CALLBACK Win32InputManager::_DIEnumDevCallback(LPCDIDEVICEINSTANCE lpddi, L
 		jsInfo.devId = _this_->joySticks;
 
 		_this_->joySticks++;
-		
+
 		_this_->unusedJoyStickList.push_back( jsInfo );
 	}
 
@@ -234,7 +234,7 @@ Object* Win32InputManager::createObject(InputManager* creator, Type iType, bool 
 
 	switch(iType)
 	{
-	case OISKeyboard: 
+	case OISKeyboard:
 	{
 		if( keyboardUsed == false )
 			obj = new Win32Keyboard(this, mDirectInput, bufferMode, kbSettings);

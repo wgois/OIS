@@ -80,7 +80,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 	hWnd = CreateDialog( 0, MAKEINTRESOURCE(IDD_MAIN_WINDOW), 0,(DLGPROC)DlgProc);
 	if( hWnd == 0 ) exit(-1);
 	ShowWindow(hWnd, SW_SHOW);
-	
+
 	hOut = GetDlgItem(hWnd, IDC_OUTPUT);
 	if(hOut == 0) exit(-1);
 
@@ -146,7 +146,7 @@ void initSDL()
 	if( SDL_Init(SDL_INIT_VIDEO) < 0 )
 		throw("Error!");
 	SDL_Surface *screen = SDL_SetVideoMode( r.right-r.left, r.bottom-r.top, 32, SDL_HWSURFACE );
-	
+
 	//SDL_Surface *screen = SDL_SetVideoMode( r.right-r.left, r.bottom-r.top, 0, 0 );
 	//SetWindowPos(hDisp, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	OutputMessage("Success!");
@@ -169,7 +169,7 @@ void initOIS()
 
 	gMouse = static_cast<Mouse*>(im->createInputObject(OISMouse, false));
 	gMouse->setEventCallback( &gHandler );
-	
+
 	std::ostringstream temp;
 	unsigned int v = im->getVersionNumber();
 	temp << "Success! >> " << "Version: " << (v>>16 ) << "." << ((v>>8) & 0x000000FF)

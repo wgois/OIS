@@ -26,7 +26,7 @@ private:
 	//bool FindWiimote();
 	void GetCapabilities();
 	void PrepareForOverlappedTransfer();
-	
+
 	HANDLE mHandle;
 	HANDLE mEvent;
 	HANDLE WriteHandle;
