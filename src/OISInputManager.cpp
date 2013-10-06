@@ -266,6 +266,8 @@ void InputManager::removeFactoryCreator( FactoryCreator* factory )
 //----------------------------------------------------------------------------//
 void InputManager::enableAddOnFactory(AddOnFactories factory)
 {
+	OIS_UNUSED(factory);
+
 #if defined OIS_LIRC_SUPPORT
 	if( factory == AddOn_LIRC || factory == AddOn_All )
 	{

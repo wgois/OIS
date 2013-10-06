@@ -230,6 +230,8 @@ bool Win32InputManager::vendorExist(Type iType, const std::string & vendor)
 //----------------------------------------------------------------------------//
 Object* Win32InputManager::createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor)
 {
+	OIS_UNUSED(creator);
+
 	Object *obj = 0;
 
 	switch(iType)

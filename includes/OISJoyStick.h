@@ -148,13 +148,13 @@ namespace OIS
 
 		//-- Not so common control events, so are not required --//
 		//! Joystick Event, and sliderID
-		virtual bool sliderMoved( const JoyStickEvent &, int index) {return true;}
+		virtual bool sliderMoved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
 
 		//! Joystick Event, and povID
-		virtual bool povMoved( const JoyStickEvent &arg, int index) {return true;}
+		virtual bool povMoved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
 
 		//! Joystick Event, and Vector3ID
-		virtual bool vector3Moved( const JoyStickEvent &arg, int index) {return true;}
+		virtual bool vector3Moved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
 	};
 
 	/**

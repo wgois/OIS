@@ -99,6 +99,26 @@ restrictions:
 #	define OIS_ARCH_32
 #endif
 
+//-------------- Various helper preprocessor definitions ---------------------//
+
+#ifdef OIS_MSVC_COMPILER
+#	define OIS_INLINE_PRAGMA(x) __pragma(x) // x is intentionally not wrapped; __pragma rejects expressions beginning with '('.
+#else
+#	define OIS_INLINE_PRAGMA(x)
+#endif
+
+#define OIS_MACRO_BEGIN do {
+
+#define OIS_MACRO_END \
+	} OIS_INLINE_PRAGMA(warning(push)) OIS_INLINE_PRAGMA(warning(disable:4127)) while (0) OIS_INLINE_PRAGMA(warning(pop))
+
+// This creative trickery taken from this StackOverflow answer:
+// http://stackoverflow.com/questions/4030959/will-a-variablename-c-statement-be-a-no-op-at-all-times/4030983#4030983
+#define OIS_UNUSED(x)\
+	OIS_MACRO_BEGIN\
+		((void)(true ? 0 : ((x), void(), 0)));\
+	OIS_MACRO_END
+
 //-------------- Common Classes, Enums, and Typdef's -------------------------//
 #define OIS_VERSION_MAJOR 1
 #define OIS_VERSION_MINOR 4
