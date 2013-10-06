@@ -65,15 +65,6 @@ const char* Effect::getDirectionName(Effect::EDirection eValue)
 }
 
 //------------------------------------------------------------------------------//
-Effect::Effect() : 
-	force(UnknownForce), 
-	type(Unknown),
-	effect(0),
-	axes(1)
-{
-}
-
-//------------------------------------------------------------------------------//
 Effect::Effect(EForce ef, EType et) : 
 	force(ef), 
 	type(et),

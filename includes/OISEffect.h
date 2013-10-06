@@ -46,10 +46,6 @@ namespace OIS
 	*/
 	class _OISExport Effect
 	{
-		/**
-			hidden so this class cannot be instanced with default constructor
-		*/
-		Effect();
 	public:
 		//! Type of force
 		enum EForce

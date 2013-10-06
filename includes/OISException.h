@@ -50,8 +50,6 @@ namespace OIS
 	*/
 	class _OISExport Exception : public std::exception
 	{
-		//! Hidden default
-		Exception() : eType(E_General), eLine(0), eFile(0) {}
 	public:
 		//! Creates exception object
 		Exception( OIS_ERROR err, const char* str, int line, const char *file )
