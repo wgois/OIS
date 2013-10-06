@@ -32,7 +32,7 @@ namespace OIS
 	class _OISExport EventArg
 	{
 	public:
-		EventArg( Object* obj ) : device(obj) {}
+		explicit EventArg( Object* obj ) : device(obj) {}
 		virtual ~EventArg() {}
 
 		//! Pointer to the Input Device

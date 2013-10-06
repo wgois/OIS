@@ -177,7 +177,7 @@ namespace OIS
 		@remarks
 			Derived classes must provide input system name
 		*/
-		InputManager(const std::string& name);
+		explicit InputManager(const std::string& name);
 
 		/**
 		@remarks
