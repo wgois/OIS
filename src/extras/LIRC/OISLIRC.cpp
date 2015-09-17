@@ -67,7 +67,7 @@ void LIRCControl::capture()
 	LIRCEvent events[OIS_LIRC_EVENT_BUFFER];
 	if( entries > OIS_LIRC_EVENT_BUFFER )
 		entries = OIS_LIRC_EVENT_BUFFER;
-	
+
 	mRingBuffer.Read(events, entries);
 
 	//Loop through each event

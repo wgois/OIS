@@ -8,16 +8,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -58,7 +58,7 @@ public:
 	//Thread Stuff
 	//! Boost thread execution object (only alive when at least 1 lirc is alive)
 	boost::thread *mThreadHandler;
-		
+
 	//! Gaurds access to the active lirc list
 	boost::mutex mLircListMutex;
 
@@ -151,13 +151,13 @@ void LIRCFactoryCreator::discoverRemotes()
 	{
 		std::ostringstream istr;
 		istr << "LIST " << mUnusedRemotes[i] << "\n";
-		
+
 		mWrapped->mSocket.write_some(boost::asio::buffer(istr.str()));
 		RemoteInfo information;
 		int buttonCount = 0;
 
 		start = data = false;
-		
+
 		for(;;)
 		{
 			boost::asio::read_until(mWrapped->mSocket, buffer, '\n');
@@ -263,7 +263,7 @@ void LIRCFactoryCreator::threadUpdate()
 			while(  mWrapped->mSocket.in_avail() > 0 )
 			{
 				boost::asio::read_until(mWrapped->mSocket, buffer, '\n');
-				
+
 				stream >> code;   //64 bit value, ignorable
 				stream >> repeat; //Repeat rate starting at zero (we ignore, for now)
 				stream >> button; //Button name
@@ -281,7 +281,7 @@ void LIRCFactoryCreator::threadUpdate()
 		}
 		catch(...)
 		{	//Hmm, what should we do if we get a socket error here.. Ignore it I suppose,
-		}	//and wait till the used remote objects get shutdown. We could try to 
+		}	//and wait till the used remote objects get shutdown. We could try to
 			//reconnect, but how do we know if we will even get the same remotes.
 
 		boost::xtime_get(&timer, boost::TIME_UTC);
@@ -359,7 +359,7 @@ Object* LIRCFactoryCreator::createObject(InputManager* creator, Type iType, bool
 			return obj;
 		}
 	}
-	
+
 	OIS_EXCEPT(E_InputDeviceNonExistant, "No Device found which matches description!");
 }
 
@@ -392,7 +392,7 @@ void LIRCFactoryCreator::destroyObject(Object* obj)
 		//Move from used to unused list
 		mUnusedRemotes.push_back(i->first);
 		mUpdateRemotes.erase(i);
-		
+
 		delete obj;
 
 		remotes_alive = (int)mUpdateRemotes.size();

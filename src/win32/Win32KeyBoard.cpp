@@ -6,16 +6,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -130,10 +130,10 @@ void Win32Keyboard::_readBuffered()
 		//send no more events and just leave as the this pointer is invalid now...
 		bool ret = true;
 		KeyCode kc = (KeyCode)diBuff[ i ].dwOfs;
-			
+
 		//Store result in our keyBuffer too
 		KeyBuffer[kc] = static_cast<unsigned char>(diBuff[ i ].dwData);
-			
+
 		if( diBuff[ i ].dwData & 0x80 )
 		{
 			//Turn on modifier
@@ -170,7 +170,7 @@ void Win32Keyboard::_readBuffered()
 	if(verifyAfterAltTab)
 	{
 		bool ret = true;
-		
+
 		//Copy old buffer to temp location to compare against
 		unsigned char keyBufferCopy[256];
 		memcpy(keyBufferCopy, KeyBuffer, 256);
@@ -246,7 +246,7 @@ int Win32Keyboard::_translateText( KeyCode kc )
 		// Combine the two into a single character
 		WCHAR wcBuff[3] = {buff[0], deadKey, '\0'};
 		WCHAR out[3];
-		
+
 		deadKey = '\0';
 		if(FoldStringW(MAP_PRECOMPOSED, (LPWSTR)wcBuff, 3, (LPWSTR)out, 3))
 			return out[0];
@@ -326,7 +326,7 @@ void Win32Keyboard::setBuffered(bool buffered)
 			mKeyboard->Release();
 			mKeyboard = 0;
 		}
-		
+
 		mBuffered = buffered;
 		_initialize();
 	}

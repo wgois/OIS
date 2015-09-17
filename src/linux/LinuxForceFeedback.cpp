@@ -64,7 +64,7 @@ unsigned short LinuxForceFeedback::getFFMemoryLoad()
 	if (ioctl(mJoyStick, EVIOCGEFFECTS, &nEffects) == -1)
 		OIS_EXCEPT(E_General, "Unknown error reading max number of uploaded effects.");
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-	cout << "LinuxForceFeedback("<< mJoyStick  
+	cout << "LinuxForceFeedback("<< mJoyStick
 		 << ") : Read device max number of uploaded effects : " << nEffects << endl;
 #endif
 
@@ -77,7 +77,7 @@ void LinuxForceFeedback::setMasterGain(float value)
 	if (!mSetGainSupport)
 	{
 #if (OIS_LINUX_JOYFF_DEBUG > 0)
-		cout << "LinuxForceFeedback("<< mJoyStick << ") : Setting master gain " 
+		cout << "LinuxForceFeedback("<< mJoyStick << ") : Setting master gain "
 			 << "is not supported by the device" << endl;
 #endif
 		return;
@@ -95,7 +95,7 @@ void LinuxForceFeedback::setMasterGain(float value)
 	event.value = (__s32)(value * 0xFFFFUL);
 
 #if (OIS_LINUX_JOYFF_DEBUG > 0)
-	cout << "LinuxForceFeedback("<< mJoyStick << ") : Setting master gain to " 
+	cout << "LinuxForceFeedback("<< mJoyStick << ") : Setting master gain to "
 		 << value << " => " << event.value << endl;
 #endif
 
@@ -110,7 +110,7 @@ void LinuxForceFeedback::setAutoCenterMode(bool enabled)
 	if (!mSetAutoCenterSupport)
 	{
 #if (OIS_LINUX_JOYFF_DEBUG > 0)
-		cout << "LinuxForceFeedback("<< mJoyStick << ") : Setting auto-center mode " 
+		cout << "LinuxForceFeedback("<< mJoyStick << ") : Setting auto-center mode "
 			 << "is not supported by the device" << endl;
 #endif
 		return;
@@ -124,7 +124,7 @@ void LinuxForceFeedback::setAutoCenterMode(bool enabled)
 	event.value = (__s32)(enabled*0xFFFFFFFFUL);
 
 #if (OIS_LINUX_JOYFF_DEBUG > 0)
-	cout << "LinuxForceFeedback("<< mJoyStick << ") : Toggling auto-center to " 
+	cout << "LinuxForceFeedback("<< mJoyStick << ") : Toggling auto-center to "
 		 << enabled << " => 0x" << hex << event.value << dec << endl;
 #endif
 
@@ -138,23 +138,23 @@ void LinuxForceFeedback::upload( const Effect* effect )
 {
 	switch( effect->force )
 	{
-		case OIS::Effect::ConstantForce: 
-			_updateConstantEffect(effect);	
+		case OIS::Effect::ConstantForce:
+			_updateConstantEffect(effect);
 			break;
-		case OIS::Effect::ConditionalForce: 
+		case OIS::Effect::ConditionalForce:
 			_updateConditionalEffect(effect);
 			break;
-		case OIS::Effect::PeriodicForce: 
+		case OIS::Effect::PeriodicForce:
 			_updatePeriodicEffect(effect);
 			break;
-		case OIS::Effect::RampForce: 
-			_updateRampEffect(effect);	
+		case OIS::Effect::RampForce:
+			_updateRampEffect(effect);
 			break;
-		case OIS::Effect::CustomForce: 
+		case OIS::Effect::CustomForce:
 			//_updateCustomEffect(effect);
 			//break;
-		default: 
-			OIS_EXCEPT(E_NotImplemented, "Requested force not implemented yet, sorry!"); 
+		default:
+			OIS_EXCEPT(E_NotImplemented, "Requested force not implemented yet, sorry!");
 			break;
 	}
 }
@@ -220,8 +220,8 @@ void LinuxForceFeedback::remove( const Effect* effect )
 
 
 //--------------------------------------------------------------//
-void LinuxForceFeedback::_setCommonProperties(struct ff_effect *event, 
-											  struct ff_envelope *ffenvelope, 
+void LinuxForceFeedback::_setCommonProperties(struct ff_effect *event,
+											  struct ff_envelope *ffenvelope,
 											  const Effect* effect, const Envelope *envelope )
 {
 	memset(event, 0, sizeof(struct ff_effect));
@@ -232,23 +232,23 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect *event,
 		ffenvelope->fade_length = LinuxDuration(envelope->fadeLength);
 		ffenvelope->fade_level = LinuxPositiveLevel(envelope->fadeLevel);
 	}
-	
+
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
 	cout << endl;
 	if (envelope && ffenvelope)
 	{
 		cout << "  Enveloppe :" << endl
 			 << "    AttackLen : " << envelope->attackLength
-			 << " => " << ffenvelope->attack_length << endl 
+			 << " => " << ffenvelope->attack_length << endl
 			 << "    AttackLvl : " << envelope->attackLevel
-			 << " => " << ffenvelope->attack_level << endl 
+			 << " => " << ffenvelope->attack_level << endl
 			 << "    FadeLen   : " << envelope->fadeLength
 			 << " => " << ffenvelope->fade_length << endl
 			 << "    FadeLvl   : " << envelope->fadeLevel
 			 << " => " << ffenvelope->fade_level << endl;
 	}
 #endif
-	
+
 	event->direction = (__u16)(1 + (effect->direction*45.0+135.0)*0xFFFFUL/360.0);
 
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
@@ -262,9 +262,9 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect *event,
 
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
 	cout << "  Trigger :" << endl
-		 << "    Button   : " << effect->trigger_button 
+		 << "    Button   : " << effect->trigger_button
 		 << " => " << event->trigger.button << endl
-		 << "    Interval : " << effect->trigger_interval 
+		 << "    Interval : " << effect->trigger_interval
 		 << " => " << event->trigger.interval << endl;
 #endif
 
@@ -273,9 +273,9 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect *event,
 
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
 	cout << "  Replay :" << endl
-		 << "    Length : " << effect->replay_length 
+		 << "    Length : " << effect->replay_length
 		 << " => " << event->replay.length << endl
-		 << "    Delay  : " << effect->replay_delay 
+		 << "    Delay  : " << effect->replay_delay
 		 << " => " << event->replay.delay << endl;
 #endif
 }
@@ -361,7 +361,7 @@ void LinuxForceFeedback::_updatePeriodicEffect( const Effect* eff )
 			//event.u.periodic.waveform = FF_CUSTOM;
 			//break;
 		default:
-			OIS_EXCEPT(E_General, "No such available effect for Periodic force!"); 
+			OIS_EXCEPT(E_General, "No such available effect for Periodic force!");
 			break;
 	}
 
@@ -400,19 +400,19 @@ void LinuxForceFeedback::_updateConditionalEffect( const Effect* eff )
 	switch( eff->type )
 	{
 		case OIS::Effect::Friction:
-			event.type = FF_FRICTION; 
+			event.type = FF_FRICTION;
 			break;
 		case OIS::Effect::Damper:
-			event.type = FF_DAMPER; 
+			event.type = FF_DAMPER;
 			break;
 		case OIS::Effect::Inertia:
-			event.type = FF_INERTIA; 
+			event.type = FF_INERTIA;
 			break;
 		case OIS::Effect::Spring:
 			event.type = FF_SPRING;
 			break;
 		default:
-			OIS_EXCEPT(E_General, "No such available effect for Conditional force!"); 
+			OIS_EXCEPT(E_General, "No such available effect for Conditional force!");
 			break;
 	}
 
@@ -422,7 +422,7 @@ void LinuxForceFeedback::_updateConditionalEffect( const Effect* eff )
 	event.u.condition[0].left_saturation  = LinuxSignedLevel(effect->leftSaturation);
 	event.u.condition[0].right_coeff      = LinuxSignedLevel(effect->rightCoeff);
 	event.u.condition[0].left_coeff       = LinuxSignedLevel(effect->leftCoeff);
-	event.u.condition[0].deadband         = LinuxPositiveLevel(effect->deadband);// Unit ?? 
+	event.u.condition[0].deadband         = LinuxPositiveLevel(effect->deadband);// Unit ??
 	event.u.condition[0].center           = LinuxSignedLevel(effect->center); // Unit ?? TODO ?
 
 	// TODO support for second condition
@@ -461,7 +461,7 @@ void LinuxForceFeedback::_upload( struct ff_effect* ffeffect, const Effect* effe
 	if( linEffect == 0 )
 	{
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-		cout << endl << "LinuxForceFeedback("<< mJoyStick << ") : Adding new effect : " 
+		cout << endl << "LinuxForceFeedback("<< mJoyStick << ") : Adding new effect : "
 			 << Effect::getEffectTypeName(effect->type) << endl;
 #endif
 
@@ -487,7 +487,7 @@ void LinuxForceFeedback::_upload( struct ff_effect* ffeffect, const Effect* effe
 	else
 	{
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-		cout << endl << "LinuxForceFeedback("<< mJoyStick << ") : Replacing effect : " 
+		cout << endl << "LinuxForceFeedback("<< mJoyStick << ") : Replacing effect : "
 			 << Effect::getEffectTypeName(effect->type) << endl;
 #endif
 
@@ -504,7 +504,7 @@ void LinuxForceFeedback::_upload( struct ff_effect* ffeffect, const Effect* effe
 	}
 
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-	cout << "LinuxForceFeedback("<< mJoyStick 
+	cout << "LinuxForceFeedback("<< mJoyStick
 		 << ") : Effect handle : " << effect->_handle << endl;
 #endif
 }
@@ -518,7 +518,7 @@ void LinuxForceFeedback::_stop( int handle) {
 	stop.value = 0;
 
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-	cout << endl << "LinuxForceFeedback("<< mJoyStick 
+	cout << endl << "LinuxForceFeedback("<< mJoyStick
 		 << ") : Stopping effect with handle " << handle << endl;
 #endif
 
@@ -536,7 +536,7 @@ void LinuxForceFeedback::_start( int handle) {
 	play.value = 1; // Play once.
 
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-	cout << endl << "LinuxForceFeedback("<< mJoyStick 
+	cout << endl << "LinuxForceFeedback("<< mJoyStick
 		 << ") : Starting effect with handle " << handle << endl;
 #endif
 
@@ -549,7 +549,7 @@ void LinuxForceFeedback::_start( int handle) {
 void LinuxForceFeedback::_unload( int handle)
 {
 #if (OIS_LINUX_JOYFF_DEBUG > 1)
-	cout << endl << "LinuxForceFeedback("<< mJoyStick 
+	cout << endl << "LinuxForceFeedback("<< mJoyStick
 		 << ") : Removing effect with handle " << handle << endl;
 #endif
 

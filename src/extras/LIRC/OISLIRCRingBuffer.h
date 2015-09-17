@@ -8,16 +8,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -84,10 +84,10 @@ namespace OIS
 		LIRCEvent *buffer;
 
 		//! Index of next writable byte. Set by RingBuffer_AdvanceWriteIndex.
-		volatile int writeIndex; 
-		
+		volatile int writeIndex;
+
 		//! Index of next readable byte. Set by RingBuffer_AdvanceReadIndex.
-		volatile int readIndex;	
+		volatile int readIndex;
 
 	public:
 		LIRCRingBuffer( unsigned int numEntries )
@@ -112,7 +112,7 @@ namespace OIS
 		unsigned int RoundUpToNextPowerOf2( unsigned int n )
 		{
 			int numBits = 0;
-			if( ((n-1) & n) == 0) 
+			if( ((n-1) & n) == 0)
 			return n; //Already Power of two.
 
 			while( n > 0 )
@@ -140,7 +140,7 @@ namespace OIS
 		{
 			int size1 = 0, size2 = 0, numWritten;
 			int data1Ptr = 0, data2Ptr = 0;
-			
+
 			numWritten = GetWriteRegions( numEntries, data1Ptr, size1, data2Ptr, size2 );
 
 			if( size2 > 0 )
@@ -168,9 +168,9 @@ namespace OIS
 		int Read( LIRCEvent *data, int numEntries )
 		{
 			int size1 = 0, size2 = 0, numRead, data1Ptr = 0, data2Ptr = 0;
-			
+
 			numRead = GetReadRegions( numEntries, data1Ptr, size1, data2Ptr, size2 );
-			
+
 			if( size2 > 0 )
 			{
 				memcpy( data, &buffer[data1Ptr], sizeof(LIRCEvent) * size1 );
@@ -193,9 +193,9 @@ namespace OIS
 		{
 			int   index;
 			int   available = GetWriteAvailable();
-			if( numEntries > available ) 
+			if( numEntries > available )
 				numEntries = available;
-		
+
 			//Check to see if write is not contiguous.
 			index = writeIndex & smallMask;
 			if( (index + numEntries) > bufferSize )
@@ -216,15 +216,15 @@ namespace OIS
 			}
 			return numEntries;
 		}
-	
+
 
 		int GetReadRegions( int numEntries, int &dataPtr1, int &sizePtr1, int &dataPtr2, int &sizePtr2 )
 		{
 			int   index;
 			int   available = GetReadAvailable( );
-			if( numEntries > available ) 
+			if( numEntries > available )
 				numEntries = available;
-			
+
 			// Check to see if read is not contiguous
 			index = readIndex & smallMask;
 			if( (index + numEntries) > bufferSize )

@@ -411,7 +411,7 @@ void Win32JoyStick::captureXInput()
         axisMoved[1] = true;
 
 	//RightY
-	value = -(int)inputState.Gamepad.sThumbRY;           
+	value = -(int)inputState.Gamepad.sThumbRY;
     mState.mAxes[2].rel = value - mState.mAxes[2].abs;
     mState.mAxes[2].abs = value;
 	if(mState.mAxes[2].rel != 0)
@@ -442,11 +442,11 @@ void Win32JoyStick::captureXInput()
     mState.mAxes[5].abs = value;
 	if(mState.mAxes[5].rel != 0)
 		axisMoved[5] = true;
-    
+
     //POV
-    int previousPov = mState.mPOV[0].direction;        
+    int previousPov = mState.mPOV[0].direction;
     int& pov = mState.mPOV[0].direction;
-    pov = Pov::Centered;        
+    pov = Pov::Centered;
     if (inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
         pov |= Pov::North;
     else if (inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
@@ -455,7 +455,7 @@ void Win32JoyStick::captureXInput()
         pov |= Pov::West;
     else if (inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
         pov |= Pov::East;
-    
+
     //Buttons - The first 4 buttons don't need to be checked since they represent the dpad
     bool previousButtons[XINPUT_TRANSLATED_BUTTON_COUNT];
     std::copy(mState.mButtons.begin(), mState.mButtons.end(), previousButtons);
@@ -601,16 +601,16 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
     bstrDeviceID  = SysAllocString( L"DeviceID" );
 	if( bstrDeviceID == NULL )
 		goto LCleanup;
-    
-    // Connect to WMI 
+
+    // Connect to WMI
     hr = pIWbemLocator->ConnectServer( bstrNamespace, NULL, NULL, 0L, 0L, NULL, NULL, &pIWbemServices );
     if( FAILED(hr) || pIWbemServices == NULL )
         goto LCleanup;
 
-    // Switch security level to IMPERSONATE. 
-    CoSetProxyBlanket(pIWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );                    
+    // Switch security level to IMPERSONATE.
+    CoSetProxyBlanket(pIWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );
 
-    hr = pIWbemServices->CreateInstanceEnum( bstrClassName, 0, NULL, &pEnumDevices ); 
+    hr = pIWbemServices->CreateInstanceEnum( bstrClassName, 0, NULL, &pEnumDevices );
     if( FAILED(hr) || pEnumDevices == NULL )
         goto LCleanup;
 
@@ -631,7 +631,7 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
             hr = pDevices[iDevice]->Get(bstrDeviceID, 0L, &var, NULL, NULL);
             if(SUCCEEDED(hr) && var.vt == VT_BSTR && var.bstrVal != NULL)
             {
-                // Check if the device ID contains "IG_".  If it does, then it's an XInput device - This information can not be found from DirectInput 
+                // Check if the device ID contains "IG_".  If it does, then it's an XInput device - This information can not be found from DirectInput
                 if(wcsstr(var.bstrVal, L"IG_"))
                 {
                     // If it does, then get the VID/PID from var.bstrVal

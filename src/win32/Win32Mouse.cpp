@@ -6,16 +6,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -52,18 +52,18 @@ void Win32Mouse::_initialize()
     dipdw.diph.dwObj        = 0;
     dipdw.diph.dwHow        = DIPH_DEVICE;
 	dipdw.dwData            = MOUSE_DX_BUFFERSIZE;
-	
+
 	if( FAILED(mDirectInput->CreateDevice(GUID_SysMouse, &mMouse, NULL)) )
 		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to create device" );
 
 	if( FAILED(mMouse->SetDataFormat(&c_dfDIMouse2)) )
 		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to set format" );
-	
+
 	mHwnd = ((Win32InputManager*)mCreator)->getWindowHandle();
 
 	if( FAILED(mMouse->SetCooperativeLevel(mHwnd, coopSetting)) )
 		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to set coop level" );
-	
+
 	if( FAILED(mMouse->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph )) )
 		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to set property" );
 
@@ -98,11 +98,11 @@ void Win32Mouse::capture()
 	if( hr != DI_OK )
 	{
 		hr = mMouse->Acquire();
-		while( hr == DIERR_INPUTLOST ) 
+		while( hr == DIERR_INPUTLOST )
 			hr = mMouse->Acquire();
 
 		hr = mMouse->GetDeviceData( sizeof(DIDEVICEOBJECTDATA), diBuff, &entries, 0 );
-		
+
 		//Perhaps the user just tabbed away, and coop settings
 		//are nonexclusive..so just ignore
 		if( FAILED(hr) )
@@ -130,7 +130,7 @@ void Win32Mouse::capture()
 				break;
 			case DIMOFS_BUTTON4:
 				if(!_doMouseClick(4, diBuff[i])) return;
-				break;	
+				break;
 			case DIMOFS_BUTTON5:
 				if(!_doMouseClick(5, diBuff[i])) return;
 				break;

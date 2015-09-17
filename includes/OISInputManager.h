@@ -6,16 +6,16 @@ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial 
+Permission is granted to anyone to use this software for any purpose, including commercial
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that 
-		you wrote the original software. If you use this software in a product, 
-		an acknowledgment in the product documentation would be appreciated but is 
+    1. The origin of this software must not be misrepresented; you must not claim that
+		you wrote the original software. If you use this software in a product,
+		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be 
+    2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -56,7 +56,7 @@ namespace OIS
 
 		/**
 		@remarks
-			Creates appropriate input system dependent on platform. 
+			Creates appropriate input system dependent on platform.
 		@param winHandle
 			Contains OS specific window handle (such as HWND or X11 Window)
 		@returns
@@ -66,7 +66,7 @@ namespace OIS
 
 		/**
 		@remarks
-			Creates appropriate input system dependent on platform. 
+			Creates appropriate input system dependent on platform.
 		@param paramList
 			ParamList contains OS specific info (such as HWND and HINSTANCE for window apps),
 			and access mode.
@@ -177,7 +177,7 @@ namespace OIS
 		@remarks
 			Derived classes must provide input system name
 		*/
-		InputManager(const std::string& name);
+		explicit InputManager(const std::string& name);
 
 		/**
 		@remarks
@@ -188,7 +188,7 @@ namespace OIS
 		//! OIS Version name
 		const std::string m_VersionName;
 
-		//! FactoryCreator list	
+		//! FactoryCreator list
 		FactoryList mFactories;
 
 		//! Factory created objects - useful so we can find creator to send destruction request to
@@ -200,6 +200,11 @@ namespace OIS
 		//! Extra factory (not enabled by default)
 		LIRCFactoryCreator *m_lircSupport;
 		WiiMoteFactoryCreator *m_wiiMoteSupport;
+
+	private:
+		// Prevent copying.
+		InputManager(const InputManager&);
+		InputManager& operator=(InputManager);
 	};
 }
 #endif

@@ -3,9 +3,9 @@
 //cWiimote 0.2 by Kevin Forbes (http://simulatedcomicproduct.com)
 //This code is public domain, and comes with no warranty. The user takes full responsibility for anything that happens as a result from using this code.
 
-//Edited for Toshiba Stack support (hopefully also all others) by 
+//Edited for Toshiba Stack support (hopefully also all others) by
 //Sean Stellingwerff (http://sean.stellingwerff.com) using information
-//gathered from http://www.lvr.com/hidpage.htm (Thanks a million! :D) 
+//gathered from http://www.lvr.com/hidpage.htm (Thanks a million! :D)
 
 //#include "stdafx.h"
 #include "wiimote.h"
@@ -103,7 +103,7 @@ bool cWiiMote::SendReportMode()
 	bool continuous = true;
 	unsigned char channel = INPUT_CHANNEL_BUTTONS_ONLY;
 	bool check_chuck = false;
-	
+
 	switch (mReportMode)
 	{
 	case REPORT_MODE_MOTION_IR:
@@ -142,8 +142,8 @@ bool cWiiMote::SendReportMode()
 bool cWiiMote::ConnectToDevice(int index)
 {
 	Init();
-	const bool retval = mHIDDevice.Connect(mDeviceID,mVendorID,index) && 
-						SetReportMode(REPORT_MODE_MOTION_CHUCK_IR) && 
+	const bool retval = mHIDDevice.Connect(mDeviceID,mVendorID,index) &&
+						SetReportMode(REPORT_MODE_MOTION_CHUCK_IR) &&
 						UpdateOutput() &&
 						ReadCalibrationData();
 
@@ -158,7 +158,7 @@ bool cWiiMote::Disconnect()
 {
 	bool retval = false;
 	StopDataStream();
-	
+
 	if (mHIDDevice.IsConnected())
 	{
 		retval = mHIDDevice.Disconnect();
@@ -196,7 +196,7 @@ bool cWiiMote::SetLEDs(bool led1, bool led2, bool led3, bool led4)
 	}
 
 	mOutputControls.mLED1 = led1;
-	mOutputControls.mLED2 = led2;	
+	mOutputControls.mLED2 = led2;
 	mOutputControls.mLED3 = led3;
 	mOutputControls.mLED4 = led4;
 	return UpdateOutput();
@@ -207,10 +207,10 @@ bool cWiiMote::UpdateOutput()
 	ClearBuffer();
 	mOutputBuffer[0] = OUTPUT_CHANNEL_LED;
 	mOutputBuffer[1] =  (mOutputControls.mVibration ? 0x1 : 0x0) |
-						(mOutputControls.mLED1 ? 0x1 : 0x0) << 4 | 
-						(mOutputControls.mLED2 ? 0x1 : 0x0) << 5 | 
-						(mOutputControls.mLED3 ? 0x1 : 0x0) << 6 | 
-						(mOutputControls.mLED4 ? 0x1 : 0x0) << 7; 
+						(mOutputControls.mLED1 ? 0x1 : 0x0) << 4 |
+						(mOutputControls.mLED2 ? 0x1 : 0x0) << 5 |
+						(mOutputControls.mLED3 ? 0x1 : 0x0) << 6 |
+						(mOutputControls.mLED4 ? 0x1 : 0x0) << 7;
 	return mHIDDevice.WriteToDevice(mOutputBuffer,mOutputBufferSize);
 }
 
@@ -218,7 +218,7 @@ bool cWiiMote::HeartBeat(int timeout)
 {
 	bool retval = true;
 	int bytes_read = 0;
-	
+
 
 	//most of these reports aren't implemented yet. I don't have a sensor bar or a nunchuck :)
 	if (mHIDDevice.ReadFromDevice(mInputBuffer,mInputBufferSize,bytes_read) && (bytes_read > 0,timeout))
@@ -233,7 +233,7 @@ bool cWiiMote::HeartBeat(int timeout)
 					bool restart = mDataStreamRunning;
 					StopDataStream();
 					InitNunchuck();
-					
+
 					if (restart)
 					{
 						retval = StartDataStream();
@@ -295,7 +295,7 @@ bool cWiiMote::HeartBeat(int timeout)
 				retval = false;
 				//unknown report
 			break;
-		}		
+		}
 	}
 	return retval;
 }
@@ -310,7 +310,7 @@ void cWiiMote::ParseExpansionReport(const unsigned char *data)
 	mLastExpansionReport.mLED2On = (data[0] & 0x20) != 0;
 	mLastExpansionReport.mLED3On = (data[0] & 0x40) != 0;
 	mLastExpansionReport.mLED4On = (data[0] & 0x80) != 0;
-	
+
 	//two unknown bytes
 	mLastExpansionReport.mBatteryLevel = data[3];
 }
@@ -345,7 +345,7 @@ void cWiiMote::PrintStatus() const
 	float cX,cY,cZ;
 	float sX,sY;
 	float irX,irY;
-	
+
 	wX =wY=wZ=cX=cY=cZ=sX=sY=irX=irY=0.f;
 
 	GetCalibratedAcceleration(wX,wY,wZ);
@@ -432,10 +432,10 @@ bool cWiiMote::IssueReadRequest(unsigned int address, unsigned short size, unsig
 		mOutputBuffer[2] = (address & 0x00ff0000) >> 16;
 		mOutputBuffer[3] = (address & 0x0000ff00) >> 8;
 		mOutputBuffer[4] = (address & 0xff);
-		
+
 		mOutputBuffer[5] = (size & 0xff00) >> 8;
 		mOutputBuffer[6] = (size & 0xff);
-		
+
 		if (mHIDDevice.WriteToDevice(mOutputBuffer,mOutputBufferSize))
 		{
 			mReadInfo.mReadStatus = tMemReadInfo::READ_PENDING;
@@ -468,7 +468,7 @@ void cWiiMote::ParseReadData(const unsigned char * data)
 				space_left_in_buffer >= bytes)
 			{
 				memcpy(&mReadInfo.mReadBuffer[mReadInfo.mBytesRead],&data[3],bytes);
-				
+
 				mReadInfo.mBytesRead+= bytes;
 				if (mReadInfo.mBytesRead >= mReadInfo.mTotalBytesToRead)
 				{
@@ -509,7 +509,7 @@ bool cWiiMote::ReadCalibrationData()
 		mAccelCalibrationData.mZG = buffer[6];
 		retval = true;
 	}
-	
+
 	return retval;
 }
 
@@ -583,17 +583,17 @@ bool cWiiMote::InitNunchuck()
 {
 
 	bool retval = false;
-	
+
 	//first init the nunchuck, if it is present
 	if (WriteMemory(NUNCHUCK_INIT_ADDRESS,1,&NUNCHUCK_INIT_VAL))
 	{
-	
+
 		unsigned char buffer[16];
 		//now try to read the nunchuck's calibration data
 		if (ReadData(NUNCHUCK_CALIBRATION_ADDRESS,16,buffer))
 		{
-			
-			//note that this hasn't worked properly for me yet (I get all 0xff). 
+
+			//note that this hasn't worked properly for me yet (I get all 0xff).
 			/*mNunchuckAccelCalibrationData.mXZero = NunChuckByte(buffer[0]);
 			mNunchuckAccelCalibrationData.mYZero = NunChuckByte(buffer[1]);
 			mNunchuckAccelCalibrationData.mZZero = NunChuckByte(buffer[2]);
@@ -644,7 +644,7 @@ void cWiiMote::ParseChuckReport(const unsigned char * data)
 bool cWiiMote::EnableIR()
 {
 	bool retval = false;
-	
+
 	DisableIR();
 
 	if (!mIRRunning)
@@ -653,7 +653,7 @@ bool cWiiMote::EnableIR()
 		mOutputBuffer[0] = OUTPUT_ENABLE_IR;
 		mOutputBuffer[1] = 0x4 | (mOutputControls.mVibration ? 0x1 : 0x0);
 		retval = mHIDDevice.WriteToDevice(mOutputBuffer,mOutputBufferSize);
-		
+
 		if (retval)
 		{
 			mOutputBuffer[0] = OUTPUT_ENABLE_IR2;
@@ -666,7 +666,7 @@ bool cWiiMote::EnableIR()
 			unsigned char val = 0x1;
 			retval = WriteMemory(IR_REG_1,1,&val);
 		}
-		
+
 		if (retval)
 		{
 			retval = WriteMemory(IR_SENS_ADDR_1,9,IR_SENS_MIDRANGE_PART1);
@@ -682,7 +682,7 @@ bool cWiiMote::EnableIR()
 		{
 			retval = WriteMemory(IR_REG_2,1,&IR_MODE_EXP);
 		}
-		
+
 		if (retval)
 		{
 			unsigned char val = 0x8;
@@ -706,7 +706,7 @@ bool cWiiMote::DisableIR()
 		mOutputBuffer[0] = OUTPUT_ENABLE_IR;
 		mOutputBuffer[1] = (mOutputControls.mVibration ? 0x1 : 0x0);
 		retval = mHIDDevice.WriteToDevice(mOutputBuffer,mOutputBufferSize);
-		
+
 		if (retval)
 		{
 			mOutputBuffer[0] = OUTPUT_ENABLE_IR2;
@@ -763,7 +763,7 @@ bool cWiiMote::GetIRP2(float &x, float &y) const
 bool cWiiMote::StartDataStream()
 {
 	bool retval = false;
-	
+
 	StopDataStream();
 
 	if (mNunchuckAttached)

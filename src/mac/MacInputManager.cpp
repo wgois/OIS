@@ -1,23 +1,23 @@
 /*
  The zlib/libpng License
- 
- Copyright (c) 2006 Chris Snyder 
- 
+
+ Copyright (c) 2006 Chris Snyder
+
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
- 
- Permission is granted to anyone to use this software for any purpose, including commercial 
+
+ Permission is granted to anyone to use this software for any purpose, including commercial
  applications, and to alter it and redistribute it freely, subject to the following
  restrictions:
- 
- 1. The origin of this software must not be misrepresented; you must not claim that 
- you wrote the original software. If you use this software in a product, 
- an acknowledgment in the product documentation would be appreciated but is 
+
+ 1. The origin of this software must not be misrepresented; you must not claim that
+ you wrote the original software. If you use this software in a product,
+ an acknowledgment in the product documentation would be appreciated but is
  not required.
- 
- 2. Altered source versions must be plainly marked as such, and must not be 
+
+ 2. Altered source versions must be plainly marked as such, and must not be
  misrepresented as being the original software.
- 
+
  3. This notice may not be removed or altered from any source distribution.
 */
 #include "mac/MacInputManager.h"
@@ -60,10 +60,10 @@ MacInputManager::~MacInputManager()
 void MacInputManager::_initialize( ParamList &paramList )
 {
 	_parseConfigSettings( paramList );
-    
+
 	//Enumerate all devices attached
 	_enumerateDevices();
-	
+
 	mHIDManager->initialize();
 }
 
@@ -102,10 +102,10 @@ void MacInputManager::_parseConfigSettings( ParamList &paramList )
 			mEventTargetRef = GetApplicationEventTarget();
 		}
 	}
-	
+
 	if(mEventTargetRef == NULL)
 		OIS_EXCEPT( E_General, "MacInputManager::_parseConfigSettings >> Unable to find a window or event target" );
-    
+
     // Keyboard
     if(paramList.find("MacAutoRepeatOn") != paramList.end())
 	{
@@ -167,14 +167,14 @@ bool MacInputManager::vendorExist(Type iType, const std::string & vendor)
 }
 
 //--------------------------------------------------------------------------------//
-Object* MacInputManager::createObject(InputManager* creator, Type iType, bool bufferMode, 
+Object* MacInputManager::createObject(InputManager* creator, Type iType, bool bufferMode,
 									  const std::string & vendor)
 {
 	Object *obj = 0;
 
 	switch(iType)
 	{
-	case OISKeyboard: 
+	case OISKeyboard:
 	{
 		if( keyboardUsed == false )
 			obj = new MacKeyboard(this, bufferMode, mUseRepeat);
