@@ -1,5 +1,7 @@
 # OIS: Object oriented Input System
 
+[![Software License](https://img.shields.io/badge/license-zlib%2Flibpng-green.svg)](LICENSE.md)
+
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
 
