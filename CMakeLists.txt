@@ -11,6 +11,15 @@ set(OIS_SOVERSION ${OIS_MAJOR_VERSION}.${OIS_MINOR_VERSION}.0)
 
 set(OIS_LIBRARY_NAME OIS)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING
+        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+        FORCE)
+endif()
+
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(OIS_BUILD_DEMOS "Build demo applications" ON)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/includes
     ${CMAKE_CURRENT_SOURCE_DIR}/includes/linux
@@ -74,6 +83,7 @@ endif()
 
 source_group("OIS" FILES ${ois_source})
 add_library(OIS ${ois_source})
+set_target_properties(OIS PROPERTIES SOLUTION_FOLDER "libOIS")
 
 add_definitions(-DOIS_VERSION_MAJOR=${OIS_MAJOR_VERSION})
 add_definitions(-DOIS_VERSION_MINOR=${OIS_MINOR_VERSION})
@@ -84,10 +94,29 @@ if(UNIX)
 
     if (NOT APPLE)
         add_dependencies(OIS X11)
+        target_link_libraries(OIS X11)
     endif()
 
     set_target_properties(OIS PROPERTIES
         VERSION ${OIS_VERSION}
         SOVERSION ${OIS_SOVERSION}
     )
+endif()
+
+if (OIS_BUILD_DEMOS)
+    project(OISConsoleApp)
+    source_group("ConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/OISConsole.cpp")
+    include_directories(${CMAKE_SOURCE_DIR}/includes)
+    add_executable(ConsoleApp "${CMAKE_SOURCE_DIR}/demos/OISConsole.cpp")
+    set_target_properties(ConsoleApp PROPERTIES SOLUTION_FOLDER "OIS Console Demo")
+    add_dependencies(ConsoleApp OIS)
+    target_link_libraries(ConsoleApp "OIS")
+
+    project(OISFFConsoleApp)
+    source_group("FFConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo.cpp")
+    include_directories(${CMAKE_SOURCE_DIR}/includes)
+    add_executable(FFConsoleApp "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo.cpp")
+    set_target_properties(FFConsoleApp PROPERTIES SOLUTION_FOLDER "OIS FF Console Demo")
+    add_dependencies(FFConsoleApp OIS)
+    target_link_libraries(FFConsoleApp "OIS")
 endif()
