@@ -18,6 +18,7 @@ This is the official repository and is a continuation of the great work done by 
 Dependencies: X11
 
 To build and install:
+
     cmake -H. -B./build
     cd ./build
     make
@@ -28,14 +29,17 @@ To build and install:
 Dependencies: DirectInput 8
 
 For Visual Studio:
+
     cmake -H. -B./build -G"Visual Studio 12 2013"
 
 For CodeBlocks:
+
     cmake -H. -B./build -G"CodeBlocks"
 
 ### OSX
 
 For XCode:
+
     cmake -H. -B./build -G"Xcode"
 
 ## License
