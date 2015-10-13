@@ -11,6 +11,8 @@ set(OIS_SOVERSION ${OIS_MAJOR_VERSION}.${OIS_MINOR_VERSION}.0)
 
 set(OIS_LIBRARY_NAME OIS)
 
+configure_file(${CMAKE_SOURCE_DIR}/includes/OISPrereqs.h.in ${CMAKE_SOURCE_DIR}/includes/OISPrereqs.h @ONLY)
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING
         "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
@@ -85,10 +87,6 @@ source_group("OIS" FILES ${ois_source})
 add_library(OIS ${ois_source})
 set_target_properties(OIS PROPERTIES SOLUTION_FOLDER "libOIS")
 
-add_definitions(-DOIS_VERSION_MAJOR=${OIS_MAJOR_VERSION})
-add_definitions(-DOIS_VERSION_MINOR=${OIS_MINOR_VERSION})
-add_definitions(-DOIS_VERSION_PATCH=${OIS_PATCH_VERSION})
-add_definitions(-DOIS_VERSION_NAME="\\"${OIS_VERSION}\\"")
 
 if(UNIX)
 
@@ -119,4 +117,25 @@ if (OIS_BUILD_DEMOS)
     set_target_properties(FFConsoleApp PROPERTIES SOLUTION_FOLDER "OIS FF Console Demo")
     add_dependencies(FFConsoleApp OIS)
     target_link_libraries(FFConsoleApp "OIS")
+endif()
+
+set(LIB_INSTALL_DIR "lib")
+set(OIS_LIB_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR})
+
+file(GLOB PUBLIC_HEADERS "${CMAKE_SOURCE_DIR}/includes/*.h")
+
+install(FILES ${PUBLIC_HEADERS}
+  DESTINATION include/ois
+)
+
+install(TARGETS OIS
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  FRAMEWORK DESTINATION Library/Frameworks
+)
+
+if(UNIX)
+    configure_file(${CMAKE_SOURCE_DIR}/OIS.pc.in ${CMAKE_BINARY_DIR}/OIS.pc @ONLY)
+    install(FILES ${CMAKE_BINARY_DIR}/OIS.pc DESTINATION ${OIS_LIB_DIRECTORY}/pkgconfig)
 endif()

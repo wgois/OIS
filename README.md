@@ -9,48 +9,40 @@ This is the official repository and is a continuation of the great work done by 
 
 ## Todo
 
-- Add CMake for compiling
 - Merge pull requests/patches send in over time
 - Cleanup and remove dead-code
 - Start implementing support for new platforms and backends
 
-## Compiling:
-Win32/
-	Contains Visual Studio .Net Solution Files
-	Contains CodeBlocks project files for OIS
+### Linux
 
-	---- Dependencies ------------------------------------------------------
-	DirectInput 8
+Dependencies: X11
 
+To build and install:
+    cmake -H. -B./build
+    cd ./build
+    make
+    make install
 
-Linux/
-	---- Dependencies ------------------------------------------------------
-	X11
-        Newer Linux Kernel (2.6+ ?) for Event API
+### Windows
 
-	Steps to build on Linux:
-	./bootstrap
-	./configure
-	./make && make install
+Dependencies: DirectInput 8
 
-	---- Configure build options --------------------------------------------
-	./configure --help              --- List all configure options
+For Visual Studio:
+    cmake -H. -B./build -G"Visual Studio 12 2013"
 
+For CodeBlocks:
+    cmake -H. -B./build -G"CodeBlocks"
 
-LinuxCB/
-        Contains CodeBlock files for building OIS and Demos with codeblocks
-        This project file looks for Ogre and other dependencies in /usr/local/lib
-        and /usr/local/include. If installed elsewhere, modify the project
-        settings. It also installs libOIS to ~/libs
+### OSX
 
-Mac/
-	XCode-2.2/
-		Working, mostly complete OSX vackend.
+For XCode:
+    cmake -H. -B./build -G"Xcode"
 
 ## License
 
 The zlib/libpng License
 
+Copyright (c) 2015 Andrew Fenn
 Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
 This software is provided 'as-is', without any express or implied warranty. In no
