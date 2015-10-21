@@ -21,6 +21,7 @@ endif()
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(OIS_BUILD_DEMOS "Build demo applications" ON)
+set(CMAKE_MACOSX_RPATH 0)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/includes
