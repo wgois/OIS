@@ -1,7 +1,7 @@
 /*
  The zlib/libpng License
 
- Copyright (c) 2007 Phillip
+ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
@@ -19,7 +19,7 @@
  misrepresented as being the original software.
 
  3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 #ifndef OIS_MacHIDManager_Header
 #define OIS_MacHIDManager_Header
 

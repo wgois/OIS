@@ -1,7 +1,7 @@
 /*
  The zlib/libpng License
 
- Copyright (c) 2006 Chris Snyder
+ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
@@ -19,7 +19,10 @@
  misrepresented as being the original software.
 
  3. This notice may not be removed or altered from any source distribution.
-*/
+ */
+
+#ifndef __LP64__
+
 #include "mac/MacInputManager.h"
 #include "mac/MacKeyboard.h"
 #include "mac/MacMouse.h"
@@ -34,7 +37,7 @@ using namespace std;
 using namespace OIS;
 
 //--------------------------------------------------------------------------------//
-MacInputManager::MacInputManager() : InputManager("Mac OSX Input Manager")
+MacInputManager::MacInputManager() : InputManager("Mac OS X Input Manager")
 {
     mHideMouse = true;
     mUseRepeat = false;
@@ -204,3 +207,4 @@ void MacInputManager::destroyObject(Object* obj)
 {
 	delete obj;
 }
+#endif
