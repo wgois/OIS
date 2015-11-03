@@ -86,10 +86,14 @@ namespace OIS
 		//! The state of the mouse - including buttons and axes
 		const MouseState &state;
 
+		MouseEvent(const MouseEvent&);
+        MouseEvent& operator=(MouseEvent);
+
 	private:
 		// Prevent copying.
-		MouseEvent(const MouseEvent&);
-		MouseEvent& operator=(MouseEvent);
+
+
+
 	};
 
 	/**

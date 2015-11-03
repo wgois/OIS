@@ -203,8 +203,9 @@ namespace OIS
 
 	private:
 		// Prevent copying.
-		InputManager(const InputManager&);
-		InputManager& operator=(InputManager);
+		InputManager(const InputManager&&);
+		InputManager& operator=(InputManager&&);
+
 	};
 }
 #endif

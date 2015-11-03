@@ -403,7 +403,7 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 	{
 		if((*it)->inUse == false && (*it)->type == iType && (vendor == "" || (*it)->combinedKey == vendor))
 		{
-			switch(iType)
+			/*switch(iType)
 			{
 				case OISJoyStick:
 					int totalDevs = totalDevices(iType);
@@ -418,7 +418,7 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 					break;
 				default:
 					break;
-			}
+			}*/
 		}
 	}
 

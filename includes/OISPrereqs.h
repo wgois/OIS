@@ -77,6 +77,10 @@ restrictions:
 #			endif
 #		endif
 #	endif
+#elif OSX_CODEBLOCKS //We're smart enough to put this in our defines. For some reason this prereqs thinks we're using linux if we use codeblocks, and thinks we're on Iphone if we define __APPLE_CC__
+#   define OIS_APPLE_PLATFORM
+#   undef _OISExport
+#   define _OISExport __attribute__((visibility("default")))
 #elif defined( __APPLE_CC__ ) // Apple OS X
     // Device                                       Simulator
 #   if __IPHONE_OS_VERSION_MIN_REQUIRED >= 20201 || __IPHONE_OS_VERSION_MIN_REQUIRED >= 20000
