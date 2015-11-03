@@ -24,7 +24,7 @@ const EventTypeSpec mouseEvents[] = {
 const EventTypeSpec WinFocusAcquired [] = {{kEventClassApplication, kEventAppDeactivated}};
 
 //-------------------------------------------------------------------//
-MacMouse::MacMouse( InputManager* creator, bool buffered )
+MacMouse::MacMouse( InputManager* creator, bool buffered, bool nonExclusive )
 	: Mouse(creator->inputSystemName(), buffered, 0, creator), mNeedsToRegainFocus( false )
 {
     mouseEventRef = NULL;
@@ -33,6 +33,8 @@ MacMouse::MacMouse( InputManager* creator, bool buffered )
     // Get a "Univeral procedure pointer" for our callback
     mouseUPP = NewEventHandlerUPP(MouseWrapper);
 	mWindowFocusListener = NewEventHandlerUPP(WindowFocusChanged);
+
+	mMouseNonExclusive = nonExclusive;
 
 	static_cast<MacInputManager*>(mCreator)->_setMouseUsed(true);
 }
@@ -62,7 +64,10 @@ void MacMouse::_initialize()
 	mMouseWarped = false;
 
 	// Hide OS Mouse
- 	CGDisplayHideCursor(kCGDirectMainDisplay);
+	if(!mMouseNonExclusive)
+    {
+        CGDisplayHideCursor(kCGDirectMainDisplay);
+    }
 
 	MacInputManager* im = static_cast<MacInputManager*>(mCreator);
 	WindowRef win = im->_getWindow();
@@ -72,10 +77,13 @@ void MacMouse::_initialize()
 		Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
 		GetWindowBounds(win, kWindowContentRgn, &clipRect);
 
-		CGPoint warpPoint;
-		warpPoint.x = ((clipRect.right - clipRect.left) / 2) + clipRect.left;
-		warpPoint.y = ((clipRect.bottom - clipRect.top) / 2) + clipRect.top;
-		CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin
+        if(!mMouseNonExclusive)
+        {
+            CGPoint warpPoint;
+            warpPoint.x = ((clipRect.right - clipRect.left) / 2) + clipRect.left;
+            warpPoint.y = ((clipRect.bottom - clipRect.top) / 2) + clipRect.top;
+            CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin*
+        }
 
 		mMouseWarped = true;
 	}
@@ -99,7 +107,10 @@ void MacMouse::_initialize()
 
 	//Lock OS Mouse movement
 	mNeedsToRegainFocus = false;
-	CGAssociateMouseAndMouseCursorPosition(FALSE);
+	if(!mMouseNonExclusive)
+    {
+        CGAssociateMouseAndMouseCursorPosition(FALSE);
+    }
 }
 
 OSStatus MacMouse::WindowFocusChanged(EventHandlerCallRef nextHandler, EventRef event, void* macMouse)
@@ -132,26 +143,30 @@ void MacMouse::capture()
 
 	if(mTempState.X.rel || mTempState.Y.rel || mTempState.Z.rel)
 	{
-		//printf("%i %i %i\n\n", mTempState.X.rel, mTempState.Y.rel, mTempState.Z.rel);
 
-		//Set new relative motion values
-		mState.X.rel = mTempState.X.rel;
-		mState.Y.rel = mTempState.Y.rel;
-		mState.Z.rel = mTempState.Z.rel;
+        if(!mMouseNonExclusive)
+        {
+            //Update absolute position when using non exclusives
+            mState.X.abs += mTempState.X.rel;
+            mState.Y.abs += mTempState.Y.rel;
 
-		//Update absolute position
-		mState.X.abs += mTempState.X.rel;
-		mState.Y.abs += mTempState.Y.rel;
+            //Make sure crap don't go off the screen.
+            if(mState.X.abs > mState.width)
+                mState.X.abs = mState.width;
+            else if(mState.X.abs < 0)
+                mState.X.abs = 0;
 
-		if(mState.X.abs > mState.width)
-			mState.X.abs = mState.width;
-		else if(mState.X.abs < 0)
-			mState.X.abs = 0;
+            if(mState.Y.abs > mState.height)
+                mState.Y.abs = mState.height;
+            else if(mState.Y.abs < 0)
+                mState.Y.abs = 0;
+        }
 
-		if(mState.Y.abs > mState.height)
-			mState.Y.abs = mState.height;
-		else if(mState.Y.abs < 0)
-			mState.Y.abs = 0;
+
+        //update mState with temps generated in _mouseCallback....
+        mState.X.rel = mTempState.X.rel;
+        mState.Y.rel = mTempState.Y.rel;
+        mState.Z.rel = mTempState.Z.rel;
 
 		mState.Z.abs += mTempState.Z.rel;
 
@@ -159,6 +174,10 @@ void MacMouse::capture()
 		if(mListener && mBuffered)
 			mListener->mouseMoved(MouseEvent(this, mState));
 	}
+
+
+
+
 
 	mTempState.clear();
 }
@@ -173,59 +192,53 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 		case kEventMouseDragged:
 		case kEventMouseMoved:
 		{
-			//HIPoint location = {0.0f, 0.0f};
-			HIPoint delta = {0.0f, 0.0f};
-			//Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
 
-			if(mNeedsToRegainFocus)
-				break;
 
-			// Capture the parameters
-			// TODO: Look into HIViewNewTrackingArea
-			//GetEventParameter(theEvent, kEventParamMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &location);
-			GetEventParameter(theEvent, kEventParamMouseDelta, typeHIPoint, NULL, sizeof(HIPoint), NULL, &delta);
-
-			// Mouse X and Y are the position on the screen,
-			// startng from top-left at 0,0 caps at full monitor resolution
-
-			// If we have a window we need to return adjusted coordinates
-			// If not, just use raw coordinates - only do this if showing OS mouse
-			//MacInputManager* im = static_cast<MacInputManager*>(mCreator);
-			//WindowRef win = im->_getWindow();
-
-			//if(win != NULL)
-			//{
-			//	GetWindowBounds(win, kWindowContentRgn, &clipRect);
-			//}
-            //else
-            //{
-            //    clipRect.right = mState.width;
-            //    clipRect.bottom = mState.height;
-            //}
-
-            // clip the mouse, absolute positioning
-            //if (location.x <= clipRect.left)
-			//	mState.X.abs = 0;
-			//else if(location.x >= clipRect.right)
-			//	mState.X.abs = clipRect.right - clipRect.left;
-			//else
-			//	mState.X.abs = location.x - clipRect.left;
-
-			//if (location.y <= clipRect.top)
-			//	mState.Y.abs = 0;
-			//else if(location.y >= clipRect.bottom)
-			//	mState.Y.abs = clipRect.bottom - clipRect.top;
-			//else
-			//	mState.Y.abs = location.y - clipRect.top;
-
-			// relative positioning
-			if(!mMouseWarped)
+		    if(mNeedsToRegainFocus)
 			{
-				mTempState.X.rel += delta.x;
-				mTempState.Y.rel += delta.y;
+			    break;
 			}
 
-			mMouseWarped = false;
+			if(!mMouseWarped)
+            {
+                if(mMouseNonExclusive)//Non-exclusive mouse mode.
+                {
+                    HIPoint location = {0.0f, 0.0f};
+                    GetEventParameter(theEvent, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &location);
+
+                    //START OPTIMIZE (>',')> We may not need to really call this all the time. How often does window manager decoration (v','v)
+                    //    (>',')> change after the program has launched in OSX? making clipRect a member would speed up the lib...<(','<)
+                    MacInputManager* im = static_cast<MacInputManager*>(mCreator);
+                    WindowRef win = im->_getWindow();
+                    if(win)
+                    {
+                        HIRect clipRect = {0.0f, 0.0f, 0.0f, 0.0f}; // <(','<) This what i'm talking about.... (^','^)
+
+                        HIWindowGetBounds(win, kWindowContentRgn, kHICoordSpaceWindow, &clipRect);
+                        //END OPTIMIZE (^','^) End of Optimization Recommendation (^','^)
+
+
+                        mState.X.abs = location.x;
+                        mState.Y.abs = location.y - clipRect.origin.y; //Window border offsets mouse pointer.
+
+                    }
+
+
+                }
+
+                //OPTIMIZE (>',')> We could eliminate delta and relitive generation in non-exclusive mode IF we generate (v','v)
+                //    (>',')> relitive values from the non-exclusive stuff... <(','<)
+                HIPoint delta = {0.0f, 0.0f};
+
+                GetEventParameter(theEvent, kEventParamMouseDelta, typeHIPoint, NULL, sizeof(HIPoint), NULL, &delta);
+
+                mTempState.X.rel = delta.x;
+                mTempState.Y.rel = delta.y;
+
+            }
+
+
+                mMouseWarped = false;
 
 			break;
 		}
@@ -282,12 +295,15 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 					Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
 					GetWindowBounds(win, kWindowContentRgn, &clipRect);
 
-					CGPoint warpPoint;
-					warpPoint.x = ((clipRect.right - clipRect.left) / 2) + clipRect.left;
-					warpPoint.y = ((clipRect.bottom - clipRect.top) / 2) + clipRect.top;
-					CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin
+                    if(!mMouseNonExclusive)
+                    {
+                        CGPoint warpPoint;
+                        warpPoint.x = ((clipRect.right - clipRect.left) / 2) + clipRect.left;
+                        warpPoint.y = ((clipRect.bottom - clipRect.top) / 2) + clipRect.top;
+                        CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin*/
 
-					CGDisplayHideCursor(kCGDirectMainDisplay);
+                        CGDisplayHideCursor(kCGDirectMainDisplay);
+                    }
 
 					mMouseWarped = true;
 				}

@@ -12,7 +12,7 @@ namespace OIS
 	class MacMouse : public Mouse
     {
 	public:
-		MacMouse( InputManager* creator, bool buffered );
+		MacMouse( InputManager* creator, bool buffered, bool nonExclusive );
 		virtual ~MacMouse();
 
 		/** @copydoc Object::setBuffered */
@@ -42,8 +42,10 @@ namespace OIS
 
 		bool mNeedsToRegainFocus;
 		bool mMouseWarped;
+		bool mMouseNonExclusive;
 
 		MouseState mTempState;
+
 	};
 }
 
