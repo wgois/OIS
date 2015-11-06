@@ -283,6 +283,18 @@ namespace OIS
 
 		/**
 		@remarks
+			Translates string to KeyCode representation.
+			For example, "Enter" will be KC_ENTER - Locale
+			specific of course.
+		@param str
+			string to convert
+		@returns
+			The matching KeyCode
+		*/
+		virtual OIS::KeyCode getAsKeyCode(std::string str) = 0;
+
+		/**
+		@remarks
 			Check modifier status
 		*/
 		bool isModifierDown(Modifier mod) const;
