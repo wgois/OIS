@@ -1,4 +1,5 @@
 # OIS: Object oriented Input System
+[![Travis build status](https://travis-ci.org/wgois/OIS.svg?branch=master)](https://travis-ci.org/wgois/OIS)
 
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
