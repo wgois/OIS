@@ -112,6 +112,52 @@ void Win32Mouse::capture()
 	bool axesMoved = false;
 	//Accumulate all axis movements for one axesMove message..
 	//Buttons are fired off as they are found
+	//FIXME: Not implemented in mingw yet
+#ifdef __MINGW32__
+	for(unsigned int i = 0; i < entries; ++i )
+	{
+		switch( diBuff[i].dwOfs )
+		{
+			case 12:
+				if(!_doMouseClick(0, diBuff[i])) return;
+				break;
+			case 13:
+				if(!_doMouseClick(1, diBuff[i])) return;
+				break;
+			case 14:
+				if(!_doMouseClick(2, diBuff[i])) return;
+				break;
+			case 15:
+				if(!_doMouseClick(3, diBuff[i])) return;
+				break;
+			case 16:
+				if(!_doMouseClick(4, diBuff[i])) return;
+				break;	
+			case 17:
+				if(!_doMouseClick(5, diBuff[i])) return;
+				break;
+			case 18:
+				if(!_doMouseClick(6, diBuff[i])) return;
+				break;
+			case 19:
+				if(!_doMouseClick(7, diBuff[i])) return;
+				break;
+			case 0:
+				mState.X.rel += diBuff[i].dwData;
+				axesMoved = true;
+				break;
+			case 4:
+				mState.Y.rel += diBuff[i].dwData;
+				axesMoved = true;
+				break;
+			case 8:
+				mState.Z.rel += diBuff[i].dwData;
+				axesMoved = true;
+				break;
+			default: break;
+		} //end switch
+	}//end for
+#else
 	for(unsigned int i = 0; i < entries; ++i )
 	{
 		switch( diBuff[i].dwOfs )
@@ -155,6 +201,7 @@ void Win32Mouse::capture()
 			default: break;
 		} //end switch
 	}//end for
+#endif
 
 	if( axesMoved )
 	{
