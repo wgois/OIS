@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS =  src includes
 
 pkgconfigdir = $(libdir)/pkgconfig

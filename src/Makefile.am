@@ -12,8 +12,8 @@ libOIS_la_SOURCES = OISInputManager.cpp \
 	OISException.cpp \
 	./linux/EventHelpers.cpp \
 	./linux/LinuxInputManager.cpp \
-        ./linux/LinuxJoyStickEvents.cpp \
-        ./linux/LinuxForceFeedback.cpp \
+    ./linux/LinuxJoyStickEvents.cpp \
+    ./linux/LinuxForceFeedback.cpp \
 	./linux/LinuxKeyboard.cpp \
 	./linux/LinuxMouse.cpp
 
@@ -37,8 +37,8 @@ libOIS_la_SOURCES = OISInputManager.cpp \
 	OISForceFeedback.cpp \
 	OISException.cpp \
 	./win32/Win32InputManager.cpp \
-        ./win32/Win32JoyStick.cpp \
-        ./win32/Win32ForceFeedback.cpp \
+    ./win32/Win32JoyStick.cpp \
+    ./win32/Win32ForceFeedback.cpp \
 	./win32/Win32KeyBoard.cpp \
 	./win32/Win32Mouse.cpp
 
