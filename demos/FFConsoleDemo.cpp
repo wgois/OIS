@@ -7,6 +7,7 @@
 #include <ios>
 #include <sstream>
 #include <vector>
+#include <unistd.h>
 
 using namespace std;
 

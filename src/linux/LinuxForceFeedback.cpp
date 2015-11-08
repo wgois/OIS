@@ -26,6 +26,7 @@ restrictions:
 #include <cstdlib>
 #include <errno.h>
 #include <memory.h>
+#include <unistd.h>
 
 using namespace OIS;
 

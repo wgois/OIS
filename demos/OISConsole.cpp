@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <unistd.h>
 
 ////////////////////////////////////Needed Windows Headers////////////
 #if defined OIS_WIN32_PLATFORM

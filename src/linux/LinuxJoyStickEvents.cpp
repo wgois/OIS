@@ -33,6 +33,7 @@ restrictions:
 #include <fcntl.h>        //Needed to Open a file descriptor
 #include <cassert>
 #include <linux/input.h>
+#include <unistd.h>
 
 
 #include <sstream>

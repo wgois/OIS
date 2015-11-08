@@ -5,7 +5,8 @@ AC_INIT( [OIS], 1.4.0 )
 
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([subdir-objects])
-AM_CONFIG_HEADER([includes/config.h])
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADER([includes/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 case "$host" in
