@@ -42,6 +42,9 @@ namespace OIS
 		/** @copydoc Keyboard::getAsString */
 		virtual const std::string& getAsString( KeyCode kc );
 
+		/** @copydoc Keyboard::getAsKeyCode */
+		virtual OIS::KeyCode getAsKeyCode( std::string str );
+
 		/** @copydoc Keyboard::copyKeyStates */
 		virtual void copyKeyStates( char keys[256] ) const;
 
@@ -60,7 +63,7 @@ namespace OIS
 	protected:
 		inline bool _isKeyRepeat(XEvent &event)
 		{
-			//When a key is repeated, there will be two events: released, followed by another immediate pressed. So check to see if another pressed is present	
+			//When a key is repeated, there will be two events: released, followed by another immediate pressed. So check to see if another pressed is present
 			if(!XPending(display))
 				return false;
 

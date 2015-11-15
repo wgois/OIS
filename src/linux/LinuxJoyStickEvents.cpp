@@ -31,7 +31,7 @@ restrictions:
 #include "OISException.h"
 
 #include <fcntl.h>        //Needed to Open a file descriptor
-#include <cassert>	
+#include <cassert>
 #include <linux/input.h>
 
 
@@ -190,7 +190,7 @@ void LinuxJoyStick::capture()
 				break;
 			}
 
-			
+
 			case EV_REL: //Relative Axes (Do any joystick actually have a relative axis?)
 	#ifdef OIS_LINUX_JOY_DEBUG
 				cout << "\nWarning: Relatives axes not supported yet" << endl;

@@ -283,7 +283,8 @@ void LinuxKeyboard::capture()
 
 	while( XPending(display) > 0 )
 	{
-		XNextEvent(display, &event);
+		XNextEvent(display, &event);
+
 		if(KeyPress == event.type)
 		{
 			unsigned int character = 0;
@@ -323,7 +324,8 @@ void LinuxKeyboard::capture()
 				event.xkey.state &= ~LockMask;
 
 				XLookupString(&event.xkey,NULL,0,&key,NULL);
-				_injectKeyUp(key);			}
+				_injectKeyUp(key);
+			}
 		}
 	}
 
@@ -420,6 +422,17 @@ const std::string& LinuxKeyboard::getAsString( KeyCode kc )
 	}
 
 	return mGetString;
+}
+
+//-------------------------------------------------------------------//
+OIS::KeyCode LinuxKeyboard::getAsKeyCode( std::string str )
+{
+	OIS::KeyCode mGetKeyCode;
+
+    KeySym X11Key = XStringToKeysym(str.c_str());
+    mGetKeyCode = keyConversion.at(X11Key);
+
+	return mGetKeyCode;
 }
 
 //-------------------------------------------------------------------//

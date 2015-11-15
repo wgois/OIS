@@ -28,7 +28,7 @@
 int main(int nargs, const char * cargs)
 {
 	cWiiMote wiimote;
-	
+
 	if (wiimote.ConnectToDevice() &&
 		wiimote.StartDataStream())
 	{

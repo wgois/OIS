@@ -1,6 +1,6 @@
 
 AC_DEFUN([OIS_USE_STLPORT],
-[AC_ARG_WITH(stlport, 
+[AC_ARG_WITH(stlport,
              AC_HELP_STRING([--with-stlport=PATH],
                            [the path to STLPort.]),
              ac_cv_use_stlport=$withval,

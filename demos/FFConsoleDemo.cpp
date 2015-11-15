@@ -113,12 +113,12 @@ class LimitedVariable : public Variable
 
   public:
 
-    LimitedVariable(double dInitValue, double dMinValue, double dMaxValue) 
+    LimitedVariable(double dInitValue, double dMinValue, double dMaxValue)
 	: _dMinValue(dMinValue), _dMaxValue(dMaxValue), Variable(dInitValue)
     {}
 
-    virtual void setValue(double dValue) 
-    { 
+    virtual void setValue(double dValue)
+    {
 	  _dValue = dValue;
 	  if (_dValue > _dMaxValue)
 		_dValue = _dMaxValue;
@@ -129,7 +129,7 @@ class LimitedVariable : public Variable
 /*    virtual string toString() const
     {
 	  ostringstream oss;
-	  oss << setiosflags(ios_base::right) << setw(4) 
+	  oss << setiosflags(ios_base::right) << setw(4)
 	      << (int)(200.0 * getValue()/(_dMaxValue - _dMinValue)); // [-100%, +100%]
 	  return oss.str();
 	}*/
@@ -143,7 +143,7 @@ class TriangleVariable : public LimitedVariable
 
   public:
 
-    TriangleVariable(double dInitValue, double dDeltaValue, double dMinValue, double dMaxValue) 
+    TriangleVariable(double dInitValue, double dDeltaValue, double dMinValue, double dMaxValue)
 	: LimitedVariable(dInitValue, dMinValue, dMaxValue), _dDeltaValue(dDeltaValue) {};
 
     virtual void update()
@@ -192,9 +192,9 @@ class VariableEffect
 
   public:
 
-    VariableEffect(const char* pszDesc, Effect* pEffect, 
+    VariableEffect(const char* pszDesc, Effect* pEffect,
 				   const MapVariables& mapVars, const EffectVariablesApplier pfApplyVars)
-	: _pszDesc(pszDesc), _pEffect(pEffect), 
+	: _pszDesc(pszDesc), _pEffect(pEffect),
 	  _mapVariables(mapVars), _pfApplyVariables(pfApplyVars), _bActive(false)
     {}
 
@@ -206,7 +206,7 @@ class VariableEffect
 	  for (iterVars = _mapVariables.begin(); iterVars != _mapVariables.end(); iterVars++)
 		if (iterVars->second)
 		  delete iterVars->second;
-	  
+
 	}
 
     void setActive(bool bActive = true)
@@ -294,13 +294,13 @@ class JoystickManager
 
     {
 	  _bFFFound = false;
-	  for( int nJoyInd = 0; nJoyInd < pInputMgr->getNumberOfDevices(OISJoyStick); ++nJoyInd ) 
+	  for( int nJoyInd = 0; nJoyInd < pInputMgr->getNumberOfDevices(OISJoyStick); ++nJoyInd )
 	  {
 		//Create the stick
 		JoyStick* pJoy = (JoyStick*)pInputMgr->createInputObject( OISJoyStick, true );
-		cout << endl << "Created buffered joystick #" << nJoyInd << " '" << pJoy->vendor() 
+		cout << endl << "Created buffered joystick #" << nJoyInd << " '" << pJoy->vendor()
 			 << "' (Id=" << pJoy->getID() << ")";
-		
+
 		// Check for FF, and if so, keep the joy and dump FF info
 		ForceFeedback* pFFDev = (ForceFeedback*)pJoy->queryInterface(Interface::ForceFeedback );
 		if( pFFDev )
@@ -313,11 +313,11 @@ class JoystickManager
 
 		  // Keep also the associated FF device
 		  _vecFFDev.push_back(pFFDev);
-		  
+
 		  // Dump FF supported effects and other info.
-		  cout << endl << " * Number of force feedback axes : " 
+		  cout << endl << " * Number of force feedback axes : "
 			   << pFFDev->getFFAxesNumber() << endl;
-		  const ForceFeedback::SupportedEffectList &lstFFEffects = 
+		  const ForceFeedback::SupportedEffectList &lstFFEffects =
 			pFFDev->getSupportedEffects();
 		  if (lstFFEffects.size() > 0)
 		  {
@@ -393,7 +393,7 @@ class JoystickManager
 		  _dMasterGain = 1.0;
 		else if (_dMasterGain < 0.0)
 		  _dMasterGain = 0.0;
-		
+
 		_vecFFDev[_nCurrJoyInd]->setMasterGain(_dMasterGain);
 	  }
 	}
@@ -416,7 +416,7 @@ class JoystickManager
     {
 	  // This fires off buffered events for each joystick we have
 	  for(size_t nJoyInd = 0; nJoyInd < _vecJoys.size(); ++nJoyInd)
-		if( _vecJoys[nJoyInd] )	
+		if( _vecJoys[nJoyInd] )
 		  _vecJoys[nJoyInd]->capture();
 	}
 
@@ -482,7 +482,7 @@ class EffectManager
 
   public:
 
-    EffectManager(JoystickManager* pJoystickMgr, unsigned int nUpdateFreq) 
+    EffectManager(JoystickManager* pJoystickMgr, unsigned int nUpdateFreq)
 	: _pJoystickMgr(pJoystickMgr), _nUpdateFreq(nUpdateFreq), _nCurrEffectInd(-1)
     {
 	  Effect* pEffect;
@@ -490,16 +490,16 @@ class EffectManager
 	  ConstantEffect* pConstForce;
 	  PeriodicEffect* pPeriodForce;
 
-	  // Please don't modify or remove effects (unless there is some bug ...) : 
+	  // Please don't modify or remove effects (unless there is some bug ...) :
 	  // add new ones to enhance the test repository.
 	  // And feel free to add any tested device, even when the test failed !
 	  // Tested devices capabilities :
-      // - Logitech G25 Racing wheel : 
+      // - Logitech G25 Racing wheel :
 	  //   * Only 1 axis => no directional 2D effect (only left and right)
 	  //   * Full support for constant force under WinXPSP2DX9 and Linux 2.6.22.9
-	  //   * Full support for periodic forces under WinXPSP2DX9 
+	  //   * Full support for periodic forces under WinXPSP2DX9
 	  //     (but poor rendering under 20ms period), and no support under Linux 2.6.22.9
-	  //   * Full support reported (not tested) for all other forces under WinXPSP2DX9, 
+	  //   * Full support reported (not tested) for all other forces under WinXPSP2DX9,
 	  //     and no support under Linux 2.6.22.9
       // - Logitech Rumble pad 2 :
 	  //   * Only 1 axis => no directional 2D effect (only left and right)
@@ -521,7 +521,7 @@ class EffectManager
 	  // Notes: Linux: replay_length: no way to get it to work if not 0 or Effect::OIS_INFINITE
 	  // Tested devices :
       // - Logitech G25 Racing wheel : WinXPSP2DX9=OK, Linux2.6.22.9=OK.
-      // - Logitech Rumble pad 2 : WinXPSP2DX9=OK (but only light motor involved), 
+      // - Logitech Rumble pad 2 : WinXPSP2DX9=OK (but only light motor involved),
 	  //                           Linux2.6.22.9=Not supported
 	  pEffect = new Effect(Effect::ConstantForce, Effect::Constant);
 	  pEffect->direction = Effect::North;
@@ -538,10 +538,10 @@ class EffectManager
 	  pConstForce->envelope.fadeLevel = (unsigned short)pConstForce->level;
 
 	  mapVars.clear();
-	  mapVars["Force"] = 
+	  mapVars["Force"] =
 		new TriangleVariable(0.0, // F0
 							 4*10000/_nUpdateFreq / 20.0, // dF for a 20s-period triangle
-							 -10000.0, // Fmin 
+							 -10000.0, // Fmin
 							 10000.0); // Fmax
 	  mapVars["AttackFactor"] = new Constant(1.0);
 
@@ -551,11 +551,11 @@ class EffectManager
 				"of its signed amplitude in [-10K, +10K]",
 				pEffect, mapVars, forceVariableApplier));
 
-	  // 2) Constant force on 1 axis with noticeable attack 
+	  // 2) Constant force on 1 axis with noticeable attack
 	  //    with 20s-period triangle oscillations in [-10K, +10K].
 	  // Tested devices :
       // - Logitech G25 Racing wheel : WinXPSP2DX9=OK, Linux=OK.
-      // - Logitech Rumble pad 2 : WinXPSP2DX9=OK (including attack, but only light motor involved), 
+      // - Logitech Rumble pad 2 : WinXPSP2DX9=OK (including attack, but only light motor involved),
 	  //                           Linux2.6.22.9=Not supported.
 	  pEffect = new Effect(Effect::ConstantForce, Effect::Constant);
 	  pEffect->direction = Effect::North;
@@ -572,10 +572,10 @@ class EffectManager
 	  pConstForce->envelope.fadeLevel = (unsigned short)pConstForce->level; // Idem
 
 	  mapVars.clear();
-	  mapVars["Force"] = 
+	  mapVars["Force"] =
 		new TriangleVariable(0.0, // F0
 							 4*10000/_nUpdateFreq / 20.0, // dF for a 20s-period triangle
-							 -10000.0, // Fmin 
+							 -10000.0, // Fmin
 							 10000.0); // Fmax
 	  mapVars["AttackFactor"] = new Constant(0.1);
 
@@ -609,10 +609,10 @@ class EffectManager
 	  pPeriodForce->envelope.fadeLevel = (unsigned short)pPeriodForce->magnitude;
 
 	  mapVars.clear();
-	  mapVars["Period"] = 
+	  mapVars["Period"] =
 		new TriangleVariable(1*1000.0, // P0
 							 4*(400-10)*1000.0/_nUpdateFreq / 40.0, // dP for a 40s-period triangle
-							 10*1000.0, // Pmin 
+							 10*1000.0, // Pmin
 							 400*1000.0); // Pmax
 	  _vecEffects.push_back
 		(new VariableEffect
@@ -680,14 +680,14 @@ class EffectManager
 	  // Nothing to do if no joystick currently selected
 	  if (!_pJoystickMgr->getCurrentFFDevice())
 	  {
-		  cout << "\nNo Joystick selected.\n";  
+		  cout << "\nNo Joystick selected.\n";
 		return;
 	  }
 
 	  // Nothing to do if joystick cannot play any effect
 	  if (_vecPlayableEffectInd.empty())
 	  {
-		  cout << "\nNo playable effects.\n"; 
+		  cout << "\nNo playable effects.\n";
 		return;
 	  }
 
@@ -695,7 +695,7 @@ class EffectManager
 	  if (eWhich != eNone && _nCurrEffectInd < 0)
 		_nCurrEffectInd = 0;
 
-	  // Otherwise, remove the current one from the device, 
+	  // Otherwise, remove the current one from the device,
 	  // and then select the requested one if any.
 	  else if (_nCurrEffectInd >= 0)
 	  {
@@ -743,10 +743,10 @@ class EffectManager
 		//	oss << _pJoystickMgr->getCurrentFFDevice()->getFFMemoryLoad() << "%";
 		//else
 		//	oss << "----";
-	  
+
 		oss << " Effect:" << setw(2);
 	  if (_nCurrEffectInd >= 0)
-		oss << _vecPlayableEffectInd[_nCurrEffectInd] 
+		oss << _vecPlayableEffectInd[_nCurrEffectInd]
 			<< " " << _vecEffects[_vecPlayableEffectInd[_nCurrEffectInd]]->toString();
 	  else
 		oss << "--";
@@ -820,7 +820,7 @@ class Application
 
 	  ShowWindow(_hWnd, SW_SHOW);
 
-	  wnd << (size_t)_hWnd; 
+	  wnd << (size_t)_hWnd;
 
 #elif defined OIS_LINUX_PLATFORM
 
@@ -880,12 +880,12 @@ class Application
 
 #if defined OIS_LINUX_PLATFORM
 
-    // This is just here to show that you still receive x11 events, 
+    // This is just here to show that you still receive x11 events,
     // as the lib only needs mouse/key events
     void checkX11Events()
     {
 	  XEvent event;
-	  
+
 	  //Poll x11 for events
 	  while( XPending(_pXDisp) > 0 )
 	  {
@@ -950,7 +950,7 @@ class Application
 #if defined OIS_WIN32_PLATFORM
 		MessageBox(0, ex.eText, "Exception Raised!", MB_OK);
 #else
-		cout << endl << "OIS Exception Caught!" << endl 
+		cout << endl << "OIS Exception Caught!" << endl
 			 << "\t" << ex.eText << "[Line " << ex.eLine << " in " << ex.eFile << "]" << endl;
 #endif
 	  }
@@ -1047,12 +1047,12 @@ bool EventHandler::keyPressed( const KeyEvent &arg )
 	case KC_ESCAPE:
 	  _pApplication->stop();
 	  break;
-	  
+
 	// Help.
 	case KC_H:
 	  _pApplication->printHelp();
 	  break;
-	  
+
 	// Change current joystick.
 	case KC_RIGHT:
 	  _pEffectMgr->selectEffect(EffectManager::eNone);
@@ -1080,12 +1080,12 @@ bool EventHandler::keyPressed( const KeyEvent &arg )
 	case KC_PGDOWN:
 	  _pJoystickMgr->changeMasterGain(-5.0); // Percent
 	  break;
-	  
+
 	// Toggle auto-center mode.
 	case KC_SPACE:
 	  _pJoystickMgr->changeAutoCenter();
 	  break;
-	  
+
 	default:
 	  cout << "Non mapped key: " << arg.key << endl;
   }
@@ -1118,14 +1118,14 @@ bool EventHandler::povMoved( const JoyStickEvent &arg, int pov )
 int main(int argc, const char* argv[])
 {
 
-  cout << endl 
+  cout << endl
 	   << "This is a simple command line Force Feedback testing demo ..." << endl
 	   << "All connected joystick devices will be created and if FF Support is found," << endl
 	   << "you'll be able to play some predefined variable effects on them." << endl << endl
 	   << "Note: 1 effect can be played on 1 joystick at a time for the moment." << endl << endl;
 
   Application app(argc, argv);
-  
+
   int status = app.initialize();
 
   if (!status)
@@ -1134,7 +1134,7 @@ int main(int argc, const char* argv[])
 
 	status = app.run();
   }
-  
+
   cout << endl << endl << "Exiting ..." << endl << endl;
 
 #if defined OIS_WIN32_PLATFORM && _DEBUG

@@ -18,7 +18,7 @@ const EventTypeSpec mouseEvents[] = {
 	{ kEventClassMouse, kEventMouseUp },
 	{ kEventClassMouse, kEventMouseMoved },
 	{ kEventClassMouse, kEventMouseDragged },
-	{ kEventClassMouse, kEventMouseWheelMoved }		
+	{ kEventClassMouse, kEventMouseWheelMoved }
 };
 
 const EventTypeSpec WinFocusAcquired [] = {{kEventClassApplication, kEventAppDeactivated}};
@@ -44,10 +44,10 @@ MacMouse::~MacMouse()
 
 	if(mWindowFocusHandler != NULL)
 		RemoveEventHandler(mWindowFocusHandler);
-	
+
 	DisposeEventHandlerUPP(mouseUPP);
 	DisposeEventHandlerUPP(mWindowFocusListener);
-	
+
 	// Restore Mouse
 	CGAssociateMouseAndMouseCursorPosition(TRUE);
 	CGDisplayShowCursor(kCGDirectMainDisplay);
@@ -60,32 +60,32 @@ void MacMouse::_initialize()
 	mState.clear();
 	mTempState.clear();
 	mMouseWarped = false;
-	
+
 	// Hide OS Mouse
  	CGDisplayHideCursor(kCGDirectMainDisplay);
 
 	MacInputManager* im = static_cast<MacInputManager*>(mCreator);
 	WindowRef win = im->_getWindow();
-	
+
 	if(win)
 	{
 		Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
 		GetWindowBounds(win, kWindowContentRgn, &clipRect);
-		
+
 		CGPoint warpPoint;
 		warpPoint.x = ((clipRect.right - clipRect.left) / 2) + clipRect.left;
 		warpPoint.y = ((clipRect.bottom - clipRect.top) / 2) + clipRect.top;
 		CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin
-		
+
 		mMouseWarped = true;
 	}
 
 	//Now that mouse is warped, start listening for events
 	EventTargetRef event = ((MacInputManager*)mCreator)->_getEventTarget();
-    
+
 	if(mouseEventRef != NULL)
 		RemoveEventHandler(mouseEventRef);
-		
+
 	if(mWindowFocusHandler != NULL)
 		RemoveEventHandler(mWindowFocusHandler);
 
@@ -95,7 +95,7 @@ void MacMouse::_initialize()
 		OIS_EXCEPT( E_General, "MacMouse::_initialize >> Error loading Mouse event handler" );
 
 	if(InstallEventHandler(event, mWindowFocusListener, GetEventTypeCount(WinFocusAcquired), WinFocusAcquired, this, &mWindowFocusHandler) != noErr)
-		OIS_EXCEPT( E_General, "MacMouse::_initialize >> Error loading Mouse event handler" );		
+		OIS_EXCEPT( E_General, "MacMouse::_initialize >> Error loading Mouse event handler" );
 
 	//Lock OS Mouse movement
 	mNeedsToRegainFocus = false;
@@ -129,7 +129,7 @@ void MacMouse::capture()
 	mState.X.rel = 0;
 	mState.Y.rel = 0;
 	mState.Z.rel = 0;
-	    
+
 	if(mTempState.X.rel || mTempState.Y.rel || mTempState.Z.rel)
 	{
 		//printf("%i %i %i\n\n", mTempState.X.rel, mTempState.Y.rel, mTempState.Z.rel);
@@ -138,11 +138,11 @@ void MacMouse::capture()
 		mState.X.rel = mTempState.X.rel;
 		mState.Y.rel = mTempState.Y.rel;
 		mState.Z.rel = mTempState.Z.rel;
-		
+
 		//Update absolute position
 		mState.X.abs += mTempState.X.rel;
 		mState.Y.abs += mTempState.Y.rel;
-		
+
 		if(mState.X.abs > mState.width)
 			mState.X.abs = mState.width;
 		else if(mState.X.abs < 0)
@@ -152,9 +152,9 @@ void MacMouse::capture()
 			mState.Y.abs = mState.height;
 		else if(mState.Y.abs < 0)
 			mState.Y.abs = 0;
-			
+
 		mState.Z.abs += mTempState.Z.rel;
-		
+
 		//Fire off event
 		if(mListener && mBuffered)
 			mListener->mouseMoved(MouseEvent(this, mState));
@@ -176,7 +176,7 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 			//HIPoint location = {0.0f, 0.0f};
 			HIPoint delta = {0.0f, 0.0f};
 			//Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
-			
+
 			if(mNeedsToRegainFocus)
 				break;
 
@@ -184,15 +184,15 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 			// TODO: Look into HIViewNewTrackingArea
 			//GetEventParameter(theEvent, kEventParamMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &location);
 			GetEventParameter(theEvent, kEventParamMouseDelta, typeHIPoint, NULL, sizeof(HIPoint), NULL, &delta);
-			
-			// Mouse X and Y are the position on the screen, 
+
+			// Mouse X and Y are the position on the screen,
 			// startng from top-left at 0,0 caps at full monitor resolution
-			
+
 			// If we have a window we need to return adjusted coordinates
 			// If not, just use raw coordinates - only do this if showing OS mouse
 			//MacInputManager* im = static_cast<MacInputManager*>(mCreator);
 			//WindowRef win = im->_getWindow();
-			
+
 			//if(win != NULL)
 			//{
 			//	GetWindowBounds(win, kWindowContentRgn, &clipRect);
@@ -202,7 +202,7 @@ void MacMouse::_mouseCallback( EventRef theEvent )
             //    clipRect.right = mState.width;
             //    clipRect.bottom = mState.height;
             //}
-                
+
             // clip the mouse, absolute positioning
             //if (location.x <= clipRect.left)
 			//	mState.X.abs = 0;
@@ -210,21 +210,21 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 			//	mState.X.abs = clipRect.right - clipRect.left;
 			//else
 			//	mState.X.abs = location.x - clipRect.left;
-			
+
 			//if (location.y <= clipRect.top)
 			//	mState.Y.abs = 0;
 			//else if(location.y >= clipRect.bottom)
 			//	mState.Y.abs = clipRect.bottom - clipRect.top;
 			//else
 			//	mState.Y.abs = location.y - clipRect.top;
-			
+
 			// relative positioning
 			if(!mMouseWarped)
 			{
 				mTempState.X.rel += delta.x;
 				mTempState.Y.rel += delta.y;
 			}
-			
+
 			mMouseWarped = false;
 
 			break;
@@ -234,21 +234,21 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 			EventMouseButton button = 0;
 			int mouseButton = 3;
 			UInt32 modifiers = 0;
-			
+
 			if(mNeedsToRegainFocus)
 				break;
 
 			// Capture parameters
 			GetEventParameter(theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(EventMouseButton), NULL, &button);
 			GetEventParameter(theEvent, kEventParamKeyModifiers, typeUInt32, NULL, sizeof(UInt32), NULL, &modifiers);
-			
+
 			if((button == kEventMouseButtonTertiary) || ((button == kEventMouseButtonPrimary) && (modifiers & optionKey)))
 			{
 				mouseButton = 2;
 				mState.buttons |= 1 << mouseButton;
 			}
             else if((button == kEventMouseButtonSecondary) || ((button == kEventMouseButtonPrimary) && (modifiers & controlKey)))
-            {	
+            {
                 mouseButton = 1;
                 mState.buttons |= 1 << mouseButton;
             }
@@ -268,48 +268,48 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 			EventMouseButton button = 0;
 			int mouseButton = 3;
 			UInt32 modifiers = 0;
-			
+
 			if(mNeedsToRegainFocus)
 			{
 				mNeedsToRegainFocus = false;
 				CGAssociateMouseAndMouseCursorPosition(false);
-				
+
 				MacInputManager* im = static_cast<MacInputManager*>(mCreator);
 				WindowRef win = im->_getWindow();
-				
+
 				if(win)
 				{
 					Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
 					GetWindowBounds(win, kWindowContentRgn, &clipRect);
-					
+
 					CGPoint warpPoint;
 					warpPoint.x = ((clipRect.right - clipRect.left) / 2) + clipRect.left;
 					warpPoint.y = ((clipRect.bottom - clipRect.top) / 2) + clipRect.top;
 					CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin
-					
+
 					CGDisplayHideCursor(kCGDirectMainDisplay);
-					
+
 					mMouseWarped = true;
 				}
-				
+
 				//Once we regain focus, we do not really know what state all the buttons are in - for now, set to not pressed. todo, check current status
 				//compare against old status, and send off any needed events
 				mState.buttons = 0;
-				
+
 				break;
 			}
-			
+
 			// Capture parameters
 			GetEventParameter(theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(EventMouseButton), NULL, &button);
 			GetEventParameter(theEvent, kEventParamKeyModifiers, typeUInt32, NULL, sizeof(UInt32), NULL, &modifiers);
-			
+
 			if ((button == kEventMouseButtonTertiary) || ((button == kEventMouseButtonPrimary) && (modifiers & optionKey)))
 			{
 				mouseButton = 2;
 				mState.buttons &= ~(1 << mouseButton);
 			}
             else if ((button == kEventMouseButtonSecondary) || ((button == kEventMouseButtonPrimary) && (modifiers & controlKey)))
-            {	
+            {
                 mouseButton = 1;
                 mState.buttons &= ~(1 << mouseButton);
             }
@@ -327,12 +327,12 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 		case kEventMouseWheelMoved:
 		{
 			SInt32 wheelDelta = 0;
-			EventMouseWheelAxis	wheelAxis = 0; 
+			EventMouseWheelAxis	wheelAxis = 0;
 
 			// Capture parameters
 			GetEventParameter(theEvent, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(EventMouseWheelAxis), NULL, &wheelAxis);
 			GetEventParameter(theEvent, kEventParamMouseWheelDelta, typeSInt32, NULL, sizeof(SInt32), NULL, &wheelDelta);
-			
+
 			// If the Y axis of the wheel changed, then update the Z
 			// Does OIS care about the X wheel axis?
 			if(wheelAxis == kEventMouseWheelAxisY)
@@ -342,5 +342,5 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 		}
 		default:
 			break;
-	}    
+	}
 }

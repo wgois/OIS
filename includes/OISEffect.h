@@ -46,10 +46,6 @@ namespace OIS
 	*/
 	class _OISExport Effect
 	{
-		/**
-			hidden so this class cannot be instanced with default constructor
-		*/
-		Effect();
 	public:
 		//! Type of force
 		enum EForce
@@ -158,6 +154,10 @@ namespace OIS
 		*/
 		mutable int _handle;
 	protected:
+		// Prevent copying.
+		Effect(const Effect&);
+		Effect& operator=(Effect);
+
 		ForceEffect* effect; //Properties depend on EForce
 		short axes;          //Number of axes to use in effect
 	};
@@ -215,7 +215,7 @@ namespace OIS
 	public:
 		ConstantEffect() : level(5000) {}
 
-		class Envelope envelope; //Optional envolope
+		Envelope envelope; //Optional envolope
 		signed short level;       //-10K to +10k
 	};
 
@@ -228,7 +228,7 @@ namespace OIS
 	public:
 		RampEffect() : startLevel(0), endLevel(0) {}
 
-        class Envelope envelope; //Optional envelope
+        Envelope envelope; //Optional envelope
 		signed short startLevel;  //-10K to +10k
 		signed short endLevel;    //-10K to +10k
 	};
@@ -242,7 +242,7 @@ namespace OIS
 	public:
 		PeriodicEffect() : magnitude(0), offset(0), phase(0), period(0) {}
 
-		class Envelope envelope;  //Optional Envelope
+		Envelope envelope;  //Optional Envelope
 
 		unsigned short magnitude;  //0 to 10,0000
 		signed short   offset;

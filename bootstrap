@@ -12,4 +12,4 @@ libtoolize --force --copy
 aclocal $ACLOCAL_FLAGS
 autoheader
 automake --include-deps --add-missing --foreign --copy
-autoconf 
+autoconf

@@ -15,13 +15,13 @@ class cWiiMote
 public:
 	cWiiMote();
 	~cWiiMote();
-	
+
 	//connection management
 	bool ConnectToDevice(int index = 0);
-	bool Disconnect();	
+	bool Disconnect();
 	bool IsConnected() const {return mHIDDevice.IsConnected();}
-	
-	
+
+
 	bool StartDataStream();
 	bool StopDataStream();
 
@@ -79,7 +79,7 @@ public:
 		bool mDown;
 		bool mLeft;
 		bool mRight;
-	
+
 		void Init()
 		{
 			mA = mB = m1 = m2 = mPlus = mMinus = mHome = mUp = mDown = mLeft = mRight = false;
@@ -90,7 +90,7 @@ public:
 		unsigned char mX;
 		unsigned char mY;
 		unsigned char mZ;
-		
+
 		void Init()
 		{
 			mX = mY = mZ = 0;
@@ -117,7 +117,7 @@ public:
 	{
 		unsigned short mP1X;
 		unsigned short mP1Y;
-		
+
 		unsigned short mP2X;
 		unsigned short mP2Y;
 
@@ -140,13 +140,13 @@ public:
 	const tMotionReport & GetLastMotionReport() const { return mLastMotionReport;}
 	const tExpansionReport & GetLastExpansionReport() const { return mLastExpansionReport;}
 	const tIRReport & GetLastIRReport() const { return mLastIRReport;}
-	
-	
+
+
 	//debugging functions:
 	void PrintStatus() const;
 
 private:
-	
+
 	//parsing functions for input reports
 	void ParseExpansionReport(const unsigned char * data);
 	void ParseButtonReport(const unsigned char * data);
@@ -160,7 +160,7 @@ private:
 	enum eReportMode
 	{
 		REPORT_MODE_EVENT_BUTTONS,
-		REPORT_MODE_MOTION, 
+		REPORT_MODE_MOTION,
 		REPORT_MODE_MOTION_CHUCK,
 		REPORT_MODE_MOTION_IR,
 		REPORT_MODE_MOTION_CHUCK_IR
@@ -175,7 +175,7 @@ private:
 	//low level tasks
 	bool SelectInputChannel(bool continuous, unsigned char channel);
 	bool UpdateOutput();
-	bool ReadMemory(unsigned int address, unsigned short size, unsigned char * buffer) const;	
+	bool ReadMemory(unsigned int address, unsigned short size, unsigned char * buffer) const;
 	bool WriteMemory(unsigned int address, unsigned char size, const unsigned char * buffer);
 
 	bool ReadData(unsigned int address, unsigned short size, unsigned char * buffer);
@@ -242,7 +242,7 @@ private:
 			mXmax = mYmax = mXmin = mYmin = mXmid = mYmid =0;
 		}
 	};
-	
+
 	tAccelCalibrationData mAccelCalibrationData;
 	tAccelCalibrationData mNunchuckAccelCalibrationData;
 	tStickCalibrationData mNunchuckStickCalibrationData;
@@ -261,8 +261,8 @@ private:
 			mVibration = mLED1 = mLED2= mLED3= mLED4 = false;
 		}
 	};
-	
-	
+
+
 	//input states
 	tExpansionReport mLastExpansionReport;
 	tButtonStatus mLastButtonStatus;
@@ -276,7 +276,7 @@ private:
 
 	//our communications device
 	cHIDDevice mHIDDevice;
-	
+
 	bool mNunchuckAttached;
 	bool mIRRunning;
 	bool mDataStreamRunning;

@@ -119,6 +119,11 @@ namespace OIS
 		virtual ~JoyStickEvent() {}
 
 		const JoyStickState &state;
+
+	private:
+		// Prevent copying.
+		JoyStickEvent(const JoyStickEvent&);
+		JoyStickEvent& operator=(JoyStickEvent);
 	};
 
 	/**
@@ -134,7 +139,7 @@ namespace OIS
 		virtual ~JoyStickListener() {}
 		/** @remarks Joystick button down event */
 		virtual bool buttonPressed( const JoyStickEvent &arg, int button ) = 0;
-		
+
 		/** @remarks Joystick button up event */
 		virtual bool buttonReleased( const JoyStickEvent &arg, int button ) = 0;
 
@@ -143,13 +148,13 @@ namespace OIS
 
 		//-- Not so common control events, so are not required --//
 		//! Joystick Event, and sliderID
-		virtual bool sliderMoved( const JoyStickEvent &, int index) {return true;}
-		
+		virtual bool sliderMoved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
+
 		//! Joystick Event, and povID
-		virtual bool povMoved( const JoyStickEvent &arg, int index) {return true;}
+		virtual bool povMoved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
 
 		//! Joystick Event, and Vector3ID
-		virtual bool vector3Moved( const JoyStickEvent &arg, int index) {return true;}
+		virtual bool vector3Moved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
 	};
 
 	/**
@@ -171,7 +176,7 @@ namespace OIS
 
 		/**
 		@remarks
-			Sets a cutoff limit for changes in the Vector3 component for movement to 
+			Sets a cutoff limit for changes in the Vector3 component for movement to
 			be ignored. Helps reduce much event traffic for frequent small/sensitive
 			changes
 		@param degrees

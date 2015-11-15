@@ -16,15 +16,15 @@ namespace OIS
 	public:
 		iPhoneAccelerometer(InputManager* creator, bool buffered);
 		virtual ~iPhoneAccelerometer();
-		
+
 		/** @copydoc Object::setBuffered */
 		virtual void setBuffered(bool buffered);
 
-        void setUpdateInterval(float interval) { 
+        void setUpdateInterval(float interval) {
             mUpdateInterval = interval;
             [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0f / mUpdateInterval)];
         }
-        
+
         Vector3 getAccelerometerVector3(void) { return mState.mVectors[0]; }
 		/** @copydoc Object::capture */
 		virtual void capture();

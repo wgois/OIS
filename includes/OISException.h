@@ -50,12 +50,13 @@ namespace OIS
 	*/
 	class _OISExport Exception : public std::exception
 	{
-		//! Hidden default
-		Exception() : eType(E_General), eLine(0), eFile(0) {}
 	public:
 		//! Creates exception object
 		Exception( OIS_ERROR err, const char* str, int line, const char *file )
 			: eType(err), eLine(line), eFile(file), eText(str) {}
+
+		Exception(const Exception& other)
+			: eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) {}
 
 		~Exception() throw() {}
 
@@ -69,6 +70,10 @@ namespace OIS
 		const char* eFile;
 		//! A message passed along when the exception was raised
 		const char* eText;
+
+	private:
+		// Unimplemented and unaccessible due to const members.
+		Exception& operator=(Exception);
 	};
 }
 
