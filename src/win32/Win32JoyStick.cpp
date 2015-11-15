@@ -284,6 +284,92 @@ void Win32JoyStick::capture()
 						  false,false,false,false,false,false,false,false};
 	bool sliderMoved[4] = {false,false,false,false};
 
+   //FIXME: Not implemented in mingw yet
+#ifdef __MINGW32__
+
+   //Loop through all the events
+   for(unsigned int i = 0; i < entries; ++i)
+   {
+       //This may seem outof order, but is in order of the way these variables
+       //are declared in the JoyStick State 2 structure.
+       switch(diBuff[i].dwOfs)
+       {
+       //------ slider -//
+       case 24:
+           sliderMoved[0] = true;
+           mState.mSliders[0].abX = diBuff[i].dwData;
+           break;
+       case 28:
+           sliderMoved[0] = true;
+           mState.mSliders[0].abY = diBuff[i].dwData;
+           break;
+       //----- Max 4 POVs Next ---------------//
+       case 32:
+           if(!_changePOV(0,diBuff[i]))
+               return;
+           break;
+       case 36:
+           if(!_changePOV(1,diBuff[i]))
+               return;
+           break;
+       case 40:
+           if(!_changePOV(2,diBuff[i]))
+               return;
+           break;
+       case 44:
+           if(!_changePOV(3,diBuff[i]))
+               return;
+           break;
+//FIXME: Strange not in mingw at all
+/*     case DIJOFS_SLIDER1(0):
+           sliderMoved[1] = true;
+           mState.mSliders[1].abX = diBuff[i].dwData;
+           break;
+       case DIJOFS_SLIDER1(1):
+           sliderMoved[1] = true;
+           mState.mSliders[1].abY = diBuff[i].dwData;
+           break;
+       case DIJOFS_SLIDER2(0):
+           sliderMoved[2] = true;
+           mState.mSliders[2].abX = diBuff[i].dwData;
+           break;
+       case DIJOFS_SLIDER2(1):
+           sliderMoved[2] = true;
+           mState.mSliders[2].abY = diBuff[i].dwData;
+           break;
+       case DIJOFS_SLIDER3(0):
+           sliderMoved[3] = true;
+           mState.mSliders[3].abX = diBuff[i].dwData;
+           break;
+       case DIJOFS_SLIDER3(1):
+           sliderMoved[3] = true;
+           mState.mSliders[3].abY = diBuff[i].dwData;
+           break;*/
+       //-----------------------------------------//
+       default:
+           //Handle Button Events Easily using the DX Offset Macros
+           if( diBuff[i].dwOfs >= 48 && diBuff[i].dwOfs < 176 )
+           {
+               if(!_doButtonClick((diBuff[i].dwOfs - 48), diBuff[i]))
+                   return;
+           }
+           else if((short)(diBuff[i].uAppData >> 16) == 0x1313)
+           {   //If it was nothing else, might be axis enumerated earlier (determined by magic number)
+               int axis = (int)(0x0000FFFF & diBuff[i].uAppData); //Mask out the high bit
+               assert( axis >= 0 && axis < (int)mState.mAxes.size() && "Axis out of range!");
+
+               if(axis >= 0 && axis < (int)mState.mAxes.size())
+               {
+                   mState.mAxes[axis].abs = diBuff[i].dwData;
+                   axisMoved[axis] = true;
+               }
+           }
+
+           break;
+       } //end case
+   } //end for
+#else
+
 	//Loop through all the events
 	for(unsigned int i = 0; i < entries; ++i)
 	{
@@ -364,6 +450,7 @@ void Win32JoyStick::capture()
 			break;
 		} //end case
 	} //end for
+#endif
 
 	//Check to see if any of the axes values have changed.. if so send events
 	if( mBuffered && mListener && entries > 0 )
@@ -584,12 +671,12 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
     // CoInit if needed
     hr = CoInitialize(NULL);
     bool bCleanupCOM = SUCCEEDED(hr);
-
+#ifndef __MINGW32__
     // Create WMI
     hr = CoCreateInstance(__uuidof(WbemLocator), NULL, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID*)&pIWbemLocator);
     if( FAILED(hr) || pIWbemLocator == NULL )
+#endif
         goto LCleanup;
-
     bstrNamespace = SysAllocString( L"\\\\.\\root\\cimv2" );
 	if( bstrNamespace == NULL )
 		goto LCleanup;
@@ -636,6 +723,7 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
                 {
                     // If it does, then get the VID/PID from var.bstrVal
                     DWORD dwPid = 0, dwVid = 0;
+#ifndef __MINGW32__
                     WCHAR* strVid = wcsstr( var.bstrVal, L"VID_" );
                     if(strVid && swscanf_s( strVid, L"VID_%4X", &dwVid ) != 1)
 						dwVid = 0;
@@ -643,6 +731,7 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
                     WCHAR* strPid = wcsstr( var.bstrVal, L"PID_" );
                     if(strPid && swscanf_s( strPid, L"PID_%4X", &dwPid ) != 1)
                         dwPid = 0;
+#endif
 
                     // Compare the VID/PID to the DInput device
                     DWORD dwVidPid = MAKELONG(dwVid, dwPid);

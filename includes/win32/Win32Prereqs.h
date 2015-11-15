@@ -29,6 +29,15 @@ restrictions:
 #include <windows.h>
 #include <dinput.h>
 
+#ifdef __MINGW32__
+#ifndef IDirectInput8
+#define IDirectInput8 IDirectInput8A
+#endif
+#ifndef IDirectInputDevice8
+#define IDirectInputDevice8 IDirectInputDevice8A
+#endif
+#endif
+
 #ifdef OIS_WIN32_XINPUT_SUPPORT
 #	include <XInput.h>
 #endif

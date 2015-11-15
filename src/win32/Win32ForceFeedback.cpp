@@ -195,7 +195,12 @@ void Win32ForceFeedback::_updateConstantEffect( const Effect* effect )
 {
 	ConstantEffect *eff = static_cast<ConstantEffect*>(effect->getForceEffect());
 
+	//FIXME: Not implemented in mingw yet
+#ifdef __MINGW32__
+	DWORD           rgdwAxes[2]     = { 0, 4 };
+#else
 	DWORD           rgdwAxes[2]     = { DIJOFS_X, DIJOFS_Y };
+#endif
 	LONG            rglDirection[2] = { 0, 0 };
 	DIENVELOPE      diEnvelope;
 	DICONSTANTFORCE cf;
@@ -219,7 +224,12 @@ void Win32ForceFeedback::_updateRampEffect( const Effect* effect )
 {
 	RampEffect *eff = static_cast<RampEffect*>(effect->getForceEffect());
 
+	//FIXME: Not implemented in mingw yet
+#ifdef __MINGW32__
+	DWORD           rgdwAxes[2]     = { 0, 4 };
+#else
 	DWORD           rgdwAxes[2]     = { DIJOFS_X, DIJOFS_Y };
+#endif
 	LONG            rglDirection[2] = { 0, 0 };
 	DIENVELOPE      diEnvelope;
 	DIRAMPFORCE     rf;
@@ -238,7 +248,12 @@ void Win32ForceFeedback::_updatePeriodicEffect( const Effect* effect )
 {
 	PeriodicEffect *eff = static_cast<PeriodicEffect*>(effect->getForceEffect());
 
+	//FIXME: Not implemented in mingw yet
+#ifdef __MINGW32__
+	DWORD           rgdwAxes[2]     = { 0, 4 };
+#else
 	DWORD           rgdwAxes[2]     = { DIJOFS_X, DIJOFS_Y };
+#endif
 	LONG            rglDirection[2] = { 0, 0 };
 	DIENVELOPE      diEnvelope;
 	DIPERIODIC      pf;
@@ -268,7 +283,12 @@ void Win32ForceFeedback::_updateConditionalEffect( const Effect* effect )
 {
 	ConditionalEffect *eff = static_cast<ConditionalEffect*>(effect->getForceEffect());
 
+	//FIXME: Not implemented in mingw yet
+#ifdef __MINGW32__
+	DWORD           rgdwAxes[2]     = { 0, 4 };
+#else
 	DWORD           rgdwAxes[2]     = { DIJOFS_X, DIJOFS_Y };
+#endif
 	LONG            rglDirection[2] = { 0, 0 };
 	DIENVELOPE      diEnvelope;
 	DICONDITION     cf;
