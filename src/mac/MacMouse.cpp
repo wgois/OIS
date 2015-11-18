@@ -285,7 +285,11 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 			if(mNeedsToRegainFocus)
 			{
 				mNeedsToRegainFocus = false;
-				CGAssociateMouseAndMouseCursorPosition(false);
+
+				if(!mMouseNonExclusive)
+                {
+                    CGAssociateMouseAndMouseCursorPosition(false);
+                }
 
 				MacInputManager* im = static_cast<MacInputManager*>(mCreator);
 				WindowRef win = im->_getWindow();
@@ -303,9 +307,11 @@ void MacMouse::_mouseCallback( EventRef theEvent )
                         CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint); //Place at display origin*/
 
                         CGDisplayHideCursor(kCGDirectMainDisplay);
+
+                        mMouseWarped = true;
                     }
 
-					mMouseWarped = true;
+
 				}
 
 				//Once we regain focus, we do not really know what state all the buttons are in - for now, set to not pressed. todo, check current status
