@@ -166,8 +166,8 @@ void LinuxMouse::_processXEvents()
 			//Ignore out of bounds mouse if we just warped
 			if( mWarped )
 			{
-				if(event.xmotion.x < 5 || event.xmotion.x > mState.width - 5 ||
-				   event.xmotion.y < 5 || event.xmotion.y > mState.height - 5)
+				if(event.xmotion.x < 100 || event.xmotion.x > mState.width - 100 ||
+				   event.xmotion.y < 100 || event.xmotion.y > mState.height - 100)
 					continue;
 			}
 
@@ -179,8 +179,18 @@ void LinuxMouse::_processXEvents()
 			oldXMouseX = event.xmotion.x;
 			oldXMouseY = event.xmotion.y;
 
-			mState.X.abs += dx;
-			mState.Y.abs += dy;
+			if(grabMouse &&  mouseFocusLost == false)
+			{
+				mState.X.abs += dx;
+				mState.Y.abs += dy;
+			}
+			else
+			{
+				mState.X.abs = event.xmotion.x;
+				mState.Y.abs = event.xmotion.y;
+			}
+			
+			
 			mState.X.rel += dx;
 			mState.Y.rel += dy;
 
@@ -200,8 +210,8 @@ void LinuxMouse::_processXEvents()
 				if( mouseFocusLost == false )
 				{
 					//Keep mouse in window (fudge factor)
-					if(event.xmotion.x < 5 || event.xmotion.x > mState.width - 5 ||
-					   event.xmotion.y < 5 || event.xmotion.y > mState.height - 5 )
+					if(event.xmotion.x < 100 || event.xmotion.x > mState.width - 100 ||
+					   event.xmotion.y < 100 || event.xmotion.y > mState.height - 100 )
 					{
 						oldXMouseX = mState.width >> 1;  //center x
 						oldXMouseY = mState.height >> 1; //center y
