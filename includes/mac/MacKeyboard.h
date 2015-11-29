@@ -71,7 +71,7 @@ namespace OIS
         void populateKeyConversion();
 
         // updates the keybuffer and optionally the eventStack
-        void injectEvent(KeyCode kc, unsigned int time, MacEventType type, unsigned int txt = 0 );
+        void injectEvent(KeyCode kc, unsigned int time, MacEventType type, unsigned int txt = 0, unsigned int raw = 0 );
 
         typedef std::map<UInt32, KeyCode> VirtualtoOIS_KeyMap;
         VirtualtoOIS_KeyMap keyConversion;
