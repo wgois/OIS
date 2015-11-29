@@ -218,7 +218,7 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 			stringsize--; // no termination char
 			for ( int i = 0; i < stringsize; i++ )
 			{
-				injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)text[i] );
+				injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)text[i], virtualKey );
 			}
 		}
 	}
@@ -226,11 +226,11 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 	{
 
 		status = GetEventParameter( theEvent, 'kchr', typeChar, NULL, sizeof(char), NULL, &macChar );
-		injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)macChar );
+		injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)macChar, virtualKey );
 	}
 	else
 	{
-		injectEvent( kc, time, MAC_KEYDOWN );
+		injectEvent( kc, time, MAC_KEYDOWN, 0, virtualKey );
 	}
 }
 
@@ -309,13 +309,13 @@ void MacKeyboard::_modChangeCallback( EventRef theEvent )
 }
 
 //-------------------------------------------------------------------//
-void MacKeyboard::injectEvent( KeyCode kc, unsigned int time, MacEventType type, unsigned int txt )
+void MacKeyboard::injectEvent( KeyCode kc, unsigned int time, MacEventType type, unsigned int txt, unsigned int raw )
 {
 	// set to 1 if this is either a keydown or repeat
 	KeyBuffer[kc] = ( type == MAC_KEYUP ) ? 0 : 1;
 
 	if ( mBuffered && mListener )
-		pendingEvents.push_back( MacKeyStackEvent( KeyEvent(this, kc, txt), type) );
+		pendingEvents.push_back( MacKeyStackEvent( KeyEvent(this, kc, txt, raw, mModifiers), type) );
 }
 
 

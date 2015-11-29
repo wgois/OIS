@@ -183,13 +183,18 @@ namespace OIS
 	class _OISExport KeyEvent : public EventArg
 	{
 	public:
-		KeyEvent(Object* obj, KeyCode kc, unsigned int txt) : EventArg(obj), key(kc), text(txt) {}
+		KeyEvent(Object* obj, KeyCode kc, unsigned int txt = 0, unsigned int rk = 0, unsigned int mod = 0) :
+			EventArg(obj), key(kc), text(txt), rawKey(rk), modifiers(mod) {}
 		virtual ~KeyEvent() {}
 
 		//! KeyCode of event
 		KeyCode key;
 		//! Text character, depends on current TextTranslationMode
 		unsigned int text;
+		//! Native (depends on platform) key code
+		unsigned int rawKey;
+		//! Modifiers state during the event
+		unsigned int modifiers;
 	};
 
 	/**
@@ -276,9 +281,11 @@ namespace OIS
 		//! Enum of bit position of modifer
 		enum Modifier
 		{
-			Shift = 0x0000001,
-			Ctrl  = 0x0000010,
-			Alt   = 0x0000100
+			Shift    = 0x0000001,
+			Ctrl     = 0x0000010,
+			Alt      = 0x0000100,
+			CapsLock = 0x0001000,
+			NumLock  = 0x0010000
 		};
 
 		/**

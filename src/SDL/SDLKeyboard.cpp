@@ -173,12 +173,12 @@ void SDLKeyboard::capture()
 		{
 			if( events[i].key.state == SDL_PRESSED )
 			{
-				if( listener->keyPressed(KeyEvent(this, 0, kc, events[i].key.keysym.unicode)) == false )
+				if( listener->keyPressed(KeyEvent(this, 0, kc, events[i].key.keysym.unicode), events[i].key.keysym.sym, mModifiers) == false )
 					break;
 			}
 			else
 			{
-				if( listener->keyReleased(KeyEvent(this, 0, kc, events[i].key.keysym.unicode)) == false )
+				if( listener->keyReleased(KeyEvent(this, 0, kc, events[i].key.keysym.unicode), events[i].key.keysym.sym, mModifiers) == false )
 					break;
 			}
 		}

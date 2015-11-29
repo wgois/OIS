@@ -145,7 +145,7 @@ void Win32Keyboard::_readBuffered()
 				mModifiers |= Alt;
 
 			if( mListener )
-				ret = mListener->keyPressed( KeyEvent( this, kc, _translateText(kc) ) );
+				ret = mListener->keyPressed( KeyEvent( this, kc, _translateText(kc), kc, mModifiers ) );
 		}
 		else
 		{
@@ -159,7 +159,7 @@ void Win32Keyboard::_readBuffered()
 
 			//Fire off event
 			if( mListener )
-				ret = mListener->keyReleased( KeyEvent( this, kc, 0 ) );
+				ret = mListener->keyReleased( KeyEvent( this, kc, 0, kc, mModifiers ) );
 		}
 
 		if(ret == false)
@@ -185,9 +185,9 @@ void Win32Keyboard::_readBuffered()
 				if (mListener)
 				{
 					if (KeyBuffer[i])
-						ret = mListener->keyPressed( KeyEvent( this, (KeyCode)i, _translateText((KeyCode)i) ) );
+						ret = mListener->keyPressed( KeyEvent( this, (KeyCode)i, _translateText((KeyCode)i), (KeyCode)i, mModifiers ) );
 					else
-						ret = mListener->keyReleased( KeyEvent( this, (KeyCode)i, 0 ) );
+						ret = mListener->keyReleased( KeyEvent( this, (KeyCode)i, 0, (KeyCode)i, mModifiers ) );
 				}
 			}
 
