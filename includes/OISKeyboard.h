@@ -276,9 +276,11 @@ namespace OIS
 		//! Enum of bit position of modifer
 		enum Modifier
 		{
-			Shift = 0x0000001,
-			Ctrl  = 0x0000010,
-			Alt   = 0x0000100
+			Shift    = 0x0000001,
+			Ctrl     = 0x0000010,
+			Alt      = 0x0000100,
+			CapsLock = 0x0001000,
+			NumLock  = 0x0010000
 		};
 
 		/**

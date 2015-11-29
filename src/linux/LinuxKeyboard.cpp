@@ -67,6 +67,10 @@ void LinuxKeyboard::_initialize()
 	if ( XSetLocaleModifiers("@im=none") == NULL)
 		OIS_WARN(E_General, "LinuxKeyboard::_initialize: Failed to configure locale modifiers.");
 
+	// Get modifiers masks
+	capsLockMask = XkbKeysymToModifiers(display, XK_Caps_Lock);
+	numLockMask = XkbKeysymToModifiers(display, XK_Num_Lock);
+
 	//Open input method
 	xim = XOpenIM(display, NULL, NULL, NULL);
 	if ( !xim )
@@ -274,6 +278,16 @@ void LinuxKeyboard::_handleKeyPress( XEvent& event )
 		else if( mTextMode == Ascii)
 			character = buf[0];
 	}
+
+	if (e.state & capsLockMask)
+		mModifiers |= CapsLock;
+	else
+		mModifiers &= ~CapsLock;
+	
+	if (e.state & numLockMask)
+		mModifiers |= NumLock;
+	else
+		mModifiers &= ~NumLock;
 
 	KeyCode kc = KeySymToOISKeyCode(keySym);
 	_injectKeyDown(kc, character);
