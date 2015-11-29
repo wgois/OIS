@@ -289,7 +289,7 @@ void LinuxKeyboard::_handleKeyPress( XEvent& event )
 	else
 		mModifiers &= ~NumLock;
 
-	KeyCode kc = KeySymToOISKeyCode(keySym);
+	KeyCode kc = XKeyCodeToOISKeyCode(e.keycode);
 	_injectKeyDown(kc, character, keySym);
 
 	//Check for Alt-Tab
@@ -308,7 +308,7 @@ void LinuxKeyboard::_handleKeyRelease( XEvent& event )
 	{
 		XLookupString(&e, NULL, 0, &keySym, NULL);
 
-		KeyCode kc = KeySymToOISKeyCode(keySym);
+		KeyCode kc = XKeyCodeToOISKeyCode(e.keycode);
 		_injectKeyUp(kc, keySym);
 	}
 }

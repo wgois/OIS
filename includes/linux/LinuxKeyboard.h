@@ -85,6 +85,13 @@ namespace OIS
 		void _handleKeyPress( XEvent& event );
 		void _handleKeyRelease( XEvent& event );
 
+		inline KeyCode XKeyCodeToOISKeyCode( ::KeyCode xkc ) {
+			if (xkc > 8)
+				return static_cast<KeyCode>(xkc - 8);
+			else
+				return KC_UNASSIGNED;
+		}
+		
 		inline KeyCode KeySymToOISKeyCode( KeySym keySym )
 		{
 			if (keySym != NoSymbol)
