@@ -80,8 +80,8 @@ namespace OIS
 			return false;
 		}
 
-		bool _injectKeyDown( KeyCode kc, int text );
-		bool _injectKeyUp( KeyCode kc );
+		bool _injectKeyDown( KeyCode kc, int text, int raw );
+		bool _injectKeyUp( KeyCode kc, int raw );
 		void _handleKeyPress( XEvent& event );
 		void _handleKeyRelease( XEvent& event );
 

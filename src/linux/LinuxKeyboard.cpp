@@ -290,7 +290,7 @@ void LinuxKeyboard::_handleKeyPress( XEvent& event )
 		mModifiers &= ~NumLock;
 
 	KeyCode kc = KeySymToOISKeyCode(keySym);
-	_injectKeyDown(kc, character);
+	_injectKeyDown(kc, character, keySym);
 
 	//Check for Alt-Tab
 	LinuxInputManager* linMan = static_cast<LinuxInputManager*>(mCreator);
@@ -309,7 +309,7 @@ void LinuxKeyboard::_handleKeyRelease( XEvent& event )
 		XLookupString(&e, NULL, 0, &keySym, NULL);
 
 		KeyCode kc = KeySymToOISKeyCode(keySym);
-		_injectKeyUp(kc);
+		_injectKeyUp(kc, keySym);
 	}
 }
 
@@ -320,7 +320,7 @@ void LinuxKeyboard::setBuffered(bool buffered)
 }
 
 //-------------------------------------------------------------------//
-bool LinuxKeyboard::_injectKeyDown( KeyCode kc, int text )
+bool LinuxKeyboard::_injectKeyDown( KeyCode kc, int text, int raw )
 {
 	if (kc > 255) kc = KC_UNASSIGNED;
 	KeyBuffer[kc] = 1;
@@ -334,13 +334,13 @@ bool LinuxKeyboard::_injectKeyDown( KeyCode kc, int text )
 		mModifiers |= Alt;
 
 	if( mBuffered && mListener )
-		return mListener->keyPressed(KeyEvent(this,kc,text));
+		return mListener->keyPressed(KeyEvent(this,kc,text,raw,mModifiers));
 
 	return true;
 }
 
 //-------------------------------------------------------------------//
-bool LinuxKeyboard::_injectKeyUp( KeyCode kc )
+bool LinuxKeyboard::_injectKeyUp( KeyCode kc, int raw )
 {
 	if (kc > 255) kc = KC_UNASSIGNED;
 	KeyBuffer[kc] = 0;
@@ -354,7 +354,7 @@ bool LinuxKeyboard::_injectKeyUp( KeyCode kc )
 		mModifiers &= ~Alt;
 
 	if( mBuffered && mListener )
-		return mListener->keyReleased(KeyEvent(this, kc, 0));
+		return mListener->keyReleased(KeyEvent(this, kc, 0, raw,mModifiers));
 
 	return true;
 }
