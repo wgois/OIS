@@ -70,6 +70,10 @@ if (WIN32)
         MESSAGE("Found DirectX SDK at ${DXSDK_DIR}")
     endif()
 
+    if(BUILD_SHARED_LIBS)
+        add_definitions(-DOIS_DYNAMIC_LIB)
+    endif(BUILD_SHARED_LIBS)
+
     include_directories("${DXSDK_DIR}/Include")
 
     set(ois_source
@@ -110,7 +114,15 @@ if (APPLE)
 endif()
 
 source_group("OIS" FILES ${ois_source})
+
 add_library(OIS ${ois_source})
+
+# This is neccessary to get the dll import/export to work without modifying the
+# source to use cmake's method of setting the dll import/export definitions
+if (WIN32)
+    SET_TARGET_PROPERTIES(OIS PROPERTIES COMPILE_FLAGS "-DOIS_NONCLIENT_BUILD")
+endif()
+
 set_target_properties(OIS PROPERTIES SOLUTION_FOLDER "libOIS")
 
 if (APPLE)
@@ -144,17 +156,25 @@ endif()
 
 if (OIS_BUILD_DEMOS)
     project(OISConsoleApp)
-    source_group("ConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/OISConsole.cpp")
+    source_group("ConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp")
     include_directories(${CMAKE_SOURCE_DIR}/includes)
-    add_executable(ConsoleApp "${CMAKE_SOURCE_DIR}/demos/OISConsole.cpp")
+    if (WIN32)
+        add_executable(ConsoleApp "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp" "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/CommandLine.rc")
+    else()
+    	add_executable(ConsoleApp "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp")
+    endif()
     set_target_properties(ConsoleApp PROPERTIES SOLUTION_FOLDER "OIS Console Demo")
     add_dependencies(ConsoleApp OIS)
     target_link_libraries(ConsoleApp "OIS")
 
     project(OISFFConsoleApp)
-    source_group("FFConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo.cpp")
+    source_group("FFConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
     include_directories(${CMAKE_SOURCE_DIR}/includes)
-    add_executable(FFConsoleApp "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo.cpp")
+    if (WIN32)
+        add_executable(FFConsoleApp "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp" "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FF.rc")
+    else()
+        add_executable(FFConsoleApp "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
+    endif()
     set_target_properties(FFConsoleApp PROPERTIES SOLUTION_FOLDER "OIS FF Console Demo")
     add_dependencies(FFConsoleApp OIS)
     target_link_libraries(FFConsoleApp "OIS")
