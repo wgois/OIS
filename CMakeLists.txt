@@ -60,6 +60,17 @@ if (UNIX AND NOT APPLE)
 endif()
 
 if (WIN32)
+    # I'm assuming that this will be set under all normal circumstances
+    # if not, the user can set it themselves
+    set(DXSDK_DIR "$ENV{DXSDK_DIR}" CACHE PATH "Location of the DirectX SDK on your system.")
+
+    if ("${DXSDK_DIR}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "Could not locate DirectX SDK on this system")
+    else()
+        MESSAGE("Found DirectX SDK at ${DXSDK_DIR}")
+    endif()
+
+    include_directories("${DXSDK_DIR}/Include")
 
     set(ois_source
         ${ois_source}
@@ -108,6 +119,15 @@ if (APPLE)
     target_link_libraries(OIS ${FOUNDATION_LIBRARY})
 endif()
 
+if (WIN32)
+    if (CMAKE_CL_64)
+        set(DIRECTX_ARCH x64)
+    else()
+        set(DIRECTX_ARCH x86)
+    endif()
+
+    target_link_libraries(OIS "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dinput8.lib" "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dxguid.lib")
+endif()
 
 if(UNIX)
 
