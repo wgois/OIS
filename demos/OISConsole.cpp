@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //////////////////////////////// OS Nuetral Headers ////////////////
 #include "OISInputManager.h"
 #include "OISException.h"
@@ -469,7 +468,7 @@ void checkMacEvents()
 	}
 }
 #endif
-=======
+
 //////////////////////////////// OS Nuetral Headers ////////////////
 #include "OISInputManager.h"
 #include "OISException.h"
@@ -939,4 +938,3 @@ void checkMacEvents()
 	}
 }
 #endif
->>>>>>> 692546bf8a79abd2eb7f7aaed814185d7ef62ba3
