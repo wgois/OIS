@@ -38,6 +38,7 @@ For Visual Studio:
 For XCode:
 
     cmake -H. -B./build
+    cd ./build
     make
 
 ## License
