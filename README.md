@@ -2,6 +2,7 @@
 
 [![Software License](https://img.shields.io/badge/license-zlib%2Flibpng-green.svg)](LICENSE.md)
 [![Build status](https://ci.appveyor.com/api/projects/status/grsgdeij6soi88bs?svg=true)](https://ci.appveyor.com/project/andrewfenn/ois)
+[![Build Status](https://travis-ci.org/andrewfenn/OIS.svg?branch=master)](https://travis-ci.org/andrewfenn/OIS)
 
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.

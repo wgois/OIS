@@ -1,0 +1,18 @@
+language: cpp
+matrix:
+    include:
+        - os: linux
+          compiler: gcc
+        - os: linux
+          compiler: clang
+        - os: osx
+          compiler: gcc
+        - os: osx
+          compiler: clang
+before_script:
+    - travis_wait cmake -H. -B./build
+    - cd ./build
+script:
+    - travis_wait make
+notifications:
+    email: false
