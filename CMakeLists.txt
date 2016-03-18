@@ -92,6 +92,7 @@ if (APPLE)
     find_library(FOUNDATION_LIBRARY Foundation)
     find_library(IOKIT_LIBRARY IOKit)
     find_path(COCOA_INCLUDE_DIR Cocoa/Cocoa.h)
+    find_library(CARBON_LIBRARY Carbon)
 
     add_definitions(-x objective-c++)
 
@@ -110,7 +111,7 @@ if (APPLE)
         "${CMAKE_SOURCE_DIR}/src/mac/CocoaKeyboard.mm"
         "${CMAKE_SOURCE_DIR}/src/mac/CocoaMouse.mm"
     )
-    set(OIS_BUILD_DEMOS false)
+    set(OIS_BUILD_DEMOS true)
 endif()
 
 source_group("OIS" FILES ${ois_source})
@@ -166,6 +167,9 @@ if (OIS_BUILD_DEMOS)
     set_target_properties(ConsoleApp PROPERTIES SOLUTION_FOLDER "OIS Console Demo")
     add_dependencies(ConsoleApp OIS)
     target_link_libraries(ConsoleApp "OIS")
+    if (APPLE)
+        target_link_libraries(ConsoleApp ${CARBON_LIBRARY})
+    endif()
 
     project(OISFFConsoleApp)
     source_group("FFConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
@@ -178,6 +182,10 @@ if (OIS_BUILD_DEMOS)
     set_target_properties(FFConsoleApp PROPERTIES SOLUTION_FOLDER "OIS FF Console Demo")
     add_dependencies(FFConsoleApp OIS)
     target_link_libraries(FFConsoleApp "OIS")
+    if (APPLE)
+        target_link_libraries(FFConsoleApp ${CARBON_LIBRARY})
+    endif()
+
 endif()
 
 set(LIB_INSTALL_DIR "lib")
