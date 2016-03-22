@@ -11,7 +11,7 @@ set(OIS_SOVERSION ${OIS_MAJOR_VERSION}.${OIS_MINOR_VERSION}.0)
 
 set(OIS_LIBRARY_NAME OIS)
 
-configure_file(${CMAKE_SOURCE_DIR}/includes/OISPrereqs.h.in ${CMAKE_SOURCE_DIR}/includes/OISPrereqs.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/includes/OISPrereqs.h.in ${CMAKE_CURRENT_SOURCE_DIR}/includes/OISPrereqs.h @ONLY)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -34,13 +34,13 @@ include_directories(
 
 set(ois_source
     ${ois_source}
-    "${CMAKE_SOURCE_DIR}/src/OISInputManager.cpp"
-    "${CMAKE_SOURCE_DIR}/src/OISObject.cpp"
-    "${CMAKE_SOURCE_DIR}/src/OISEffect.cpp"
-    "${CMAKE_SOURCE_DIR}/src/OISJoyStick.cpp"
-    "${CMAKE_SOURCE_DIR}/src/OISKeyboard.cpp"
-    "${CMAKE_SOURCE_DIR}/src/OISForceFeedback.cpp"
-    "${CMAKE_SOURCE_DIR}/src/OISException.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISInputManager.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISObject.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISEffect.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISJoyStick.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISKeyboard.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISForceFeedback.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/OISException.cpp"
 )
 
 if (UNIX AND NOT APPLE)
@@ -50,12 +50,12 @@ if (UNIX AND NOT APPLE)
 
     set(ois_source
         ${ois_source}
-        "${CMAKE_SOURCE_DIR}/src/linux/EventHelpers.cpp"
-        "${CMAKE_SOURCE_DIR}/src/linux/LinuxForceFeedback.cpp"
-        "${CMAKE_SOURCE_DIR}/src/linux/LinuxInputManager.cpp"
-        "${CMAKE_SOURCE_DIR}/src/linux/LinuxJoyStickEvents.cpp"
-        "${CMAKE_SOURCE_DIR}/src/linux/LinuxKeyboard.cpp"
-        "${CMAKE_SOURCE_DIR}/src/linux/LinuxMouse.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/linux/EventHelpers.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/linux/LinuxForceFeedback.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/linux/LinuxInputManager.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/linux/LinuxJoyStickEvents.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/linux/LinuxKeyboard.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/linux/LinuxMouse.cpp"
     )
 endif()
 
@@ -78,11 +78,11 @@ if (WIN32)
 
     set(ois_source
         ${ois_source}
-        "${CMAKE_SOURCE_DIR}/src/win32/Win32ForceFeedback.cpp"
-        "${CMAKE_SOURCE_DIR}/src/win32/Win32InputManager.cpp"
-        "${CMAKE_SOURCE_DIR}/src/win32/Win32JoyStick.cpp"
-        "${CMAKE_SOURCE_DIR}/src/win32/Win32KeyBoard.cpp"
-        "${CMAKE_SOURCE_DIR}/src/win32/Win32Mouse.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/win32/Win32ForceFeedback.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/win32/Win32InputManager.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/win32/Win32JoyStick.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/win32/Win32KeyBoard.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/win32/Win32Mouse.cpp"
     )
 endif()
 
@@ -99,17 +99,17 @@ if (APPLE)
     include_directories(SYSTEM ${COCOA_INCLUDE_DIR})
     set(ois_source
         ${ois_source}
-        "${CMAKE_SOURCE_DIR}/src/mac/MacHelpers.cpp"
-        "${CMAKE_SOURCE_DIR}/src/mac/MacHIDManager.cpp"
-        "${CMAKE_SOURCE_DIR}/src/mac/MacInputManager.cpp"
-        "${CMAKE_SOURCE_DIR}/src/mac/MacJoyStick.cpp"
-        "${CMAKE_SOURCE_DIR}/src/mac/MacKeyboard.cpp"
-        "${CMAKE_SOURCE_DIR}/src/mac/MacMouse.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/MacHelpers.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/MacHIDManager.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/MacInputManager.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/MacJoyStick.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/MacKeyboard.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/MacMouse.cpp"
 
-        "${CMAKE_SOURCE_DIR}/src/mac/CocoaInputManager.mm"
-        "${CMAKE_SOURCE_DIR}/src/mac/CocoaJoyStick.mm"
-        "${CMAKE_SOURCE_DIR}/src/mac/CocoaKeyboard.mm"
-        "${CMAKE_SOURCE_DIR}/src/mac/CocoaMouse.mm"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaInputManager.mm"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaJoyStick.mm"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaKeyboard.mm"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaMouse.mm"
     )
     set(OIS_BUILD_DEMOS true)
 endif()
@@ -157,12 +157,12 @@ endif()
 
 if (OIS_BUILD_DEMOS)
     project(OISConsoleApp)
-    source_group("ConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp")
-    include_directories(${CMAKE_SOURCE_DIR}/includes)
+    source_group("ConsoleApp" FILES "${CMAKE_CURRENT_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp")
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/includes)
     if (WIN32)
-        add_executable(ConsoleApp "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp" "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/CommandLine.rc")
+        add_executable(ConsoleApp "${CMAKE_CURRENT_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/demos/OISConsoleDemo/CommandLine.rc")
     else()
-    	add_executable(ConsoleApp "${CMAKE_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp")
+        add_executable(ConsoleApp "${CMAKE_CURRENT_SOURCE_DIR}/demos/OISConsoleDemo/OISConsole.cpp")
     endif()
     set_target_properties(ConsoleApp PROPERTIES SOLUTION_FOLDER "OIS Console Demo")
     add_dependencies(ConsoleApp OIS)
@@ -172,12 +172,12 @@ if (OIS_BUILD_DEMOS)
     endif()
 
     project(OISFFConsoleApp)
-    source_group("FFConsoleApp" FILES "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
-    include_directories(${CMAKE_SOURCE_DIR}/includes)
+    source_group("FFConsoleApp" FILES "${CMAKE_CURRENT_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/includes)
     if (WIN32)
-        add_executable(FFConsoleApp "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp" "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FF.rc")
+        add_executable(FFConsoleApp "${CMAKE_CURRENT_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/demos/FFConsoleDemo/FF.rc")
     else()
-        add_executable(FFConsoleApp "${CMAKE_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
+        add_executable(FFConsoleApp "${CMAKE_CURRENT_SOURCE_DIR}/demos/FFConsoleDemo/FFConsoleDemo.cpp")
     endif()
     set_target_properties(FFConsoleApp PROPERTIES SOLUTION_FOLDER "OIS FF Console Demo")
     add_dependencies(FFConsoleApp OIS)
@@ -205,6 +205,6 @@ install(TARGETS OIS
 )
 
 if(UNIX)
-    configure_file(${CMAKE_SOURCE_DIR}/OIS.pc.in ${CMAKE_BINARY_DIR}/OIS.pc @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OIS.pc.in ${CMAKE_BINARY_DIR}/OIS.pc @ONLY)
     install(FILES ${CMAKE_BINARY_DIR}/OIS.pc DESTINATION ${OIS_LIB_DIRECTORY}/pkgconfig)
 endif()
