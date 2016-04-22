@@ -13,37 +13,29 @@ This is the official repository and is a continuation of the great work done by 
 - Start implementing support for new platforms and backends
 
 ## Compiling:
-Win32/
-	Contains Visual Studio .Net Solution Files
-	Contains CodeBlocks project files for OIS
+- Win32
+    - Contains Visual Studio .Net Solution Files
+    - Contains CodeBlocks project files for OIS
+    - Dependencies:
+        - DirectInput 8
+- Linux
+    - Dependencies:
+        - X11
+        - Newer Linux Kernel (2.6+ ?) for Event API
+    - Steps to build on Linux:
 
-	---- Dependencies ------------------------------------------------------
-	DirectInput 8
+        ```bash
+        ./bootstrap
+        ./configure --help #Lists all configure options
+        ./configure
+        ./make && make install
+        ```
 
-
-Linux/
-	---- Dependencies ------------------------------------------------------
-	X11
-        Newer Linux Kernel (2.6+ ?) for Event API
-
-	Steps to build on Linux:
-	./bootstrap
-	./configure
-	./make && make install
-
-	---- Configure build options --------------------------------------------
-	./configure --help              --- List all configure options
-
-
-LinuxCB/
-        Contains CodeBlock files for building OIS and Demos with codeblocks
-        This project file looks for Ogre and other dependencies in /usr/local/lib
-        and /usr/local/include. If installed elsewhere, modify the project
-        settings. It also installs libOIS to ~/libs
-
-Mac/
-	XCode-2.2/
-		Working, mostly complete OSX vackend.
+- LinuxCB
+    - Contains CodeBlock files for building OIS and Demos with codeblocks
+    - This project file looks for Ogre and other dependencies in /usr/local/lib and /usr/local/include. If installed elsewhere, modify the project settings. It also installs libOIS to ~/libs
+- Mac
+    - XCode-2.2. Working, mostly complete OSX backend.
 
 ## License
 
