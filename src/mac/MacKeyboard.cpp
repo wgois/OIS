@@ -1,7 +1,7 @@
 /*
  The zlib/libpng License
 
- Copyright (c) 2006 Chris Snyder
+ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
@@ -19,7 +19,9 @@
  misrepresented as being the original software.
 
  3. This notice may not be removed or altered from any source distribution.
-*/
+ */
+
+#ifndef __LP64__
 
 #include "mac/MacKeyboard.h"
 #include "mac/MacInputManager.h"
@@ -142,10 +144,6 @@ void MacKeyboard::capture()
 	if ( !mBuffered || !mListener )
 		return;
 
-	//If the mListener returns false, that means that we are probably deleted...
-	//send no more events and just leave as the this pointer is invalid now...
-	bool ret = true;
-
 	// run through our event stack
 	eventStack::iterator cur_it;
 
@@ -165,7 +163,23 @@ void MacKeyboard::capture()
 //-------------------------------------------------------------------//
 std::string& MacKeyboard::getAsString( KeyCode key )
 {
-	getString = "";
+    CGKeyCode deviceKeycode;
+
+    // Convert OIS KeyCode back into device keycode
+    for(VirtualtoOIS_KeyMap::iterator it = keyConversion.begin(); it != keyConversion.end(); ++it)
+    {
+        if(it->second == key)
+            deviceKeycode = it->first;
+    }
+
+    UniChar unicodeString[1];
+    UniCharCount actualStringLength = 0;
+
+    CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+    CGEventRef ref = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
+    CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
+//    NSLog([NSString stringWithFormat:@"%C\n", unicodeString[0]]);
+    getString = unicodeString[0];
 
 	return getString;
 }
@@ -206,7 +220,7 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, 0, &stringsize, NULL);
 		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar)*10, NULL, &text );
 		status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar) * 10, &stringsize, &text );
-		std::cout << "String length: " << stringsize << std::endl;
+//     std::cout << "String length: " << stringsize << std::endl;
 
 		//wstring unitext;
 		//for (int i=0;i<10;i++) unitext += (wchar_t)text[i];
@@ -462,6 +476,4 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x75, KC_DELETE)); // del under help key?
 }
 
-
-
-
+#endif

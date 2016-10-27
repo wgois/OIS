@@ -1,55 +1,53 @@
 # OIS: Object oriented Input System
 
+[![Software License](https://img.shields.io/badge/license-zlib%2Flibpng-green.svg)](LICENSE.md)
+[![Build status](https://ci.appveyor.com/api/projects/status/grsgdeij6soi88bs?svg=true)](https://ci.appveyor.com/project/andrewfenn/ois)
+[![Build Status](https://travis-ci.org/andrewfenn/OIS.svg?branch=master)](https://travis-ci.org/andrewfenn/OIS)
+
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
 
-This is the official repository and is a continuation of the great work done by pjcast on the old sourceforge repo.
-
 ## Todo
 
-- Add CMake for compiling
 - Merge pull requests/patches send in over time
 - Cleanup and remove dead-code
 - Start implementing support for new platforms and backends
 
-## Compiling:
-Win32/
-	Contains Visual Studio .Net Solution Files
-	Contains CodeBlocks project files for OIS
+### Linux
 
-	---- Dependencies ------------------------------------------------------
-	DirectInput 8
+Dependencies: X11
 
+To build and install:
 
-Linux/
-	---- Dependencies ------------------------------------------------------
-	X11
-        Newer Linux Kernel (2.6+ ?) for Event API
+    cmake -H. -B./build
+    cd ./build
+    make
+    make install
 
-	Steps to build on Linux:
-	./bootstrap
-	./configure
-	./make && make install
+### Windows
 
-	---- Configure build options --------------------------------------------
-	./configure --help              --- List all configure options
+Dependencies: DirectInput 8
 
+For Visual Studio:
 
-LinuxCB/
-        Contains CodeBlock files for building OIS and Demos with codeblocks
-        This project file looks for Ogre and other dependencies in /usr/local/lib
-        and /usr/local/include. If installed elsewhere, modify the project
-        settings. It also installs libOIS to ~/libs
+    cmake -H. -B./build
+    msbuild "build\OISFFConsoleApp.sln"
 
-Mac/
-	XCode-2.2/
-		Working, mostly complete OSX vackend.
+### OSX
+
+For XCode:
+
+    cmake -H. -B./build
+    cd ./build
+    make
 
 ## License
 
 The zlib/libpng License
 
-Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+Copyright © 2015 Andrew Fenn
+
+Copyright © 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
 This software is provided 'as-is', without any express or implied warranty. In no
 event will the authors be held liable for any damages arising from the use of this
@@ -68,13 +66,3 @@ following restrictions:
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
-
-
-### License Explained
-In case the license was not clear enough... Basically, you can link with this lib
-which puts no restrictions on what you have to license your code as. You can modify
-this lib, and not have release your changes. Though, as explained above,
-**Altered source versions must be plainly marked as such, and must not be misrepresented
-as being the original software.**
-
-This is to allow users the greatest flexibility in what you can use this lib for.
