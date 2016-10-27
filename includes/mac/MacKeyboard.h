@@ -54,7 +54,7 @@ namespace OIS
 
         // Returns a description of the given key
         virtual std::string& getAsString( KeyCode key );
-        virtual KeyCode getAsKeyCode( std::string str ) {/*TODO: Implement OS version*/;}
+        virtual KeyCode getAsKeyCode( std::string str ) {/*TODO: Implement OS version*/ return KC_UNASSIGNED;}
 
         virtual Interface* queryInterface( Interface::IType type ) { return 0; }
 
