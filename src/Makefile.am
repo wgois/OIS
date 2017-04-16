@@ -20,6 +20,6 @@ libOIS_la_SOURCES = OISInputManager.cpp \
 libOIS_la_LDFLAGS = -release @PACKAGE_VERSION@
 #libOIS_la_LDFLAGS = -version-info $(shell echo "@PACKAGE_VERSION@" | tr '.' ':')
 
-libOIS_la_LIBADD = $(STLPORT_LIBS) -L/usr/X11R6/lib -lX11
+libOIS_la_LIBADD = $(STLPORT_LIBS)
 
 #eof "$Id: Makefile.am,v 1.15.2.1 2008/02/14 03:33:36 pjcast Exp $"

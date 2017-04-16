@@ -22,7 +22,7 @@ CXXFLAGS="$CXXFLAGS"
 LIBS="$LIBS"
 
 dnl Detect X11
-AC_CHECK_HEADERS([X11/Xlib.h],, [AC_MSG_ERROR("Xlib.h not found - libx11-dev")])
+AC_CHECK_LIB([X11], [XOpenDisplay]),, [AC_MSG_ERROR("X11 library not found - libx11-dev")])
 
 dnl Added for BSD's
 AC_PROG_LIBTOOL
