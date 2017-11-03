@@ -29,7 +29,7 @@ Linux/
 	Steps to build on Linux:
 	./bootstrap
 	./configure
-	./make && make install
+	make && make install
 
 	---- Configure build options --------------------------------------------
 	./configure --help              --- List all configure options
