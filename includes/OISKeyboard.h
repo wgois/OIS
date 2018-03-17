@@ -175,7 +175,7 @@ namespace OIS
 		KC_MYCOMPUTER  = 0xEB,    // My Computer
 		KC_MAIL        = 0xEC,    // Mail
 		KC_MEDIASELECT = 0xED,    // Media Select
-        KC_TWOSUPERIOR = 0xF0,    // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
+		KC_TWOSUPERIOR = 0xF0,    // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
 	};
 
 	/**
