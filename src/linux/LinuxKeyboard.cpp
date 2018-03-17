@@ -183,6 +183,8 @@ LinuxKeyboard::LinuxKeyboard(InputManager* creator, bool buffered, bool grab)
 	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Super_R, KC_RWIN));
 	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Menu, KC_APPS));
 
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_twosuperior, KC_TWOSUPERIOR));
+
 	static_cast<LinuxInputManager*>(mCreator)->_setKeyboardUsed(true);
 }
 
