@@ -174,7 +174,8 @@ namespace OIS
 		KC_WEBBACK     = 0xEA,    // Web Back
 		KC_MYCOMPUTER  = 0xEB,    // My Computer
 		KC_MAIL        = 0xEC,    // Mail
-		KC_MEDIASELECT = 0xED     // Media Select
+		KC_MEDIASELECT = 0xED,    // Media Select
+        KC_SQUARE      = 0xF0,    // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
 	};
 
 	/**
