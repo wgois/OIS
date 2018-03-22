@@ -7,42 +7,43 @@
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
 
-## Todo
-
-- Merge pull requests/patches send in over time
-- Cleanup and remove dead-code
-- Start implementing support for new platforms and backends
-
 ### Linux
 
 Dependencies: X11
 
 To build and install:
-
+```bash
     cmake -H. -B./build
     cd ./build
     make
     make install
-
+```
 ### Windows
 
 Dependencies: DirectInput 8
 
 For Visual Studio:
 
+```batch
     cmake -H. -B./build
     msbuild "build\OISFFConsoleApp.sln"
+```
+
+Or, simply open CMake-gui, and generate a visual studio solution in a few clicks.
 
 ### OSX
 
 For XCode:
 
+```bash
     cmake -H. -B./build
     cd ./build
     make
 
+```
 ## License
 
+```
 The zlib/libpng License
 
 Copyright © 2015 Andrew Fenn
@@ -66,3 +67,4 @@ following restrictions:
 		misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
+```
