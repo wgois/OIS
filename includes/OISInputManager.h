@@ -200,6 +200,11 @@ namespace OIS
 		//! Extra factory (not enabled by default)
 		LIRCFactoryCreator *m_lircSupport;
 		WiiMoteFactoryCreator *m_wiiMoteSupport;
+
+	private:
+		// Prevent copying.
+		InputManager(const InputManager&);
+		InputManager& operator=(const InputManager&);
 	};
 }
 #endif

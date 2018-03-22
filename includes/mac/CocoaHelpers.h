@@ -1,7 +1,7 @@
 /*
  The zlib/libpng License
 
- Copyright (c) 2006 Chris Snyder
+ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
@@ -19,30 +19,14 @@
  misrepresented as being the original software.
 
  3. This notice may not be removed or altered from any source distribution.
-*/
-#ifndef OIS_MacHelpers_H
-#define OIS_MacHelpers_H
+ */
 
-#include "mac/MacPrereqs.h"
+#ifndef OIS_CocoaHelpers_H
+#define OIS_CocoaHelpers_H
+
 #include "OISEvents.h"
 #include "OISKeyboard.h"
 #include "OISMouse.h"
-
-#include <Carbon/Carbon.h>
-
-// This is a hack needed to get the event handler working.
-// The carbon lib expects a "OSStatus (*)(EventHandlerCallRef, EventRef, void*)",
-// so I cannot give it a class member function (unless it is static which is pointless)
-// Instead, I just pass the class* through the last paramter that gets passed to the
-// callback every time an event occurs. Then I dereference it and call the member function.
-OSStatus KeyDownWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
-
-OSStatus KeyUpWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
-
-OSStatus KeyModWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
-
-OSStatus MouseWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
-
 
 // This is needed for keeping an event stack for keyboard and mouse
 namespace OIS
@@ -57,19 +41,6 @@ namespace OIS
                          MAC_MOUSEMOVED,
                          MAC_MOUSESCROLL};
     typedef enum Mac_EventType MacEventType;
-
-    // only used by MacKeyboard
-    typedef class Mac_KeyStackEvent
-    {
-        friend class MacKeyboard;
-
-    private:
-        Mac_KeyStackEvent( KeyEvent event, MacEventType type ) : Event(event), Type(type) {}
-
-        MacEventType Type;
-        KeyEvent Event;
-    } MacKeyStackEvent;
 }
-
 
 #endif

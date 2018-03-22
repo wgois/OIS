@@ -1,7 +1,7 @@
 /*
  The zlib/libpng License
 
- Copyright (c) 2006 Phillip Castaneda
+ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
@@ -403,16 +403,17 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 	{
 		if((*it)->inUse == false && (*it)->type == iType && (vendor == "" || (*it)->combinedKey == vendor))
 		{
+            int totalDevs = totalDevices(iType);
+            int freeDevs = freeDevices(iType);
+            int devID = totalDevs - freeDevs;
 			switch(iType)
 			{
 				case OISJoyStick:
-					int totalDevs = totalDevices(iType);
-					int freeDevs = freeDevices(iType);
-					int devID = totalDevs - freeDevs;
-
-					obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
-					(*it)->inUse = true;
-					return obj;
+                {
+                    obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
+                    (*it)->inUse = true;
+                    return obj;
+                }
 				case OISTablet:
 					//Create MacTablet
 					break;
