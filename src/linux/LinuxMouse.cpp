@@ -153,7 +153,8 @@ void LinuxMouse::capture()
 void LinuxMouse::_processXEvents()
 {
 	//X11 Button Events: 1=left 2=middle 3=right; Our Bit Postion: 1=Left 2=Right 3=Middle
-	char mask[4] = {0,1,4,2};
+	//X11 Button Events: 8=backward 9=forward; Our Bit Position: 4=backward 5=forward
+	char mask[10] = {0,1,4,2,0,0,0,0,8,10};
 	XEvent event;
 
 	//Poll x11 for events mouse events
@@ -216,7 +217,7 @@ void LinuxMouse::_processXEvents()
 		{	//Button down
 			static_cast<LinuxInputManager*>(mCreator)->_setGrabState(true);
 
-			if( event.xbutton.button < 4 )
+			if( event.xbutton.button < 10 && mask[event.xbutton.button] )
 			{
 				mState.buttons |= mask[event.xbutton.button];
 				if( mBuffered && mListener )
@@ -227,7 +228,7 @@ void LinuxMouse::_processXEvents()
 		}
 		else if( event.type == ButtonRelease )
 		{	//Button up
-			if( event.xbutton.button < 4 )
+			if( event.xbutton.button < 10 && mask[event.xbutton.button] )
 			{
 				mState.buttons &= ~mask[event.xbutton.button];
 				if( mBuffered && mListener )
