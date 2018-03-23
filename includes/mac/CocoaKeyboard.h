@@ -80,6 +80,12 @@ namespace OIS
 
         unsigned int & _getModifiers() { return mModifiers; }
 
+        virtual OIS::KeyCode getAsKeyCode(std::string str)
+        {
+            //TODO implement me
+            return (OIS::KeyCode)(0);
+	}
+
     protected:
         CocoaKeyboardView *mResponder;
         std::string getString;
