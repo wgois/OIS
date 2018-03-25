@@ -33,6 +33,7 @@ void checkX11Events();
 ////////////////////////////////////Needed Mac Headers//////////////
 #elif defined OIS_APPLE_PLATFORM
 #include <Carbon/Carbon.h>
+#import <Cocoa/Cocoa.h>
 void checkMacEvents();
 #endif
 //////////////////////////////////////////////////////////////////////
@@ -285,49 +286,40 @@ void doStartup()
 	//For this demo, show mouse and do not grab (confine to window)
 //	pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
 //	pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
-#elif defined OIS_APPLE_PLATFORM && !__LP64__
-    // create the window rect in global coords
-    ::Rect windowRect;
-    windowRect.left = 0;
-    windowRect.top = 0;
-    windowRect.right = 300;
-    windowRect.bottom = 300;
-
-    // set the default attributes for the window
-    WindowAttributes windowAttrs = kWindowStandardDocumentAttributes
-        | kWindowStandardHandlerAttribute
-        | kWindowInWindowMenuAttribute
-        | kWindowHideOnFullScreenAttribute;
-
-    // Create the window
-    CreateNewWindow(kDocumentWindowClass, windowAttrs, &windowRect, &mWin);
-
-    // Color the window background black
-    SetThemeWindowBackground (mWin, kThemeBrushBlack, true);
-
-    // Set the title of our window
-    CFStringRef titleRef = CFStringCreateWithCString( kCFAllocatorDefault, "OIS Input", kCFStringEncodingASCII );
-    SetWindowTitleWithCFString( mWin, titleRef );
-
-    // Center our window on the screen
-    RepositionWindow( mWin, NULL, kWindowCenterOnMainScreen );
-
-    // Install the event handler for the window
-    InstallStandardEventHandler(GetWindowEventTarget(mWin));
-
-    // This will give our window focus, and not lock it to the terminal
-    ProcessSerialNumber psn = { 0, kCurrentProcess };
-    TransformProcessType( &psn, kProcessTransformToForegroundApplication );
-	SetFrontProcess(&psn);
-
-    // Display and select our window
-    ShowWindow(mWin);
-    SelectWindow(mWin);
-
-    std::ostringstream wnd;
-	wnd << (unsigned int)mWin; //cast to int so it gets encoded correctly (else it gets stored as a hex string)
-    std::cout << "WindowRef: " << mWin << " WindowRef as int: " << wnd.str() << "\n";
-	pl.insert(std::make_pair(std::string("WINDOW"), wnd.str()));
+#elif defined OIS_APPLE_PLATFORM
+    
+    //Plese note, Carbon based code used to be there, this is progressively being replaced with Cocoa code.
+    
+    //This create an NS application and a cocoa window
+    [NSAutoreleasePool new];
+    [NSApplication sharedApplication];
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+    id menubar = [[NSMenu new] autorelease];
+    id appMenuItem = [[NSMenuItem new] autorelease];
+    [menubar addItem:appMenuItem];
+    [NSApp setMainMenu:menubar];
+    id appMenu = [[NSMenu new] autorelease];
+    id appName = [[NSProcessInfo processInfo] processName];
+    id quitTitle = [@"Quit " stringByAppendingString:appName];
+    id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle
+                                                  action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
+    [appMenu addItem:quitMenuItem];
+    [appMenuItem setSubmenu:appMenu];
+    
+    //This is the interesing bit
+    id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
+                                             styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO]
+                 autorelease];
+    [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
+    [window setTitle:@"OIS Input"];
+    [window makeKeyAndOrderFront:nil];
+    [NSApp activateIgnoringOtherApps:YES];
+    //	[NSApp run];
+    
+    //Apparently the "id" type the window variable was declared into boils down to a simple pointer.
+    //To give it to OIS, put the numerical value of the pointer into a string, as you do with Windows and Linux
+    pl.insert(std::make_pair(std::string("WINDOW"), std::to_string((size_t)window) ));
+    
 #endif
 
 	//This never returns null.. it will raise an exception on errors
@@ -367,7 +359,7 @@ void doStartup()
 		{
 			g_joys[i] = (JoyStick*)g_InputManager->createInputObject( OISJoyStick, true );
 			g_joys[i]->setEventCallback( &handler );
-			std::cout << "\n\nCreating Joystick " << (i + 1)
+            std::cout << "\n\nCreating Joystick " << (i + 1)
 				<< "\n\tAxes: " << g_joys[i]->getNumberOfComponents(OIS_Axis)
 				<< "\n\tSliders: " << g_joys[i]->getNumberOfComponents(OIS_Slider)
 				<< "\n\tPOV/HATs: " << g_joys[i]->getNumberOfComponents(OIS_POV)
