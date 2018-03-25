@@ -111,7 +111,6 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaKeyboard.mm"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaMouse.mm"
     )
-    set(OIS_BUILD_DEMOS true)
 endif()
 
 source_group("OIS" FILES ${ois_source})
