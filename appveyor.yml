@@ -1,5 +1,6 @@
 version: 1.0.{build}
 image:
+- Visual Studio 2017
 - Visual Studio 2015
 - Visual Studio 2013
 before_build:
