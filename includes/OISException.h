@@ -80,4 +80,8 @@ namespace OIS
 //! Use this macro to handle exceptions easily
 #define OIS_EXCEPT( err, str ) throw( OIS::Exception(err, str, __LINE__, __FILE__) )
 
+//TODO choose what to do with this...
+//#define OIS_WARN( err, str ) throw( OIS::Exception(err, str, __LINE__, __FILE__) )
+#define OIS_WARN( err, str ) do {} while(0)
+
 #endif //_OIS_EXCEPTION_HEADER_
