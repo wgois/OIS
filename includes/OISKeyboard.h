@@ -142,6 +142,7 @@ namespace OIS
 		KC_CALCULATOR  = 0xA1,    // Calculator
 		KC_PLAYPAUSE   = 0xA2,    // Play / Pause
 		KC_MEDIASTOP   = 0xA4,    // Media Stop
+		KC_TWOSUPERIOR = 0xAA,    // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
 		KC_VOLUMEDOWN  = 0xAE,    // Volume -
 		KC_VOLUMEUP    = 0xB0,    // Volume +
 		KC_WEBHOME     = 0xB2,    // Web home
@@ -175,7 +176,6 @@ namespace OIS
 		KC_MYCOMPUTER  = 0xEB,    // My Computer
 		KC_MAIL        = 0xEC,    // Mail
 		KC_MEDIASELECT = 0xED,    // Media Select
-		KC_TWOSUPERIOR = 0xF0,    // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
 	};
 
 	/**
