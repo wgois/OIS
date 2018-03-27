@@ -47,7 +47,7 @@ namespace OIS
 		virtual void _initialize();
 
 	protected:
-		bool _doMouseClick( int mouseButton, DIDEVICEOBJECTDATA& di );
+        bool _doMouseClick( int mouseButton, unsigned char di );
 
 		IDirectInput8* mDirectInput;
 		IDirectInputDevice8* mMouse;
