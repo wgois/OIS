@@ -10,15 +10,15 @@ Permission is granted to anyone to use this software for any purpose, including 
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that
+	1. The origin of this software must not be misrepresented; you must not claim that
 		you wrote the original software. If you use this software in a product,
 		an acknowledgment in the product documentation would be appreciated but is
 		not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be
+	2. Altered source versions must be plainly marked as such, and must not be
 		misrepresented as being the original software.
 
-    3. This notice may not be removed or altered from any source distribution.
+	3. This notice may not be removed or altered from any source distribution.
 */
 #include "win32/Win32Mouse.h"
 #include "win32/Win32InputManager.h"
@@ -47,11 +47,11 @@ void Win32Mouse::_initialize()
 	//Clear old state
 	mState.clear();
 
-    dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
-    dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-    dipdw.diph.dwObj        = 0;
-    dipdw.diph.dwHow        = DIPH_DEVICE;
-	dipdw.dwData            = MOUSE_DX_BUFFERSIZE;
+	dipdw.diph.dwSize = sizeof(DIPROPDWORD);
+	dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+	dipdw.diph.dwObj = 0;
+	dipdw.diph.dwHow = DIPH_DEVICE;
+	dipdw.dwData = MOUSE_DX_BUFFERSIZE;
 
 	if( FAILED(mDirectInput->CreateDevice(GUID_SysMouse, &mMouse, NULL)) )
 		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to create device" );
@@ -94,16 +94,16 @@ void Win32Mouse::capture()
 	mState.X.rel = mState.Y.rel = mState.Z.rel = 0;
 
 	DWORD entries = MOUSE_DX_BUFFERSIZE;
-    DIMOUSESTATE2 mouseState;
+	DIMOUSESTATE2 mouseState;
 
-    HRESULT hr = mMouse->GetDeviceState( sizeof(DIMOUSESTATE2), &mouseState);
+	HRESULT hr = mMouse->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState);
 	if( hr != DI_OK )
 	{
 		hr = mMouse->Acquire();
 		while( hr == DIERR_INPUTLOST )
 			hr = mMouse->Acquire();
 
-        hr = mMouse->GetDeviceState( sizeof(DIMOUSESTATE2), &mouseState);
+		hr = mMouse->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState);
 
 		//Perhaps the user just tabbed away, and coop settings
 		//are nonexclusive..so just ignore
@@ -111,13 +111,13 @@ void Win32Mouse::capture()
 			return;
 	}
 
-    mState.X.rel = mouseState.lX;
-    mState.Y.rel = mouseState.lY;
-    mState.Z.rel = mouseState.lZ;
-    for (unsigned int i=0;i<8;i++)
-        if(!_doMouseClick(i, mouseState.rgbButtons[i])) return;
+	mState.X.rel = mouseState.lX;
+	mState.Y.rel = mouseState.lY;
+	mState.Z.rel = mouseState.lZ;
+	for (unsigned int i = 0; i < 8; i++)
+		if (!_doMouseClick(i, mouseState.rgbButtons[i])) return;
 
-    bool axesMoved = mouseState.lX != 0 || mouseState.lY != 0 || mouseState.lZ != 0;
+	bool axesMoved = mouseState.lX != 0 || mouseState.lY != 0 || mouseState.lZ != 0;
 
 	if( axesMoved )
 	{
@@ -162,7 +162,7 @@ bool Win32Mouse::_doMouseClick( int mouseButton, unsigned char di )
 		if( mListener && mBuffered )
 			return mListener->mousePressed( MouseEvent( this, mState ), (MouseButtonID)mouseButton );
 	}
-    else if (!(di & 0x80) && mState.buttonDown((MouseButtonID)mouseButton))
+	else if (!(di & 0x80) && mState.buttonDown((MouseButtonID)mouseButton))
 	{
 		mState.buttons &= ~(1 << mouseButton); //turn the bit flag off
 		if( mListener && mBuffered )
