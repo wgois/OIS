@@ -167,8 +167,8 @@ void LinuxMouse::_processXEvents()
 			//Ignore out of bounds mouse if we just warped
 			if( mWarped )
 			{
-				if(event.xmotion.x < 5 || event.xmotion.x > mState.width - 5 ||
-				   event.xmotion.y < 5 || event.xmotion.y > mState.height - 5)
+				if(event.xmotion.x < 100 || event.xmotion.x > mState.width - 100 ||
+				   event.xmotion.y < 100 || event.xmotion.y > mState.height - 100)
 					continue;
 			}
 
@@ -201,8 +201,8 @@ void LinuxMouse::_processXEvents()
 				if( mouseFocusLost == false )
 				{
 					//Keep mouse in window (fudge factor)
-					if(event.xmotion.x < 5 || event.xmotion.x > mState.width - 5 ||
-					   event.xmotion.y < 5 || event.xmotion.y > mState.height - 5 )
+					if(event.xmotion.x < 100 || event.xmotion.x > mState.width - 100 ||
+					   event.xmotion.y < 100 || event.xmotion.y > mState.height - 100 )
 					{
 						oldXMouseX = mState.width >> 1;  //center x
 						oldXMouseY = mState.height >> 1; //center y
