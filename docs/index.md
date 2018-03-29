@@ -3,9 +3,13 @@
 [![Software License](https://img.shields.io/badge/license-zlib%2Flibpng-green.svg)](LICENSE.md)
 [![Build status](https://ci.appveyor.com/api/projects/status/8yenriuecb4pa4xj?svg=true)](https://ci.appveyor.com/project/Ybalrid/ois-0qdtw)
 [![Build Status](https://travis-ci.org/wgois/OIS.svg?branch=master)](https://travis-ci.org/wgois/OIS)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/wgois/OIS/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
+
+ - [Doxygen doumentation](doxygen/html/)
 
 ### Linux
 
