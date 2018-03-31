@@ -5,5 +5,5 @@ var searchData=
   ['level',['level',['../class_o_i_s_1_1_constant_effect.html#a0d7cc3b62c4330da644e7bd6b3946dc7',1,'OIS::ConstantEffect']]],
   ['license_2emd',['LICENSE.md',['../_l_i_c_e_n_s_e_8md.html',1,'']]],
   ['listfreedevices',['listFreeDevices',['../class_o_i_s_1_1_input_manager.html#a81f31eb36d56ce1f2ad6ea17485dcde0',1,'OIS::InputManager']]],
-  ['license',['License',['../md__home_ybalrid_dev_github__o_i_s__l_i_c_e_n_s_e.html',1,'']]]
+  ['license',['License',['../md__c_1__users_arthu__o_i_s__l_i_c_e_n_s_e.html',1,'']]]
 ];

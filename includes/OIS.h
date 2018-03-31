@@ -20,6 +20,22 @@ restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
 */
+
+
+/**\mainpage Object-oriented Input System
+ *
+ * Welcome to the documentation of OIS. 
+ *
+ *
+ * This website contains the documentation of the public API exposed by OIS.
+ *
+ * As the name of the library suggest, this is 100% Object-oriented.
+ * Every C++ classes from the library is located inside the OIS namespace.
+ *
+ * This project is licensed under the terms of the <a href="https://opensource.org/licenses/Zlib">zlib/libpng licence</a>
+ *
+ */
+
 #ifndef OIS_OISALL_H
 #define OIS_OISALL_H
 
