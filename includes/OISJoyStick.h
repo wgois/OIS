@@ -27,20 +27,21 @@ restrictions:
 
 namespace OIS
 {
-	/** @remarks default sensitivity for vector3 component of joystick */
-	#define OIS_JOYSTICK_VECTOR3_DEFAULT 2.28f
+/** @remarks default sensitivity for vector3 component of joystick */
+#define OIS_JOYSTICK_VECTOR3_DEFAULT 2.28f
 
 	//! POV / HAT Joystick component
 	class _OISExport Pov : public Component
 	{
 	public:
-		Pov() : Component(OIS_POV), direction(0) {}
+		Pov() :
+		 Component(OIS_POV), direction(0) {}
 
 		static const int Centered  = 0x00000000;
-		static const int North     = 0x00000001;
-		static const int South     = 0x00000010;
-		static const int East      = 0x00000100;
-		static const int West      = 0x00001000;
+		static const int North	 = 0x00000001;
+		static const int South	 = 0x00000010;
+		static const int East	  = 0x00000100;
+		static const int West	  = 0x00001000;
 		static const int NorthEast = 0x00000101;
 		static const int SouthEast = 0x00000110;
 		static const int NorthWest = 0x00001001;
@@ -53,7 +54,8 @@ namespace OIS
 	class _OISExport Slider : public Component
 	{
 	public:
-		Slider() : Component(OIS_Slider), abX(0), abY(0) {};
+		Slider() :
+		 Component(OIS_Slider), abX(0), abY(0){};
 		//! true if pushed, false otherwise
 		int abX, abY;
 	};
@@ -87,23 +89,23 @@ namespace OIS
 		//! internal method to reset all variables to initial values
 		void clear()
 		{
-			for( std::vector<bool>::iterator i = mButtons.begin(), e = mButtons.end(); i != e; ++i )
+			for(std::vector<bool>::iterator i = mButtons.begin(), e = mButtons.end(); i != e; ++i)
 			{
 				(*i) = false;
 			}
 
-			for( std::vector<Axis>::iterator i = mAxes.begin(), e = mAxes.end(); i != e; ++i )
+			for(std::vector<Axis>::iterator i = mAxes.begin(), e = mAxes.end(); i != e; ++i)
 			{
 				i->absOnly = true; //Currently, joysticks only report Absolute values
 				i->clear();
 			}
 
-			for( std::vector<Vector3>::iterator i = mVectors.begin(), e = mVectors.end(); i != e; ++i )
+			for(std::vector<Vector3>::iterator i = mVectors.begin(), e = mVectors.end(); i != e; ++i)
 			{
 				i->clear();
 			}
 
-			for( int i = 0; i < 4; ++i )
+			for(int i = 0; i < 4; ++i)
 			{
 				mPOV[i].direction = Pov::Centered;
 				mSliders[i].abX = mSliders[i].abY = 0;
@@ -115,10 +117,11 @@ namespace OIS
 	class _OISExport JoyStickEvent : public EventArg
 	{
 	public:
-		JoyStickEvent( Object* obj, const JoyStickState &st ) : EventArg(obj), state(st) {}
+		JoyStickEvent(Object* obj, const JoyStickState& st) :
+		 EventArg(obj), state(st) {}
 		virtual ~JoyStickEvent() {}
 
-		const JoyStickState &state;
+		const JoyStickState& state;
 
 	private:
 		// Prevent copying.
@@ -138,23 +141,38 @@ namespace OIS
 	public:
 		virtual ~JoyStickListener() {}
 		/** @remarks Joystick button down event */
-		virtual bool buttonPressed( const JoyStickEvent &arg, int button ) = 0;
+		virtual bool buttonPressed(const JoyStickEvent& arg, int button) = 0;
 
 		/** @remarks Joystick button up event */
-		virtual bool buttonReleased( const JoyStickEvent &arg, int button ) = 0;
+		virtual bool buttonReleased(const JoyStickEvent& arg, int button) = 0;
 
 		/** @remarks Joystick axis moved event */
-		virtual bool axisMoved( const JoyStickEvent &arg, int axis ) = 0;
+		virtual bool axisMoved(const JoyStickEvent& arg, int axis) = 0;
 
 		//-- Not so common control events, so are not required --//
 		//! Joystick Event, and sliderID
-		virtual bool sliderMoved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
+		virtual bool sliderMoved(const JoyStickEvent& arg, int index)
+		{
+			OIS_UNUSED(arg);
+			OIS_UNUSED(index);
+			return true;
+		}
 
 		//! Joystick Event, and povID
-		virtual bool povMoved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
+		virtual bool povMoved(const JoyStickEvent& arg, int index)
+		{
+			OIS_UNUSED(arg);
+			OIS_UNUSED(index);
+			return true;
+		}
 
 		//! Joystick Event, and Vector3ID
-		virtual bool vector3Moved( const JoyStickEvent &arg, int index) { OIS_UNUSED(arg); OIS_UNUSED(index); return true; }
+		virtual bool vector3Moved(const JoyStickEvent& arg, int index)
+		{
+			OIS_UNUSED(arg);
+			OIS_UNUSED(index);
+			return true;
+		}
 	};
 
 	/**
@@ -197,7 +215,7 @@ namespace OIS
 		@param joyListener
 			Send a pointer to a class derived from JoyStickListener or 0 to clear the callback
 		*/
-		virtual void setEventCallback( JoyStickListener *joyListener );
+		virtual void setEventCallback(JoyStickListener* joyListener);
 
 		/** @remarks Returns currently set callback.. or null */
 		JoyStickListener* getEventCallback() const;
@@ -212,7 +230,7 @@ namespace OIS
 		static const int MAX_AXIS = 32767;
 
 	protected:
-		JoyStick(const std::string &vendor, bool buffered, int devID, InputManager* creator);
+		JoyStick(const std::string& vendor, bool buffered, int devID, InputManager* creator);
 
 		//! Number of sliders
 		int mSliders;
@@ -224,7 +242,7 @@ namespace OIS
 		JoyStickState mState;
 
 		//! The callback listener
-		JoyStickListener *mListener;
+		JoyStickListener* mListener;
 
 		//! Adjustment factor for orientation vector accuracy
 		float mVector3Sensitivity;

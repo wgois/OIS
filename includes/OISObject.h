@@ -53,7 +53,7 @@ namespace OIS
 		virtual void capture() = 0;
 
 		/**	@remarks This may/may not) differentiate the different controllers based on (for instance) a port number (useful for console InputManagers) */
-		virtual int getID() const {return mDevID;}
+		virtual int getID() const { return mDevID; }
 
 		/**
 		@remarks
@@ -68,13 +68,12 @@ namespace OIS
 		virtual void _initialize() = 0;
 
 	protected:
-		Object(const std::string &vendor, Type iType, bool buffered,
-			   int devID, InputManager* creator) :
-					mVendor(vendor),
-					mType(iType),
-					mBuffered(buffered),
-					mDevID(devID),
-					mCreator(creator) {}
+		Object(const std::string& vendor, Type iType, bool buffered, int devID, InputManager* creator) :
+		 mVendor(vendor),
+		 mType(iType),
+		 mBuffered(buffered),
+		 mDevID(devID),
+		 mCreator(creator) {}
 
 		//! Vendor name if applicable/known
 		std::string mVendor;

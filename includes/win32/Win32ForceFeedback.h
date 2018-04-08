@@ -32,24 +32,25 @@ namespace OIS
 	class Win32ForceFeedback : public ForceFeedback
 	{
 		Win32ForceFeedback() {}
+
 	public:
 		Win32ForceFeedback(IDirectInputDevice8* pDIJoy, const DIDEVCAPS* pDIJoyCaps);
 		~Win32ForceFeedback();
 
 		/** @copydoc ForceFeedback::upload */
-		void upload( const Effect* effect );
+		void upload(const Effect* effect);
 
 		/** @copydoc ForceFeedback::modify */
-		void modify( const Effect* effect );
+		void modify(const Effect* effect);
 
 		/** @copydoc ForceFeedback::remove */
-		void remove( const Effect* effect );
+		void remove(const Effect* effect);
 
 		/** @copydoc ForceFeedback::setMasterGain */
-		void setMasterGain( float level );
+		void setMasterGain(float level);
 
 		/** @copydoc ForceFeedback::setAutoCenterMode */
-		void setAutoCenterMode( bool auto_on );
+		void setAutoCenterMode(bool auto_on);
 
 		/** @copydoc ForceFeedback::getFFAxesNumber */
 		short getFFAxesNumber();
@@ -62,7 +63,7 @@ namespace OIS
 			Internal use.. Used during enumeration to build a list of a devices
 			support effects.
 		*/
-		void _addEffectSupport( LPCDIEFFECTINFO pdei );
+		void _addEffectSupport(LPCDIEFFECTINFO pdei);
 
 		/**
 			@remarks
@@ -72,23 +73,20 @@ namespace OIS
 		void _addFFAxis();
 
 	protected:
-
 		//Specific Effect Settings
-		void _updateConstantEffect( const Effect* effect );
-		void _updateRampEffect( const Effect* effect );
-		void _updatePeriodicEffect( const Effect* effect );
-		void _updateConditionalEffect( const Effect* effect );
-		void _updateCustomEffect( const Effect* effect );
+		void _updateConstantEffect(const Effect* effect);
+		void _updateRampEffect(const Effect* effect);
+		void _updatePeriodicEffect(const Effect* effect);
+		void _updateConditionalEffect(const Effect* effect);
+		void _updateCustomEffect(const Effect* effect);
 
 		//Sets the common properties to all effects
-		void _setCommonProperties( DIEFFECT* diEffect, DWORD* rgdwAxes,
-									LONG* rglDirection, DIENVELOPE* diEnvelope, DWORD struct_size,
-									LPVOID struct_type, const Effect* effect, const Envelope* envelope );
+		void _setCommonProperties(DIEFFECT* diEffect, DWORD* rgdwAxes, LONG* rglDirection, DIENVELOPE* diEnvelope, DWORD struct_size, LPVOID struct_type, const Effect* effect, const Envelope* envelope);
 		//Actually do the upload
-		void _upload( GUID, DIEFFECT*, const Effect* );
+		void _upload(GUID, DIEFFECT*, const Effect*);
 
 		// Map of currently uploaded effects (handle => effect)
-		typedef std::map<int,LPDIRECTINPUTEFFECT> EffectList;
+		typedef std::map<int, LPDIRECTINPUTEFFECT> EffectList;
 		EffectList mEffectList;
 
 		//Simple unique handle creation - allows for upto 2+ billion effects

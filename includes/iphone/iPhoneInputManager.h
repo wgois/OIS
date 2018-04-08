@@ -28,33 +28,34 @@
 #include "iphone/iPhonePrereqs.h"
 
 #import <UIKit/UIKit.h>
-namespace OIS {
-    class iPhoneAccelerometer;
-    class iPhoneMultiTouch;
+namespace OIS
+{
+	class iPhoneAccelerometer;
+	class iPhoneMultiTouch;
 }
 
 @interface InputDelegate : UIView <UIAccelerometerDelegate> {
-    OIS::iPhoneAccelerometer    *accelerometerObject;
-    OIS::iPhoneMultiTouch       *touchObject;
+	OIS::iPhoneAccelerometer* accelerometerObject;
+	OIS::iPhoneMultiTouch* touchObject;
 }
 
-@property (assign) OIS::iPhoneAccelerometer     *accelerometerObject;
-@property (assign) OIS::iPhoneMultiTouch        *touchObject;
+@property (assign) OIS::iPhoneAccelerometer* accelerometerObject;
+@property (assign) OIS::iPhoneMultiTouch* touchObject;
 
 @end
 
 namespace OIS
 {
 
-    class iPhoneInputManager : public InputManager, public FactoryCreator
-    {
-    public:
-        iPhoneInputManager();
-        virtual ~iPhoneInputManager();
+	class iPhoneInputManager : public InputManager, public FactoryCreator
+	{
+	public:
+		iPhoneInputManager();
+		virtual ~iPhoneInputManager();
 
 		//InputManager Overrides
 		/** @copydoc InputManager::_initialize */
-		void _initialize( ParamList &paramList );
+		void _initialize(ParamList& paramList);
 
 		//FactoryCreator Overrides
 		/** @copydoc FactoryCreator::deviceList */
@@ -67,10 +68,10 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
@@ -80,31 +81,31 @@ namespace OIS
 		//! Internal method, used for flagging multi-touch as available/unavailable for creation
 		void _setMultiTouchUsed(bool used) { bMultiTouchUsed = used; }
 
-        //! Internal method, used for flagging accelerometer as available/unavailable for creation
+		//! Internal method, used for flagging accelerometer as available/unavailable for creation
 		void _setAccelerometerUsed(bool used) { bAccelerometerUsed = used; }
 
-        //! methodfor getting the delegate
-        InputDelegate * _getDelegate() { return mDelegate; }
+		//! methodfor getting the delegate
+		InputDelegate* _getDelegate() { return mDelegate; }
 
-        //! method for getting window
-        UIWindow * _getWindow() { return mWindow; }
+		//! method for getting window
+		UIWindow* _getWindow() { return mWindow; }
 
-    protected:
-        void _parseConfigSettings( ParamList& paramList );
+	protected:
+		void _parseConfigSettings(ParamList& paramList);
 
-        // iPhone stuff
-		UIWindow *mWindow;
-        InputDelegate *mDelegate;
+		// iPhone stuff
+		UIWindow* mWindow;
+		InputDelegate* mDelegate;
 
-        // settings
-        bool mHideMouse;
+		// settings
+		bool mHideMouse;
 
 		//! Used to know if we used up multi-touch device
 		bool bMultiTouchUsed;
 
-        //! Used to know if we used up accelerometer
+		//! Used to know if we used up accelerometer
 		bool bAccelerometerUsed;
-    };
+	};
 }
 
 #endif

@@ -27,14 +27,13 @@ restrictions:
 
 #ifdef OIS_WIN32_PLATFORM
 #pragma warning(push)
-#pragma warning(disable:4275) //Silence warning from MSVC when using std::exception as the base class of a dll-interface class (OIS::Exception)
+#pragma warning(disable : 4275) //Silence warning from MSVC when using std::exception as the base class of a dll-interface class (OIS::Exception)
 #endif
 
 namespace OIS
 {
 	//! Simple enum's for dealing with exceptions
-    enum OIS_ERROR
-	{
+	enum OIS_ERROR {
 		E_InputDisconnected,
 		E_InputDeviceNonExistant,
 		E_InputDeviceNotSupported,
@@ -57,11 +56,11 @@ namespace OIS
 	{
 	public:
 		//! Creates exception object
-		Exception( OIS_ERROR err, const char* str, int line, const char *file )
-			: eType(err), eLine(line), eFile(file), eText(str) {}
+		Exception(OIS_ERROR err, const char* str, int line, const char* file) :
+		 eType(err), eLine(line), eFile(file), eText(str) {}
 
-		Exception(const Exception& other)
-			: eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) {}
+		Exception(const Exception& other) :
+		 eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) {}
 
 		~Exception() throw() {}
 
@@ -83,12 +82,14 @@ namespace OIS
 }
 
 //! Use this macro to handle exceptions easily
-#define OIS_EXCEPT( err, str ) throw( OIS::Exception(err, str, __LINE__, __FILE__) )
+#define OIS_EXCEPT(err, str) throw(OIS::Exception(err, str, __LINE__, __FILE__))
 
 //TODO choose what to do with this...
 //#define OIS_WARN( err, str ) throw( OIS::Exception(err, str, __LINE__, __FILE__) )
-#define OIS_WARN( err, str ) do {} while(0)
-
+#define OIS_WARN(err, str) \
+	do                     \
+	{                      \
+	} while(0)
 
 #ifdef OIS_WIN32_PLATFORM
 #pragma warning(pop)

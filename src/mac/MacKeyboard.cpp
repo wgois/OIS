@@ -34,32 +34,32 @@
 #include <list>
 #include <string>
 
-const EventTypeSpec DownSpec[] = {{kEventClassKeyboard, kEventRawKeyDown},	//non - repeats
-							{kEventClassKeyboard, kEventRawKeyRepeat}}; //repeats
-const EventTypeSpec UpSpec = {kEventClassKeyboard, kEventRawKeyUp},
-			  ModSpec = {kEventClassKeyboard, kEventRawKeyModifiersChanged};
+const EventTypeSpec DownSpec[] = { { kEventClassKeyboard, kEventRawKeyDown },	 //non - repeats
+								   { kEventClassKeyboard, kEventRawKeyRepeat } }; //repeats
+const EventTypeSpec UpSpec	 = { kEventClassKeyboard, kEventRawKeyUp },
+					ModSpec	= { kEventClassKeyboard, kEventRawKeyModifiersChanged };
 
-const EventTypeSpec AllSpecs[] = {{kEventClassKeyboard, kEventRawKeyDown},
-						  {kEventClassKeyboard, kEventRawKeyRepeat},
-						  {kEventClassKeyboard, kEventRawKeyUp},
-						  {kEventClassKeyboard, kEventRawKeyModifiersChanged}};
+const EventTypeSpec AllSpecs[] = { { kEventClassKeyboard, kEventRawKeyDown },
+								   { kEventClassKeyboard, kEventRawKeyRepeat },
+								   { kEventClassKeyboard, kEventRawKeyUp },
+								   { kEventClassKeyboard, kEventRawKeyModifiersChanged } };
 
 using namespace OIS;
 
 //-------------------------------------------------------------------//
-MacKeyboard::MacKeyboard( InputManager* creator, bool buffered, bool repeat )
-	: Keyboard(creator->inputSystemName(), buffered, 0, creator)
+MacKeyboard::MacKeyboard(InputManager* creator, bool buffered, bool repeat) :
+ Keyboard(creator->inputSystemName(), buffered, 0, creator)
 {
 	keyDownEventRef = NULL;
-	keyUpEventRef = NULL;
-	keyModEventRef = NULL;
+	keyUpEventRef   = NULL;
+	keyModEventRef  = NULL;
 
 	useRepeat = repeat;
 
 	// Get a so-called "Univeral procedure pointer" for our callback
-	keyDownUPP = NewEventHandlerUPP( KeyDownWrapper );
-	keyUpUPP   = NewEventHandlerUPP( KeyUpWrapper );
-	keyModUPP  = NewEventHandlerUPP( KeyModWrapper );
+	keyDownUPP = NewEventHandlerUPP(KeyDownWrapper);
+	keyUpUPP   = NewEventHandlerUPP(KeyUpWrapper);
+	keyModUPP  = NewEventHandlerUPP(KeyModWrapper);
 
 	// populate the conversion map
 	populateKeyConversion();
@@ -72,13 +72,13 @@ MacKeyboard::~MacKeyboard()
 {
 	// Remove our handlers so that this instance doesn't get called
 	// after it is deleted
-	if (keyDownEventRef != NULL)
+	if(keyDownEventRef != NULL)
 		RemoveEventHandler(keyDownEventRef);
 
-	if (keyUpEventRef != NULL)
+	if(keyUpEventRef != NULL)
 		RemoveEventHandler(keyUpEventRef);
 
-	if (keyModEventRef != NULL)
+	if(keyModEventRef != NULL)
 		RemoveEventHandler(keyModEventRef);
 
 	// dispose of our UPPs
@@ -95,104 +95,102 @@ void MacKeyboard::_initialize()
 {
 	EventTargetRef event = ((MacInputManager*)mCreator)->_getEventTarget();
 
-	memset( &KeyBuffer, 0, 256 );
-	mModifiers = 0;
+	memset(&KeyBuffer, 0, 256);
+	mModifiers  = 0;
 	prevModMask = 0;
 
 	// just in case this gets called after the first time.. better safe
-	if (keyDownEventRef != NULL)
+	if(keyDownEventRef != NULL)
 		RemoveEventHandler(keyDownEventRef);
 
-	if (keyUpEventRef != NULL)
+	if(keyUpEventRef != NULL)
 		RemoveEventHandler(keyUpEventRef);
 
-	if (keyModEventRef != NULL)
+	if(keyModEventRef != NULL)
 		RemoveEventHandler(keyModEventRef);
 
 	keyDownEventRef = NULL;
-	keyUpEventRef = NULL;
-	keyModEventRef = NULL;
+	keyUpEventRef   = NULL;
+	keyModEventRef  = NULL;
 
 	OSStatus status;
 	// send both elements of downspec array... second index is for repeat events
-	if ( useRepeat )
-		status = InstallEventHandler( event, keyDownUPP, 2, DownSpec, this, &keyDownEventRef );
+	if(useRepeat)
+		status = InstallEventHandler(event, keyDownUPP, 2, DownSpec, this, &keyDownEventRef);
 	else
-		status = InstallEventHandler( event, keyDownUPP, 1, DownSpec, this, &keyDownEventRef );
+		status = InstallEventHandler(event, keyDownUPP, 1, DownSpec, this, &keyDownEventRef);
 
-	if (status != noErr)
-		OIS_EXCEPT( E_General, "MacKeyboard::_initialize >> Error loading KeyDown event handler" );
+	if(status != noErr)
+		OIS_EXCEPT(E_General, "MacKeyboard::_initialize >> Error loading KeyDown event handler");
 
-	if (InstallEventHandler( event, keyUpUPP, 1, &UpSpec, this, &keyUpEventRef ) != noErr)
-		OIS_EXCEPT( E_General, "MacKeyboard::_initialize >> Error loading KeyUp event handler" );
+	if(InstallEventHandler(event, keyUpUPP, 1, &UpSpec, this, &keyUpEventRef) != noErr)
+		OIS_EXCEPT(E_General, "MacKeyboard::_initialize >> Error loading KeyUp event handler");
 
-	if (InstallEventHandler( event, keyModUPP, 1, &ModSpec, this, &keyModEventRef ) != noErr )
-		OIS_EXCEPT( E_General, "MacKeyboard::_initialize >> Error loading Keymods event handler" );
+	if(InstallEventHandler(event, keyModUPP, 1, &ModSpec, this, &keyModEventRef) != noErr)
+		OIS_EXCEPT(E_General, "MacKeyboard::_initialize >> Error loading Keymods event handler");
 }
 
 //-------------------------------------------------------------------//
-bool MacKeyboard::isKeyDown( KeyCode key ) const
+bool MacKeyboard::isKeyDown(KeyCode key) const
 {
 	return (bool)KeyBuffer[key];
 }
-
 
 //-------------------------------------------------------------------//
 void MacKeyboard::capture()
 {
 	// if not buffered just return, we update the unbuffered automatically
-	if ( !mBuffered || !mListener )
+	if(!mBuffered || !mListener)
 		return;
 
 	// run through our event stack
 	eventStack::iterator cur_it;
 
-	for (cur_it = pendingEvents.begin(); cur_it != pendingEvents.end(); cur_it++)
+	for(cur_it = pendingEvents.begin(); cur_it != pendingEvents.end(); cur_it++)
 	{
 
-		if ( (*cur_it).Type == MAC_KEYDOWN || (*cur_it).Type == MAC_KEYREPEAT)
-			mListener->keyPressed( (*cur_it).Event );
-		else if ( (*cur_it).Type == MAC_KEYUP )
-			mListener->keyReleased( (*cur_it).Event );
+		if((*cur_it).Type == MAC_KEYDOWN || (*cur_it).Type == MAC_KEYREPEAT)
+			mListener->keyPressed((*cur_it).Event);
+		else if((*cur_it).Type == MAC_KEYUP)
+			mListener->keyReleased((*cur_it).Event);
 	}
 
 	pendingEvents.clear();
 }
 
-
 //-------------------------------------------------------------------//
-std::string& MacKeyboard::getAsString( KeyCode key )
+std::string& MacKeyboard::getAsString(KeyCode key)
 {
-    CGKeyCode deviceKeycode;
+	CGKeyCode deviceKeycode;
 
-    // Convert OIS KeyCode back into device keycode
-    for(VirtualtoOIS_KeyMap::iterator it = keyConversion.begin(); it != keyConversion.end(); ++it)
-    {
-        if(it->second == key)
-            deviceKeycode = it->first;
-    }
+	// Convert OIS KeyCode back into device keycode
+	for(VirtualtoOIS_KeyMap::iterator it = keyConversion.begin(); it != keyConversion.end(); ++it)
+	{
+		if(it->second == key)
+			deviceKeycode = it->first;
+	}
 
-    UniChar unicodeString[1];
-    UniCharCount actualStringLength = 0;
+	UniChar unicodeString[1];
+	UniCharCount actualStringLength = 0;
 
-    CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-    CGEventRef ref = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
-    CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
-//    NSLog([NSString stringWithFormat:@"%C\n", unicodeString[0]]);
-    getString = unicodeString[0];
+	CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+	CGEventRef ref		  = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
+	CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
+	//    NSLog([NSString stringWithFormat:@"%C\n", unicodeString[0]]);
+	getString = unicodeString[0];
 
 	return getString;
 }
 
 //-------------------------------------------------------------------//
-void MacKeyboard::setBuffered( bool buffered )
+void MacKeyboard::setBuffered(bool buffered)
 {
 	mBuffered = buffered;
 }
 
 #include <iostream>
 //-------------------------------------------------------------------//
-void MacKeyboard::_keyDownCallback( EventRef theEvent )
+void MacKeyboard::_keyDownCallback(EventRef theEvent)
 {
 
 	UInt32 virtualKey;
@@ -201,10 +199,12 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 	unsigned int time = (unsigned int)GetEventTime(theEvent);
 
 	status = GetEventParameter(theEvent,
-					'kcod',			// get it in virtual keycode
-					typeUInt32, NULL,	// desired return type
-					sizeof(UInt32), NULL, 	// bufsize
-					&virtualKey );
+							   'kcod', // get it in virtual keycode
+							   typeUInt32,
+							   NULL, // desired return type
+							   sizeof(UInt32),
+							   NULL, // bufsize
+							   &virtualKey);
 
 	KeyCode kc = keyConversion[virtualKey];
 
@@ -213,14 +213,14 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 	char macChar;
 
 	// TODO clean this up
-	if (mTextMode == Unicode)
+	if(mTextMode == Unicode)
 	{
 		//get string size
 		UInt32 stringsize;
 		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, 0, &stringsize, NULL);
 		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar)*10, NULL, &text );
-		status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar) * 10, &stringsize, &text );
-//     std::cout << "String length: " << stringsize << std::endl;
+		status = GetEventParameter(theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar) * 10, &stringsize, &text);
+		//     std::cout << "String length: " << stringsize << std::endl;
 
 		//wstring unitext;
 		//for (int i=0;i<10;i++) unitext += (wchar_t)text[i];
@@ -230,92 +230,89 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 		{
 			// for each unicode char, send an event
 			stringsize--; // no termination char
-			for ( int i = 0; i < stringsize; i++ )
+			for(int i = 0; i < stringsize; i++)
 			{
-				injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)text[i] );
+				injectEvent(kc, time, MAC_KEYDOWN, (unsigned int)text[i]);
 			}
 		}
 	}
-	else if (mTextMode == Ascii)
+	else if(mTextMode == Ascii)
 	{
 
-		status = GetEventParameter( theEvent, 'kchr', typeChar, NULL, sizeof(char), NULL, &macChar );
-		injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)macChar );
+		status = GetEventParameter(theEvent, 'kchr', typeChar, NULL, sizeof(char), NULL, &macChar);
+		injectEvent(kc, time, MAC_KEYDOWN, (unsigned int)macChar);
 	}
 	else
 	{
-		injectEvent( kc, time, MAC_KEYDOWN );
+		injectEvent(kc, time, MAC_KEYDOWN);
 	}
 }
 
 //-------------------------------------------------------------------//
-void MacKeyboard::_keyUpCallback( EventRef theEvent )
+void MacKeyboard::_keyUpCallback(EventRef theEvent)
 {
 	UInt32 virtualKey;
 
 	OSStatus status;
-	status = GetEventParameter( theEvent, kEventParamKeyCode, typeUInt32,
-								NULL, sizeof(UInt32), NULL, &virtualKey );
+	status = GetEventParameter(theEvent, kEventParamKeyCode, typeUInt32, NULL, sizeof(UInt32), NULL, &virtualKey);
 
 	KeyCode kc = keyConversion[virtualKey];
-	injectEvent( kc, (int)GetEventTime(theEvent), MAC_KEYUP );
-
+	injectEvent(kc, (int)GetEventTime(theEvent), MAC_KEYUP);
 }
 
 //-------------------------------------------------------------------//
-void MacKeyboard::_modChangeCallback( EventRef theEvent )
+void MacKeyboard::_modChangeCallback(EventRef theEvent)
 {
 	UInt32 mods;
 
 	OSStatus status;
-	status = GetEventParameter( theEvent, kEventParamKeyModifiers,
-								typeUInt32, NULL, sizeof(UInt32), NULL, &mods );
+	status = GetEventParameter(theEvent, kEventParamKeyModifiers, typeUInt32, NULL, sizeof(UInt32), NULL, &mods);
 
 	// find the changed bit
-	UInt32 change = prevModMask ^ mods;
+	UInt32 change		  = prevModMask ^ mods;
 	MacEventType newstate = ((change & prevModMask) > 0) ? MAC_KEYUP : MAC_KEYDOWN;
-	unsigned int time = (int)GetEventTime( theEvent );
+	unsigned int time	 = (int)GetEventTime(theEvent);
 
 	//cout << "preMask: " << hex << prevModMask << endl;
 	//cout << "ModMask: " << hex << mods << endl;
 	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
 
 	// TODO test modifiers on a full keyboard to check if different mask for left/right
-	switch (change)
+	switch(change)
 	{
-		case (shiftKey): // shift
+		case(shiftKey): // shift
 			mModifiers &= (newstate == MAC_KEYDOWN) ? Shift : ~Shift;
-			injectEvent( KC_LSHIFT, time, newstate );
+			injectEvent(KC_LSHIFT, time, newstate);
 			//injectEvent( KC_RSHIFT, time, newstate );
 			break;
 
-		case (optionKey): // option (alt)
+		case(optionKey): // option (alt)
 			mModifiers &= (newstate == MAC_KEYDOWN) ? Alt : -Alt;
 			//injectEvent( KC_RMENU, time, newstate );
-			injectEvent( KC_LMENU, time, newstate );
+			injectEvent(KC_LMENU, time, newstate);
 			break;
 
-		case (controlKey): // Ctrl
+		case(controlKey): // Ctrl
 			mModifiers += (newstate == MAC_KEYDOWN) ? Ctrl : -Ctrl;
 			//injectEvent( KC_RCONTROL, time, newstate );
-			injectEvent( KC_LCONTROL, time, newstate );
+			injectEvent(KC_LCONTROL, time, newstate);
 			break;
 
-		case (cmdKey): // apple
+		case(cmdKey): // apple
 			//injectEvent( KC_RWIN, time, newstate );
-			injectEvent( KC_LWIN, time, newstate );
+			injectEvent(KC_LWIN, time, newstate);
 			break;
 
-		case (kEventKeyModifierFnMask): // fn key
-			injectEvent( KC_APPS, time, newstate );
+		case(kEventKeyModifierFnMask): // fn key
+			injectEvent(KC_APPS, time, newstate);
 			break;
 
-		case (kEventKeyModifierNumLockMask): // numlock
-			injectEvent( KC_NUMLOCK, time, newstate );
+		case(kEventKeyModifierNumLockMask): // numlock
+			injectEvent(KC_NUMLOCK, time, newstate);
 			break;
 
-		case (alphaLock): // caps lock
-			injectEvent( KC_CAPITAL, time, newstate );
+		case(alphaLock): // caps lock
+			injectEvent(KC_CAPITAL, time, newstate);
 			break;
 	}
 
@@ -323,23 +320,20 @@ void MacKeyboard::_modChangeCallback( EventRef theEvent )
 }
 
 //-------------------------------------------------------------------//
-void MacKeyboard::injectEvent( KeyCode kc, unsigned int time, MacEventType type, unsigned int txt )
+void MacKeyboard::injectEvent(KeyCode kc, unsigned int time, MacEventType type, unsigned int txt)
 {
 	// set to 1 if this is either a keydown or repeat
-	KeyBuffer[kc] = ( type == MAC_KEYUP ) ? 0 : 1;
+	KeyBuffer[kc] = (type == MAC_KEYUP) ? 0 : 1;
 
-	if ( mBuffered && mListener )
-		pendingEvents.push_back( MacKeyStackEvent( KeyEvent(this, kc, txt), type) );
+	if(mBuffered && mListener)
+		pendingEvents.push_back(MacKeyStackEvent(KeyEvent(this, kc, txt), type));
 }
-
 
 //-------------------------------------------------------------------//
-void MacKeyboard::copyKeyStates( char keys[256] ) const
+void MacKeyboard::copyKeyStates(char keys[256]) const
 {
-	memcpy( keys, KeyBuffer, 256 );
+	memcpy(keys, KeyBuffer, 256);
 }
-
-
 
 //-------------------------------------------------------------------//
 void MacKeyboard::populateKeyConversion()
@@ -358,7 +352,7 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x19, KC_9));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1D, KC_0));
 
-	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x33, KC_BACK));  // might be wrong
+	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x33, KC_BACK)); // might be wrong
 
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1B, KC_MINUS));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x18, KC_EQUALS));
@@ -375,7 +369,7 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x39, KC_CAPITAL));
 
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x30, KC_TAB));
-	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x24, KC_RETURN));  // double check return/enter
+	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x24, KC_RETURN)); // double check return/enter
 
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_colon, KC_COLON));	 // no colon?
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x29, KC_SEMICOLON));
@@ -470,7 +464,6 @@ void MacKeyboard::populateKeyConversion()
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Print, KC_SYSRQ));		// ??
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Scroll_Lock, KC_SCROLL)); // ??
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Pause, KC_PAUSE));		// ??
-
 
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Insert, KC_INSERT));	  // ??
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x75, KC_DELETE)); // del under help key?

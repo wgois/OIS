@@ -34,40 +34,39 @@ using namespace OIS;
 
 namespace OIS
 {
-   class CocoaMouse : public Mouse
-    {
-   public:
-       CocoaMouse( InputManager* creator, bool buffered );
-       virtual ~CocoaMouse();
+	class CocoaMouse : public Mouse
+	{
+	public:
+		CocoaMouse(InputManager* creator, bool buffered);
+		virtual ~CocoaMouse();
 
-       /** @copydoc Object::setBuffered */
-       virtual void setBuffered(bool buffered);
+		/** @copydoc Object::setBuffered */
+		virtual void setBuffered(bool buffered);
 
-       /** @copydoc Object::capture */
-       virtual void capture();
+		/** @copydoc Object::capture */
+		virtual void capture();
 
-       /** @copydoc Object::queryInterface */
-       virtual Interface* queryInterface(Interface::IType type) {return 0;}
+		/** @copydoc Object::queryInterface */
+		virtual Interface* queryInterface(Interface::IType type) { return 0; }
 
-       /** @copydoc Object::_initialize */
-       virtual void _initialize();
+		/** @copydoc Object::_initialize */
+		virtual void _initialize();
 
-        MouseState * getMouseStatePtr() { return &(mState); }
+		MouseState* getMouseStatePtr() { return &(mState); }
 
-   protected:
-        CocoaMouseView *mResponder;
-   };
+	protected:
+		CocoaMouseView* mResponder;
+	};
 }
 
-@interface CocoaMouseView : NSView
-{
-    CocoaMouse *oisMouseObj;
-    MouseState mTempState;
-    bool mNeedsToRegainFocus;
-    bool mMouseWarped;
+@interface CocoaMouseView : NSView {
+	CocoaMouse* oisMouseObj;
+	MouseState mTempState;
+	bool mNeedsToRegainFocus;
+	bool mMouseWarped;
 }
 
-- (void)setOISMouseObj:(CocoaMouse *)obj;
+- (void)setOISMouseObj:(CocoaMouse*)obj;
 - (void)capture;
 
 @end

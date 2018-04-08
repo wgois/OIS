@@ -34,30 +34,30 @@ namespace OIS
 	class WiiMoteForceFeedback : public ForceFeedback
 	{
 	public:
-		WiiMoteForceFeedback(cWiiMote &wiiMote);
+		WiiMoteForceFeedback(cWiiMote& wiiMote);
 		~WiiMoteForceFeedback();
 
 		/** @copydoc ForceFeedback::upload */
-		void upload( const Effect* effect );
+		void upload(const Effect* effect);
 
 		/** @copydoc ForceFeedback::modify */
-		void modify( const Effect* effect );
+		void modify(const Effect* effect);
 
 		/** @copydoc ForceFeedback::remove */
-		void remove( const Effect* effect );
+		void remove(const Effect* effect);
 
 		/** @copydoc ForceFeedback::setMasterGain */
-		void setMasterGain( float level ) {}
+		void setMasterGain(float level) {}
 
 		/** @copydoc ForceFeedback::setAutoCenterMode */
-		void setAutoCenterMode( bool auto_on ) {}
+		void setAutoCenterMode(bool auto_on) {}
 
 		/** @copydoc ForceFeedback::getFFAxesNumber */
 		short getFFAxesNumber() { return 1; }
 
 	protected:
 		//! The WiiMote associated with this effect interface
-		cWiiMote &mWiiMote;
+		cWiiMote& mWiiMote;
 
 		//! The handle of the one and only allowed effect
 		int mHandle;

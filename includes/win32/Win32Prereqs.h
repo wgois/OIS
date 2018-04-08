@@ -30,7 +30,7 @@ restrictions:
 #include <dinput.h>
 
 #ifdef OIS_WIN32_XINPUT_SUPPORT
-#	include <XInput.h>
+#include <XInput.h>
 #endif
 
 //Max number of elements to collect from buffered DirectInput
@@ -40,8 +40,8 @@ restrictions:
 
 //MinGW defines
 #if defined(OIS_MINGW_COMPILER)
-#	undef FIELD_OFFSET
-#	define FIELD_OFFSET offsetof
+#undef FIELD_OFFSET
+#define FIELD_OFFSET offsetof
 #endif
 
 namespace OIS
@@ -61,7 +61,7 @@ namespace OIS
 		GUID deviceID;
 		GUID productGuid;
 		std::string vendor;
-        bool isXInput;
+		bool isXInput;
 		int xInputDev;
 	};
 

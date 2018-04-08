@@ -40,7 +40,8 @@ namespace OIS
 	class HidInfo
 	{
 	public:
-		HidInfo() : type(OISUnknown), numButtons(0), numHats(0), numAxes(0), inUse(false), interface(0)
+		HidInfo() :
+		 type(OISUnknown), numButtons(0), numHats(0), numAxes(0), inUse(false), interface(0)
 		{
 		}
 
@@ -57,7 +58,7 @@ namespace OIS
 		bool inUse;
 
 		//Used for opening a read/write/tracking interface to device
-		IOHIDDeviceInterface **interface;
+		IOHIDDeviceInterface** interface;
 	};
 
 	typedef std::vector<HidInfo*> HidInfoList;
@@ -84,10 +85,10 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);

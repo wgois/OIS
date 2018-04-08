@@ -52,7 +52,7 @@ namespace OIS
 		@returns
 			Version name
 		*/
-		const std::string &getVersionName();
+		const std::string& getVersionName();
 
 		/**
 		@remarks
@@ -62,7 +62,7 @@ namespace OIS
 		@returns
 			A pointer to the created manager, or raises Exception
 		*/
-		static InputManager* createInputSystem( std::size_t winHandle );
+		static InputManager* createInputSystem(std::size_t winHandle);
 
 		/**
 		@remarks
@@ -73,7 +73,7 @@ namespace OIS
 		@returns
 			A pointer to the created manager, or raises Exception
 		*/
-		static InputManager* createInputSystem( ParamList &paramList );
+		static InputManager* createInputSystem(ParamList& paramList);
 
 		/**
 		@remarks
@@ -94,7 +94,7 @@ namespace OIS
 		@param iType
 			Type that you are interested in
 		*/
-		int getNumberOfDevices( Type iType );
+		int getNumberOfDevices(Type iType);
 
 		/**
 		@remarks
@@ -109,12 +109,12 @@ namespace OIS
 			Tries to create an object with the specified vendor. If you have no
 			preference of vendor, leave vender as default (""). Raises exception on failure
 		*/
-		Object* createInputObject( Type iType, bool bufferMode, const std::string &vendor = "");
+		Object* createInputObject(Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/**
 		@remarks Destroys Input Object
 		*/
-		void destroyInputObject( Object* obj );
+		void destroyInputObject(Object* obj);
 
 		/**
 		@remarks
@@ -137,7 +137,7 @@ namespace OIS
 			You can safely delete the factory instance once you have removed it or shut down the
 			input manager.
 		*/
-		void addFactoryCreator( FactoryCreator* factory );
+		void addFactoryCreator(FactoryCreator* factory);
 
 		/**
 		@remarks
@@ -147,14 +147,13 @@ namespace OIS
 		@notes
 			Removing a factory will automatically destroy any Objects created from the factory
 		*/
-		void removeFactoryCreator( FactoryCreator* factory );
+		void removeFactoryCreator(FactoryCreator* factory);
 
 		//! All generic devices OIS supports internally (if they are compiled in)
-		enum AddOnFactories
-		{
-			AddOn_All = 0,		//All Devices
-			AddOn_LIRC = 1,		//PC Linux Infrared Remote Control
-			AddOn_WiiMote = 2	//PC WiiMote Support
+		enum AddOnFactories {
+			AddOn_All	 = 0, //All Devices
+			AddOn_LIRC	= 1, //PC Linux Infrared Remote Control
+			AddOn_WiiMote = 2  //PC WiiMote Support
 		};
 
 		/**
@@ -171,7 +170,7 @@ namespace OIS
 		@remarks
 			Called from createInputSystem, gives derived input class a chance to setup after it is created
 		*/
-		virtual void _initialize(ParamList &paramList) = 0;
+		virtual void _initialize(ParamList& paramList) = 0;
 
 		/**
 		@remarks
@@ -198,8 +197,8 @@ namespace OIS
 		const std::string mInputSystemName;
 
 		//! Extra factory (not enabled by default)
-		LIRCFactoryCreator *m_lircSupport;
-		WiiMoteFactoryCreator *m_wiiMoteSupport;
+		LIRCFactoryCreator* m_lircSupport;
+		WiiMoteFactoryCreator* m_wiiMoteSupport;
 
 	private:
 		// Prevent copying.

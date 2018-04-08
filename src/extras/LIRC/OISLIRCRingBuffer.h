@@ -81,7 +81,7 @@ namespace OIS
 		int smallMask;
 
 		// Buffer holding the actual event buffers
-		LIRCEvent *buffer;
+		LIRCEvent* buffer;
 
 		//! Index of next writable byte. Set by RingBuffer_AdvanceWriteIndex.
 		volatile int writeIndex;
@@ -90,17 +90,17 @@ namespace OIS
 		volatile int readIndex;
 
 	public:
-		LIRCRingBuffer( unsigned int numEntries )
+		LIRCRingBuffer(unsigned int numEntries)
 		{
-			numEntries = RoundUpToNextPowerOf2( numEntries );
+			numEntries = RoundUpToNextPowerOf2(numEntries);
 
 			//2 bytes per short
 			bufferSize = (int)numEntries;
-			buffer = new LIRCEvent[numEntries];
+			buffer	 = new LIRCEvent[numEntries];
 
 			Flush();
 
-			bigMask = (int)(numEntries*2)-1;
+			bigMask   = (int)(numEntries * 2) - 1;
 			smallMask = (int)(numEntries)-1;
 		}
 
@@ -109,107 +109,101 @@ namespace OIS
 			delete buffer;
 		}
 
-		unsigned int RoundUpToNextPowerOf2( unsigned int n )
+		unsigned int RoundUpToNextPowerOf2(unsigned int n)
 		{
 			int numBits = 0;
-			if( ((n-1) & n) == 0)
-			return n; //Already Power of two.
+			if(((n - 1) & n) == 0)
+				return n; //Already Power of two.
 
-			while( n > 0 )
+			while(n > 0)
 			{
-				n= n>>1;
+				n = n >> 1;
 				numBits++;
 			}
-			return (unsigned int)(1<<numBits);
+			return (unsigned int)(1 << numBits);
 		}
 
-
-		int GetReadAvailable( )
+		int GetReadAvailable()
 		{
-			return ( (writeIndex - readIndex) & bigMask );
+			return ((writeIndex - readIndex) & bigMask);
 		}
 
-
-		int GetWriteAvailable( )
+		int GetWriteAvailable()
 		{
-			return ( bufferSize - GetReadAvailable());
+			return (bufferSize - GetReadAvailable());
 		}
 
-
-		int Write( LIRCEvent *data, int numEntries )
+		int Write(LIRCEvent* data, int numEntries)
 		{
 			int size1 = 0, size2 = 0, numWritten;
 			int data1Ptr = 0, data2Ptr = 0;
 
-			numWritten = GetWriteRegions( numEntries, data1Ptr, size1, data2Ptr, size2 );
+			numWritten = GetWriteRegions(numEntries, data1Ptr, size1, data2Ptr, size2);
 
-			if( size2 > 0 )
+			if(size2 > 0)
 			{
 				//copy to two parts
-				memcpy( &buffer[data1Ptr], data, sizeof(LIRCEvent) * size1 );
+				memcpy(&buffer[data1Ptr], data, sizeof(LIRCEvent) * size1);
 				//Array.Copy( data, offsetPtr, buffer, data1Ptr, size1 );
-				memcpy( &buffer[data2Ptr], &data[size1], sizeof(LIRCEvent) * size2 );
+				memcpy(&buffer[data2Ptr], &data[size1], sizeof(LIRCEvent) * size2);
 				//Array.Copy( data, offsetPtr + size1, buffer, data2Ptr, size2 );
 			}
 			else
-			{	//Copy all continous
-				memcpy( &buffer[data1Ptr], data, sizeof(LIRCEvent) * size1 );
+			{ //Copy all continous
+				memcpy(&buffer[data1Ptr], data, sizeof(LIRCEvent) * size1);
 				//Array.Copy( data, offsetPtr, buffer, data1Ptr, size1 );
 			}
-			AdvanceWriteIndex( numWritten );
+			AdvanceWriteIndex(numWritten);
 			return numWritten;
 		}
-
 
 		/// <summary>
 		/// Reads requested number of entries into sent array.
 		/// Returns number written
 		/// </summary>
-		int Read( LIRCEvent *data, int numEntries )
+		int Read(LIRCEvent* data, int numEntries)
 		{
 			int size1 = 0, size2 = 0, numRead, data1Ptr = 0, data2Ptr = 0;
 
-			numRead = GetReadRegions( numEntries, data1Ptr, size1, data2Ptr, size2 );
+			numRead = GetReadRegions(numEntries, data1Ptr, size1, data2Ptr, size2);
 
-			if( size2 > 0 )
+			if(size2 > 0)
 			{
-				memcpy( data, &buffer[data1Ptr], sizeof(LIRCEvent) * size1 );
+				memcpy(data, &buffer[data1Ptr], sizeof(LIRCEvent) * size1);
 				//Array.Copy( buffer, data1Ptr, data, 0, size1 );
-				memcpy( &data[size1], &buffer[data2Ptr], sizeof(LIRCEvent) * size2 );
+				memcpy(&data[size1], &buffer[data2Ptr], sizeof(LIRCEvent) * size2);
 				//Array.Copy( buffer, data2Ptr, data, size1, size2 );
 			}
 			else
-				memcpy( data, &buffer[data1Ptr], sizeof(LIRCEvent) * size1 );
-				//Array.Copy( buffer, data1Ptr, data, 0, size1 );
+				memcpy(data, &buffer[data1Ptr], sizeof(LIRCEvent) * size1);
+			//Array.Copy( buffer, data1Ptr, data, 0, size1 );
 
-			AdvanceReadIndex( numRead );
+			AdvanceReadIndex(numRead);
 			return numRead;
 		}
 
 	private:
-
-		int GetWriteRegions( int numEntries, int &dataPtr1, int &sizePtr1,
-							 int &dataPtr2, int &sizePtr2 )
+		int GetWriteRegions(int numEntries, int& dataPtr1, int& sizePtr1, int& dataPtr2, int& sizePtr2)
 		{
-			int   index;
-			int   available = GetWriteAvailable();
-			if( numEntries > available )
+			int index;
+			int available = GetWriteAvailable();
+			if(numEntries > available)
 				numEntries = available;
 
 			//Check to see if write is not contiguous.
 			index = writeIndex & smallMask;
-			if( (index + numEntries) > bufferSize )
+			if((index + numEntries) > bufferSize)
 			{
 				//Write data in two blocks that wrap the buffer.
-				int   firstHalf = bufferSize - index;
-				dataPtr1 = index;//&buffer[index];
-				sizePtr1 = firstHalf;
-				dataPtr2 = 0;//&buffer[0];
-				sizePtr2 = numEntries - firstHalf;
+				int firstHalf = bufferSize - index;
+				dataPtr1	  = index; //&buffer[index];
+				sizePtr1	  = firstHalf;
+				dataPtr2	  = 0; //&buffer[0];
+				sizePtr2	  = numEntries - firstHalf;
 			}
 			else
 			{
-				dataPtr1 = index;//&buffer[index];
+				dataPtr1 = index; //&buffer[index];
 				sizePtr1 = numEntries;
 				dataPtr2 = 0;
 				sizePtr2 = 0;
@@ -217,28 +211,27 @@ namespace OIS
 			return numEntries;
 		}
 
-
-		int GetReadRegions( int numEntries, int &dataPtr1, int &sizePtr1, int &dataPtr2, int &sizePtr2 )
+		int GetReadRegions(int numEntries, int& dataPtr1, int& sizePtr1, int& dataPtr2, int& sizePtr2)
 		{
-			int   index;
-			int   available = GetReadAvailable( );
-			if( numEntries > available )
+			int index;
+			int available = GetReadAvailable();
+			if(numEntries > available)
 				numEntries = available;
 
 			// Check to see if read is not contiguous
 			index = readIndex & smallMask;
-			if( (index + numEntries) > bufferSize )
+			if((index + numEntries) > bufferSize)
 			{
 				// Write data in two blocks that wrap the buffer
 				int firstHalf = bufferSize - index;
-				dataPtr1 = index;//&buffer[index];
-				sizePtr1 = firstHalf;
-				dataPtr2 = 0;//&buffer[0];
-				sizePtr2 = numEntries - firstHalf;
+				dataPtr1	  = index; //&buffer[index];
+				sizePtr1	  = firstHalf;
+				dataPtr2	  = 0; //&buffer[0];
+				sizePtr2	  = numEntries - firstHalf;
 			}
 			else
 			{
-				dataPtr1 = index;//&buffer[index];
+				dataPtr1 = index; //&buffer[index];
 				sizePtr1 = numEntries;
 				dataPtr2 = 0;
 				sizePtr2 = 0;
@@ -246,20 +239,17 @@ namespace OIS
 			return numEntries;
 		}
 
-
-		int AdvanceWriteIndex( int numEntries )
+		int AdvanceWriteIndex(int numEntries)
 		{
-			 return writeIndex = (writeIndex + numEntries) & bigMask;
+			return writeIndex = (writeIndex + numEntries) & bigMask;
 		}
 
-
-		int AdvanceReadIndex( int numEntries )
+		int AdvanceReadIndex(int numEntries)
 		{
 			return readIndex = (readIndex + numEntries) & bigMask;
 		}
 
-
-		void Flush( )
+		void Flush()
 		{
 			writeIndex = readIndex = 0;
 		}

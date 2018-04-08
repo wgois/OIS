@@ -26,55 +26,55 @@
 using namespace OIS;
 
 //-------------------------------------------------------------------//
-iPhoneAccelerometer::iPhoneAccelerometer( InputManager* creator, bool buffered )
-	: JoyStick(creator->inputSystemName(), buffered, 0, creator)
+iPhoneAccelerometer::iPhoneAccelerometer(InputManager* creator, bool buffered) :
+ JoyStick(creator->inputSystemName(), buffered, 0, creator)
 {
-    iPhoneInputManager *man = static_cast<iPhoneInputManager*>(mCreator);
+	iPhoneInputManager* man = static_cast<iPhoneInputManager*>(mCreator);
 
-    man->_setAccelerometerUsed(true);
-    [man->_getDelegate() setAccelerometerObject:this];
-    [[UIAccelerometer sharedAccelerometer] setDelegate:man->_getDelegate()];
-    mUpdateInterval = 60.0f;
+	man->_setAccelerometerUsed(true);
+	[man->_getDelegate() setAccelerometerObject:this];
+	[[UIAccelerometer sharedAccelerometer] setDelegate:man->_getDelegate()];
+	mUpdateInterval = 60.0f;
 }
 
 iPhoneAccelerometer::~iPhoneAccelerometer()
 {
-    iPhoneInputManager *man = static_cast<iPhoneInputManager*>(mCreator);
+	iPhoneInputManager* man = static_cast<iPhoneInputManager*>(mCreator);
 
-    man->_setAccelerometerUsed(false);
-    [man->_getDelegate() setAccelerometerObject:nil];
+	man->_setAccelerometerUsed(false);
+	[man->_getDelegate() setAccelerometerObject:nil];
 }
 
 void iPhoneAccelerometer::_initialize()
 {
 	// Clear old joy state
-    mState.mVectors.resize(1);
+	mState.mVectors.resize(1);
 	mState.clear();
 	mTempState.clear();
 
-    // Set the update interval
-    [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / mUpdateInterval)];
+	// Set the update interval
+	[[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / mUpdateInterval)];
 }
 
-void iPhoneAccelerometer::setBuffered( bool buffered )
+void iPhoneAccelerometer::setBuffered(bool buffered)
 {
 	mBuffered = buffered;
 }
 
-void iPhoneAccelerometer::didAccelerate(UIAcceleration *acceleration)
+void iPhoneAccelerometer::didAccelerate(UIAcceleration* acceleration)
 {
-    mTempState.clear();
+	mTempState.clear();
 
-    mTempState.x = acceleration.x;
-    mTempState.y = acceleration.y;
-    mTempState.z = acceleration.z;
+	mTempState.x = acceleration.x;
+	mTempState.y = acceleration.y;
+	mTempState.z = acceleration.z;
 }
 
 void iPhoneAccelerometer::capture()
 {
-    mState.clear();
-    mState.mVectors[0] = mTempState;
+	mState.clear();
+	mState.mVectors[0] = mTempState;
 
-    if(mListener && mBuffered)
-        mListener->axisMoved(JoyStickEvent(this, mState), 0);
+	if(mListener && mBuffered)
+		mListener->axisMoved(JoyStickEvent(this, mState), 0);
 }

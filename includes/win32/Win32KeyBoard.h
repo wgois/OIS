@@ -51,7 +51,7 @@ namespace OIS
 		virtual const std::string& getAsString(KeyCode kc);
 
 		/** @copydoc Keyboard::getAsKeyCode */
-		virtual KeyCode getAsKeyCode( std::string str ) { /*TODO: Implement OS version*/ return KC_UNASSIGNED;}
+		virtual KeyCode getAsKeyCode(std::string str) { /*TODO: Implement OS version*/ return KC_UNASSIGNED; }
 
 		/** @copydoc Keyboard::copyKeyStates */
 		virtual void copyKeyStates(char keys[256]) const;
@@ -63,10 +63,15 @@ namespace OIS
 		virtual void capture();
 
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType type) { OIS_UNUSED(type); return 0; }
+		virtual Interface* queryInterface(Interface::IType type)
+		{
+			OIS_UNUSED(type);
+			return 0;
+		}
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
+
 	protected:
 		void _readBuffered();
 		void _read();
@@ -78,7 +83,7 @@ namespace OIS
 		unsigned char KeyBuffer[256];
 
 		//! Internal method for translating KeyCodes to Text
-		int _translateText( KeyCode kc );
+		int _translateText(KeyCode kc);
 
 		//! Stored dead key from last translation
 		WCHAR deadKey;

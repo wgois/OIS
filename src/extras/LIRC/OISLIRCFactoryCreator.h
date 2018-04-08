@@ -52,10 +52,10 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
@@ -91,7 +91,7 @@ namespace OIS
 		class BoostWrapper;
 
 		//! Wrapped objects
-		BoostWrapper *mWrapped;
+		BoostWrapper* mWrapped;
 	};
 }
 #endif //OIS_LIRCFactoryCreator_H

@@ -30,69 +30,69 @@
 
 namespace OIS
 {
-    class MacHIDManager;
+	class MacHIDManager;
 
-    class CocoaInputManager : public InputManager, public FactoryCreator
-    {
-    public:
-        CocoaInputManager();
-        virtual ~CocoaInputManager();
+	class CocoaInputManager : public InputManager, public FactoryCreator
+	{
+	public:
+		CocoaInputManager();
+		virtual ~CocoaInputManager();
 
-       //InputManager Overrides
-       /** @copydoc InputManager::_initialize */
-       void _initialize( ParamList &paramList );
+		//InputManager Overrides
+		/** @copydoc InputManager::_initialize */
+		void _initialize(ParamList& paramList);
 
-       //FactoryCreator Overrides
-       /** @copydoc FactoryCreator::deviceList */
-       DeviceList freeDeviceList();
+		//FactoryCreator Overrides
+		/** @copydoc FactoryCreator::deviceList */
+		DeviceList freeDeviceList();
 
-       /** @copydoc FactoryCreator::totalDevices */
-       int totalDevices(Type iType);
+		/** @copydoc FactoryCreator::totalDevices */
+		int totalDevices(Type iType);
 
-       /** @copydoc FactoryCreator::freeDevices */
-       int freeDevices(Type iType);
+		/** @copydoc FactoryCreator::freeDevices */
+		int freeDevices(Type iType);
 
-       /** @copydoc FactoryCreator::vendorExist */
-       bool vendorExist(Type iType, const std::string & vendor);
+		/** @copydoc FactoryCreator::vendorExist */
+		bool vendorExist(Type iType, const std::string& vendor);
 
-       /** @copydoc FactoryCreator::createObject */
-       Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		/** @copydoc FactoryCreator::createObject */
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
-       /** @copydoc FactoryCreator::destroyObject */
-       void destroyObject(Object* obj);
+		/** @copydoc FactoryCreator::destroyObject */
+		void destroyObject(Object* obj);
 
-       //Internal Items
-       //! Internal method, used for flaggin keyboard as available/unavailable for creation
-       void _setKeyboardUsed(bool used) {keyboardUsed = used; }
+		//Internal Items
+		//! Internal method, used for flaggin keyboard as available/unavailable for creation
+		void _setKeyboardUsed(bool used) { keyboardUsed = used; }
 
-       //! Internal method, used for flaggin mouse as available/unavailable for creation
-       void _setMouseUsed(bool used) { mouseUsed = used; }
+		//! Internal method, used for flaggin mouse as available/unavailable for creation
+		void _setMouseUsed(bool used) { mouseUsed = used; }
 
-        //! method for getting window
-        NSWindow * _getWindow() {return mWindow;}
+		//! method for getting window
+		NSWindow* _getWindow() { return mWindow; }
 
-    protected:
-        void _parseConfigSettings( ParamList& paramList );
+	protected:
+		void _parseConfigSettings(ParamList& paramList);
 
-        void _enumerateDevices();
+		void _enumerateDevices();
 
-        static const std::string iName;
+		static const std::string iName;
 
-        // Mac stuff
-       NSWindow *mWindow;
+		// Mac stuff
+		NSWindow* mWindow;
 
-        // settings
-        bool mHideMouse;
-        bool mUseRepeat;
+		// settings
+		bool mHideMouse;
+		bool mUseRepeat;
 
-       //! Used to know if we used up keyboard
-       bool keyboardUsed;
+		//! Used to know if we used up keyboard
+		bool keyboardUsed;
 
-       //! Used to know if we used up mouse
-       bool mouseUsed;
+		//! Used to know if we used up mouse
+		bool mouseUsed;
 
-       //! HID Manager class handling devices other than keyboard/mouse
-       MacHIDManager *mHIDManager;
-    };
+		//! HID Manager class handling devices other than keyboard/mouse
+		MacHIDManager* mHIDManager;
+	};
 }
 #endif

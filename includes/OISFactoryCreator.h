@@ -37,7 +37,7 @@ namespace OIS
 		/**
 			@remarks Virtual Destructor
 		*/
-		virtual ~FactoryCreator() {};
+		virtual ~FactoryCreator(){};
 
 		/**
 			@remarks Return a list of all unused devices the factory maintains
@@ -61,7 +61,7 @@ namespace OIS
 			@param iType Type to check
 			@param vendor Vendor name to test
 		*/
-		virtual bool vendorExist(Type iType, const std::string & vendor) = 0;
+		virtual bool vendorExist(Type iType, const std::string& vendor) = 0;
 
 		/**
 			@remarks Creates the object
@@ -69,7 +69,7 @@ namespace OIS
 			@param bufferMode True to setup for buffered events
 			@param vendor Create a device with the vendor name, "" means vendor name is unimportant
 		*/
-		virtual Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "") = 0;
+		virtual Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "") = 0;
 
 		/**
 			@remarks Destroys object

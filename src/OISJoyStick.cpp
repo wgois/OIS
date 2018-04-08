@@ -25,26 +25,26 @@ restrictions:
 using namespace OIS;
 
 //----------------------------------------------------------------------------//
-JoyStick::JoyStick(const std::string &vendor, bool buffered, int devID, InputManager* creator) :
-	Object(vendor, OISJoyStick, buffered, devID, creator),
-	mSliders(0),
-	mPOVs(0),
-	mListener(0),
-	mVector3Sensitivity(OIS_JOYSTICK_VECTOR3_DEFAULT)
+JoyStick::JoyStick(const std::string& vendor, bool buffered, int devID, InputManager* creator) :
+ Object(vendor, OISJoyStick, buffered, devID, creator),
+ mSliders(0),
+ mPOVs(0),
+ mListener(0),
+ mVector3Sensitivity(OIS_JOYSTICK_VECTOR3_DEFAULT)
 {
 }
 
 //----------------------------------------------------------------------------//
 int JoyStick::getNumberOfComponents(ComponentType cType) const
 {
-	switch( cType )
+	switch(cType)
 	{
-	case OIS_Button:	return (int)mState.mButtons.size();
-	case OIS_Axis:		return (int)mState.mAxes.size();
-	case OIS_Slider:	return mSliders;
-	case OIS_POV:		return mPOVs;
-	case OIS_Vector3:	return (int)mState.mVectors.size();
-	default:			return 0;
+		case OIS_Button: return (int)mState.mButtons.size();
+		case OIS_Axis: return (int)mState.mAxes.size();
+		case OIS_Slider: return mSliders;
+		case OIS_POV: return mPOVs;
+		case OIS_Vector3: return (int)mState.mVectors.size();
+		default: return 0;
 	}
 }
 
@@ -61,7 +61,7 @@ float JoyStick::getVector3Sensitivity() const
 }
 
 //----------------------------------------------------------------------------//
-void JoyStick::setEventCallback( JoyStickListener *joyListener )
+void JoyStick::setEventCallback(JoyStickListener* joyListener)
 {
 	mListener = joyListener;
 }

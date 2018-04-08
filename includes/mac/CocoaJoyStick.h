@@ -28,49 +28,50 @@
 
 namespace OIS
 {
-   struct AxisInfo
-   {
-       int min;
-       int max;
+	struct AxisInfo
+	{
+		int min;
+		int max;
 
-       AxisInfo(int min, int max)
-           : min(min), max(max) {}
-   };
+		AxisInfo(int min, int max) :
+		 min(min), max(max) {}
+	};
 
-   typedef struct cookie_struct
-   {
-       std::map<IOHIDElementCookie, AxisInfo> axisCookies;
-       std::vector<IOHIDElementCookie> buttonCookies;
-   } cookie_struct_t;
+	typedef struct cookie_struct
+	{
+		std::map<IOHIDElementCookie, AxisInfo> axisCookies;
+		std::vector<IOHIDElementCookie> buttonCookies;
+	} cookie_struct_t;
 
-   //class HidDeviceInfo
+	//class HidDeviceInfo
 
-   class CocoaJoyStick : public JoyStick
-   {
-   public:
-       CocoaJoyStick(const std::string& vendor, bool buffered, HidInfo* info, InputManager* creator, int devID);
+	class CocoaJoyStick : public JoyStick
+	{
+	public:
+		CocoaJoyStick(const std::string& vendor, bool buffered, HidInfo* info, InputManager* creator, int devID);
 
-       virtual ~CocoaJoyStick();
+		virtual ~CocoaJoyStick();
 
-       /** @copydoc Object::setBuffered */
-       virtual void setBuffered(bool buffered);
+		/** @copydoc Object::setBuffered */
+		virtual void setBuffered(bool buffered);
 
-       /** @copydoc Object::capture */
-       virtual void capture();
+		/** @copydoc Object::capture */
+		virtual void capture();
 
-       /** @copydoc Object::queryInterface */
-       virtual Interface* queryInterface(Interface::IType type);
+		/** @copydoc Object::queryInterface */
+		virtual Interface* queryInterface(Interface::IType type);
 
-       /** @copydoc Object::_initialize */
-       virtual void _initialize();
+		/** @copydoc Object::_initialize */
+		virtual void _initialize();
 
-       void _enumerateCookies();
+		void _enumerateCookies();
 
-       IOHIDQueueInterface** _createQueue(unsigned int depth = 8);
-   protected:
-       HidInfo* mInfo;
-       cookie_struct_t mCookies;
-       IOHIDQueueInterface** mQueue;
-   };
+		IOHIDQueueInterface** _createQueue(unsigned int depth = 8);
+
+	protected:
+		HidInfo* mInfo;
+		cookie_struct_t mCookies;
+		IOHIDQueueInterface** mQueue;
+	};
 }
 #endif

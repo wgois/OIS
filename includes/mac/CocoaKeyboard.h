@@ -37,83 +37,84 @@ using namespace std;
 
 namespace OIS
 {
-    typedef class Cocoa_KeyStackEvent
-    {
-        friend class CocoaKeyboard;
+	typedef class Cocoa_KeyStackEvent
+	{
+		friend class CocoaKeyboard;
 
-    public:
-        Cocoa_KeyStackEvent( KeyEvent event, MacEventType type ) : Event(event), Type(type) {}
-        const MacEventType type()   { return Type; }
-        const KeyEvent event()      { return Event; }
-    private:
-        MacEventType Type;
-        KeyEvent Event;
-    } CocoaKeyStackEvent;
+	public:
+		Cocoa_KeyStackEvent(KeyEvent event, MacEventType type) :
+		 Event(event), Type(type) {}
+		const MacEventType type() { return Type; }
+		const KeyEvent event() { return Event; }
 
-    class CocoaKeyboard : public Keyboard
-    {
-    public:
-        CocoaKeyboard( InputManager* creator, bool buffered, bool repeat );
-        virtual ~CocoaKeyboard();
+	private:
+		MacEventType Type;
+		KeyEvent Event;
+	} CocoaKeyStackEvent;
 
-        // Sets buffered mode
-        virtual void setBuffered( bool buffered );
+	class CocoaKeyboard : public Keyboard
+	{
+	public:
+		CocoaKeyboard(InputManager* creator, bool buffered, bool repeat);
+		virtual ~CocoaKeyboard();
 
-        // Unbuffered keydown check
-        virtual bool isKeyDown( KeyCode key ) const;
+		// Sets buffered mode
+		virtual void setBuffered(bool buffered);
 
-        // This will send listener events if buffered is on.
-        // Note that in the mac implementation, unbuffered input is
-        // automatically updated without calling this.
-        virtual void capture();
+		// Unbuffered keydown check
+		virtual bool isKeyDown(KeyCode key) const;
 
-        // Copies the current key buffer
-        virtual void copyKeyStates( char keys[256] ) const;
+		// This will send listener events if buffered is on.
+		// Note that in the mac implementation, unbuffered input is
+		// automatically updated without calling this.
+		virtual void capture();
 
-        // Returns a description of the given key
-        virtual std::string& getAsString( KeyCode key );
+		// Copies the current key buffer
+		virtual void copyKeyStates(char keys[256]) const;
 
-        virtual Interface* queryInterface( Interface::IType type ) { return 0; }
+		// Returns a description of the given key
+		virtual std::string& getAsString(KeyCode key);
 
-        // Public but reserved for internal use:
-        virtual void _initialize();
+		virtual Interface* queryInterface(Interface::IType type) { return 0; }
 
-        unsigned int & _getModifiers() { return mModifiers; }
+		// Public but reserved for internal use:
+		virtual void _initialize();
 
-        virtual OIS::KeyCode getAsKeyCode(std::string str)
-        {
-            //TODO implement me
-            return (OIS::KeyCode)(0);
-	}
+		unsigned int& _getModifiers() { return mModifiers; }
 
-    protected:
-        CocoaKeyboardView *mResponder;
-        std::string getString;
-    };
+		virtual OIS::KeyCode getAsKeyCode(std::string str)
+		{
+			//TODO implement me
+			return (OIS::KeyCode)(0);
+		}
+
+	protected:
+		CocoaKeyboardView* mResponder;
+		std::string getString;
+	};
 }
 
 typedef std::map<unsigned short, KeyCode> VirtualtoOIS_KeyMap;
 typedef std::list<OIS::CocoaKeyStackEvent> eventStack;
 
-@interface CocoaKeyboardView : NSResponder
-{
-    CocoaKeyboard *oisKeyboardObj;
-    VirtualtoOIS_KeyMap keyConversion;
+@interface CocoaKeyboardView : NSResponder {
+	CocoaKeyboard* oisKeyboardObj;
+	VirtualtoOIS_KeyMap keyConversion;
 
-    char KeyBuffer[256];
-    NSUInteger prevModMask;
+	char KeyBuffer[256];
+	NSUInteger prevModMask;
 
-    // buffered events, fifo stack
-    eventStack pendingEvents;
-    bool useRepeat;
+	// buffered events, fifo stack
+	eventStack pendingEvents;
+	bool useRepeat;
 }
 
-- (void)setOISKeyboardObj:(CocoaKeyboard *)obj;
+- (void)setOISKeyboardObj:(CocoaKeyboard*)obj;
 - (void)populateKeyConversion;
 - (void)capture;
 - (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type;
 - (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type eventText:(unsigned int)txt;
-- (void)copyKeyStates:(char [256])keys;
+- (void)copyKeyStates:(char[256])keys;
 - (bool)isKeyDown:(KeyCode)key;
 - (void)setUseRepeat:(bool)repeat;
 - (VirtualtoOIS_KeyMap)keyConversionMap;

@@ -48,7 +48,7 @@ namespace OIS
 			A value between 0.0 and 1.0 represent the percentage of gain. 1.0
 			being the highest possible force level (means no scaling).
 		*/
-		virtual void setMasterGain( float level ) = 0;
+		virtual void setMasterGain(float level) = 0;
 
 		/**
 		@remarks
@@ -60,7 +60,7 @@ namespace OIS
 		@param auto_on
 			true to turn auto centering on, false to turn off.
 		*/
-		virtual void setAutoCenterMode( bool auto_on ) = 0;
+		virtual void setAutoCenterMode(bool auto_on) = 0;
 
 		/**
 		@remarks
@@ -68,25 +68,25 @@ namespace OIS
 			of effects, it will fail to be uploaded. You will know this by
 			an invalid Effect Handle
 		*/
-		virtual void upload( const Effect* effect ) = 0;
+		virtual void upload(const Effect* effect) = 0;
 
 		/**
 		@remarks
 			Modifies an effect that is currently playing
 		*/
-		virtual void modify( const Effect* effect ) = 0;
+		virtual void modify(const Effect* effect) = 0;
 
 		/**
 		@remarks
 			Remove the effect from the device
 		*/
-		virtual void remove( const Effect* effect ) = 0;
+		virtual void remove(const Effect* effect) = 0;
 
 		/**
 		@remarks
 			Get the number of supported Axes for FF usage
 		*/
-        virtual short getFFAxesNumber() = 0;
+		virtual short getFFAxesNumber() = 0;
 
 		/**
 		@remarks
@@ -107,9 +107,9 @@ namespace OIS
 		*/
 		bool supportsEffect(Effect::EForce force, Effect::EType type) const;
 
-		void _addEffectTypes( Effect::EForce force, Effect::EType type );
-		void _setGainSupport( bool on );
-		void _setAutoCenterSupport( bool on );
+		void _addEffectTypes(Effect::EForce force, Effect::EType type);
+		void _setGainSupport(bool on);
+		void _setAutoCenterSupport(bool on);
 
 	protected:
 		SupportedEffectList mSupportedEffects;

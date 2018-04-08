@@ -32,72 +32,68 @@
 namespace OIS
 {
 
-    class MacKeyboard : public Keyboard
-    {
-    public:
-        MacKeyboard( InputManager* creator, bool buffered, bool repeat );
-        virtual ~MacKeyboard();
+	class MacKeyboard : public Keyboard
+	{
+	public:
+		MacKeyboard(InputManager* creator, bool buffered, bool repeat);
+		virtual ~MacKeyboard();
 
-        // Sets buffered mode
-        virtual void setBuffered( bool buffered );
+		// Sets buffered mode
+		virtual void setBuffered(bool buffered);
 
-        // unbuffered keydown check
-        virtual bool isKeyDown( KeyCode key ) const;
+		// unbuffered keydown check
+		virtual bool isKeyDown(KeyCode key) const;
 
-        // This will send listener events if buffered is on.
-        // Note that in the mac implementation, unbuffered input is
-        // automatically updated without calling this.
-        virtual void capture();
+		// This will send listener events if buffered is on.
+		// Note that in the mac implementation, unbuffered input is
+		// automatically updated without calling this.
+		virtual void capture();
 
-        // Copies the current key buffer
-        virtual void copyKeyStates( char keys[256] ) const;
+		// Copies the current key buffer
+		virtual void copyKeyStates(char keys[256]) const;
 
-        // Returns a description of the given key
-        virtual std::string& getAsString( KeyCode key );
-        virtual KeyCode getAsKeyCode( std::string str ) {/*TODO: Implement OS version*/ return KC_UNASSIGNED;}
+		// Returns a description of the given key
+		virtual std::string& getAsString(KeyCode key);
+		virtual KeyCode getAsKeyCode(std::string str) { /*TODO: Implement OS version*/ return KC_UNASSIGNED; }
 
-        virtual Interface* queryInterface( Interface::IType type ) { return 0; }
+		virtual Interface* queryInterface(Interface::IType type) { return 0; }
 
+		// Public but reserved for internal use:
+		virtual void _initialize();
+		void _keyDownCallback(EventRef theEvent);
+		void _keyUpCallback(EventRef theEvent);
+		void _modChangeCallback(EventRef theEvent);
 
-        // Public but reserved for internal use:
-        virtual void _initialize();
-        void _keyDownCallback( EventRef theEvent );
-        void _keyUpCallback( EventRef theEvent );
-        void _modChangeCallback( EventRef theEvent );
+	protected:
+		// just to get this out of the way
+		void populateKeyConversion();
 
+		// updates the keybuffer and optionally the eventStack
+		void injectEvent(KeyCode kc, unsigned int time, MacEventType type, unsigned int txt = 0);
 
-    protected:
-        // just to get this out of the way
-        void populateKeyConversion();
+		typedef std::map<UInt32, KeyCode> VirtualtoOIS_KeyMap;
+		VirtualtoOIS_KeyMap keyConversion;
 
-        // updates the keybuffer and optionally the eventStack
-        void injectEvent(KeyCode kc, unsigned int time, MacEventType type, unsigned int txt = 0 );
+		std::string getString;
 
-        typedef std::map<UInt32, KeyCode> VirtualtoOIS_KeyMap;
-        VirtualtoOIS_KeyMap keyConversion;
+		char KeyBuffer[256];
+		UInt32 prevModMask;
 
-        std::string getString;
+		// "universal procedure pointers" - required reference for callbacks
+		EventHandlerUPP keyDownUPP;
+		EventHandlerUPP keyUpUPP;
+		EventHandlerUPP keyModUPP;
 
-        char KeyBuffer[256];
-        UInt32 prevModMask;
+		// so we can delete the handlers on destruction
+		EventHandlerRef keyDownEventRef;
+		EventHandlerRef keyUpEventRef;
+		EventHandlerRef keyModEventRef;
 
+		// buffered events, fifo stack
+		typedef std::list<MacKeyStackEvent> eventStack;
+		eventStack pendingEvents;
 
-        // "universal procedure pointers" - required reference for callbacks
-        EventHandlerUPP keyDownUPP;
-        EventHandlerUPP keyUpUPP;
-        EventHandlerUPP keyModUPP;
-
-        // so we can delete the handlers on destruction
-        EventHandlerRef keyDownEventRef;
-        EventHandlerRef keyUpEventRef;
-        EventHandlerRef keyModEventRef;
-
-        // buffered events, fifo stack
-        typedef std::list<MacKeyStackEvent> eventStack;
-        eventStack pendingEvents;
-
-        bool useRepeat;
-
-    };
+		bool useRepeat;
+	};
 }
 #endif

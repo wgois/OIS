@@ -26,20 +26,20 @@ restrictions:
 using namespace OIS;
 
 //----------------------------------------------------------------------//
-void Keyboard::setTextTranslation( TextTranslationMode mode )
+void Keyboard::setTextTranslation(TextTranslationMode mode)
 {
 	mTextMode = mode;
 }
 
 //----------------------------------------------------------------------//
-bool Keyboard::isModifierDown( Modifier mod ) const
+bool Keyboard::isModifierDown(Modifier mod) const
 {
 #if defined(OIS_MSVC_COMPILER)
-  #pragma warning (push)
-  #pragma warning (disable : 4800)
+#pragma warning(push)
+#pragma warning(disable : 4800)
 #endif
 	return (mModifiers & mod);
 #if defined(OIS_MSVC_COMPILER)
-  #pragma warning (pop)
+#pragma warning(pop)
 #endif
 }

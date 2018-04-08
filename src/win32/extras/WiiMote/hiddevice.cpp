@@ -11,25 +11,24 @@
 //#include "stdafx.h"
 #include "hiddevice.h"
 
-extern "C"
-{
-	#include "hidsdi.h"
-	#include <Setupapi.h>
+extern "C" {
+#include "hidsdi.h"
+#include <Setupapi.h>
 }
 #pragma comment(lib, "setupapi.lib")
 #pragma comment(lib, "hid.lib")
 
-HIDP_CAPS							Capabilities;
-PSP_DEVICE_INTERFACE_DETAIL_DATA	detailData;
+HIDP_CAPS Capabilities;
+PSP_DEVICE_INTERFACE_DETAIL_DATA detailData;
 
-cHIDDevice::cHIDDevice() : mConnected(false), mHandle(NULL), mEvent(NULL)
+cHIDDevice::cHIDDevice() :
+ mConnected(false), mHandle(NULL), mEvent(NULL)
 {
 }
 
-
 cHIDDevice::~cHIDDevice()
 {
-	if (mConnected)
+	if(mConnected)
 	{
 		Disconnect();
 	}
@@ -38,7 +37,7 @@ cHIDDevice::~cHIDDevice()
 bool cHIDDevice::Disconnect()
 {
 	bool retval = false;
-	if (mConnected)
+	if(mConnected)
 	{
 		retval = (CloseHandle(mHandle) == TRUE && CloseHandle(mEvent) == TRUE);
 
@@ -50,9 +49,9 @@ bool cHIDDevice::Disconnect()
 
 bool cHIDDevice::Connect(unsigned short device_id, unsigned short vendor_id, int index)
 {
-	if (mConnected)
+	if(mConnected)
 	{
-		if (!Disconnect())
+		if(!Disconnect())
 		{
 			return false;
 		}
@@ -60,7 +59,7 @@ bool cHIDDevice::Connect(unsigned short device_id, unsigned short vendor_id, int
 
 	// Find the wiimote(s)
 	//for (int i = 0; i <= index; i++)
-	OpenDevice( device_id, vendor_id, index );
+	OpenDevice(device_id, vendor_id, index);
 
 	return mConnected;
 }
@@ -68,43 +67,43 @@ bool cHIDDevice::Connect(unsigned short device_id, unsigned short vendor_id, int
 bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, int index)
 {
 	//Use a series of API calls to find a HID with a specified Vendor IF and Product ID.
-	HIDD_ATTRIBUTES						Attributes;
-	SP_DEVICE_INTERFACE_DATA			devInfoData;
-	bool								LastDevice = FALSE;
-	bool								MyDeviceDetected = FALSE;
-	int									MemberIndex = 0;
-	int									MembersFound = 0;
-	GUID								HidGuid;
-	ULONG								Length;
-	LONG								Result;
-	HANDLE								hDevInfo;
-	ULONG								Required;
+	HIDD_ATTRIBUTES Attributes;
+	SP_DEVICE_INTERFACE_DATA devInfoData;
+	bool LastDevice		  = FALSE;
+	bool MyDeviceDetected = FALSE;
+	int MemberIndex		  = 0;
+	int MembersFound	  = 0;
+	GUID HidGuid;
+	ULONG Length;
+	LONG Result;
+	HANDLE hDevInfo;
+	ULONG Required;
 
-	Length = 0;
+	Length	 = 0;
 	detailData = NULL;
-	mHandle=NULL;
+	mHandle	= NULL;
 
 	HidD_GetHidGuid(&HidGuid);
-	hDevInfo=SetupDiGetClassDevs(&HidGuid, NULL, NULL, DIGCF_PRESENT|DIGCF_INTERFACEDEVICE);
+	hDevInfo = SetupDiGetClassDevs(&HidGuid, NULL, NULL, DIGCF_PRESENT | DIGCF_INTERFACEDEVICE);
 
 	devInfoData.cbSize = sizeof(devInfoData);
 
-	MemberIndex = 0;
+	MemberIndex  = 0;
 	MembersFound = 0;
-	LastDevice = FALSE;
+	LastDevice   = FALSE;
 
 	do
 	{
-		Result=SetupDiEnumDeviceInterfaces(hDevInfo, 0, &HidGuid, MemberIndex, &devInfoData);
-		if (Result != 0)
+		Result = SetupDiEnumDeviceInterfaces(hDevInfo, 0, &HidGuid, MemberIndex, &devInfoData);
+		if(Result != 0)
 		{
 			Result = SetupDiGetDeviceInterfaceDetail(hDevInfo, &devInfoData, NULL, 0, &Length, NULL);
 
-			detailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(Length);
-			detailData -> cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
-			Result = SetupDiGetDeviceInterfaceDetail(hDevInfo, &devInfoData, detailData, Length, &Required, NULL);
+			detailData		   = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(Length);
+			detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+			Result			   = SetupDiGetDeviceInterfaceDetail(hDevInfo, &devInfoData, detailData, Length, &Required, NULL);
 
-			mHandle=CreateFile(detailData->DevicePath, 0, FILE_SHARE_READ|FILE_SHARE_WRITE, (LPSECURITY_ATTRIBUTES)NULL,OPEN_EXISTING, 0, NULL);
+			mHandle			= CreateFile(detailData->DevicePath, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING, 0, NULL);
 			Attributes.Size = sizeof(Attributes);
 
 			Result = HidD_GetAttributes(mHandle, &Attributes);
@@ -112,55 +111,60 @@ bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, 
 
 			MyDeviceDetected = FALSE;
 
-			if (Attributes.VendorID == vendor_id)
+			if(Attributes.VendorID == vendor_id)
 			{
-				if (Attributes.ProductID == device_id)
+				if(Attributes.ProductID == device_id)
 				{
-					if (MembersFound == index)
+					if(MembersFound == index)
 					{
 						//Both the Vendor ID and Product ID match.
 						//printf("Wiimote found!\n");
 						mConnected = true;
 						GetCapabilities();
 
-						WriteHandle=CreateFile(detailData->DevicePath, GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING, 0, NULL);
+						WriteHandle		 = CreateFile(detailData->DevicePath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING, 0, NULL);
 						MyDeviceDetected = TRUE;
 
 						PrepareForOverlappedTransfer();
 
-						mEvent = CreateEvent(NULL, TRUE, TRUE, "");
-						mOverlapped.Offset = 0;
+						mEvent				   = CreateEvent(NULL, TRUE, TRUE, "");
+						mOverlapped.Offset	 = 0;
 						mOverlapped.OffsetHigh = 0;
-						mOverlapped.hEvent = mEvent;
-
-					} else {
+						mOverlapped.hEvent	 = mEvent;
+					}
+					else
+					{
 						//The Product ID doesn't match.
 						CloseHandle(mHandle);
 					}
 
 					MembersFound++;
 				}
-			} else {
+			}
+			else
+			{
 				CloseHandle(mHandle);
 			}
 			free(detailData);
-		} else {
-			LastDevice=TRUE;
+		}
+		else
+		{
+			LastDevice = TRUE;
 		}
 		MemberIndex = MemberIndex + 1;
-	} while ((LastDevice == FALSE) && (MyDeviceDetected == FALSE));
+	} while((LastDevice == FALSE) && (MyDeviceDetected == FALSE));
 
 	SetupDiDestroyDeviceInfoList(hDevInfo);
 	return MyDeviceDetected;
 }
 
-bool cHIDDevice::WriteToDevice(unsigned const char * OutputReport, int num_bytes)
+bool cHIDDevice::WriteToDevice(unsigned const char* OutputReport, int num_bytes)
 {
 	bool retval = false;
-	if (mConnected)
+	if(mConnected)
 	{
 		DWORD bytes_written;
-		retval = (WriteFile( WriteHandle, OutputReport, num_bytes, &bytes_written, &mOverlapped) == TRUE);
+		retval = (WriteFile(WriteHandle, OutputReport, num_bytes, &bytes_written, &mOverlapped) == TRUE);
 		retval = retval && bytes_written == num_bytes;
 	}
 	return retval;
@@ -169,7 +173,7 @@ bool cHIDDevice::WriteToDevice(unsigned const char * OutputReport, int num_bytes
 void cHIDDevice::PrepareForOverlappedTransfer()
 {
 	//Get a handle to the device for the overlapped ReadFiles.
-	ReadHandle=CreateFile(detailData->DevicePath, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
+	ReadHandle = CreateFile(detailData->DevicePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 }
 
 void cHIDDevice::GetCapabilities()
@@ -183,14 +187,14 @@ void cHIDDevice::GetCapabilities()
 	HidD_FreePreparsedData(PreparsedData);
 }
 
-bool cHIDDevice::ReadFromDevice(unsigned const char * buffer, int max_bytes, int & bytes_read, int timeout)
+bool cHIDDevice::ReadFromDevice(unsigned const char* buffer, int max_bytes, int& bytes_read, int timeout)
 {
 	bool retval = false;
-	if (mConnected)
+	if(mConnected)
 	{
-		ReadFile( ReadHandle, (LPVOID)buffer,max_bytes,(LPDWORD)&bytes_read,(LPOVERLAPPED) &mOverlapped);
+		ReadFile(ReadHandle, (LPVOID)buffer, max_bytes, (LPDWORD)&bytes_read, (LPOVERLAPPED)&mOverlapped);
 		DWORD Result = WaitForSingleObject(mEvent, timeout);
-		if (Result == WAIT_OBJECT_0)
+		if(Result == WAIT_OBJECT_0)
 		{
 			retval = true;
 		}

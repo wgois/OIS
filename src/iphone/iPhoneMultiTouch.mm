@@ -26,29 +26,29 @@
 using namespace OIS;
 
 //-------------------------------------------------------------------//
-iPhoneMultiTouch::iPhoneMultiTouch( InputManager* creator, bool buffered )
-	: MultiTouch(creator->inputSystemName(), buffered, 0, creator)
+iPhoneMultiTouch::iPhoneMultiTouch(InputManager* creator, bool buffered) :
+ MultiTouch(creator->inputSystemName(), buffered, 0, creator)
 {
-	iPhoneInputManager *man = static_cast<iPhoneInputManager*>(mCreator);
+	iPhoneInputManager* man = static_cast<iPhoneInputManager*>(mCreator);
 
-    man->_setMultiTouchUsed(true);
-    [man->_getDelegate() setTouchObject:this];
+	man->_setMultiTouchUsed(true);
+	[man->_getDelegate() setTouchObject:this];
 }
 
 iPhoneMultiTouch::~iPhoneMultiTouch()
 {
-	iPhoneInputManager *man = static_cast<iPhoneInputManager*>(mCreator);
+	iPhoneInputManager* man = static_cast<iPhoneInputManager*>(mCreator);
 
-    man->_setMultiTouchUsed(false);
-    [man->_getDelegate() setTouchObject:nil];
+	man->_setMultiTouchUsed(false);
+	[man->_getDelegate() setTouchObject:nil];
 }
 
 void iPhoneMultiTouch::_initialize()
 {
-//    mTempState.clear();
+	//    mTempState.clear();
 }
 
-void iPhoneMultiTouch::setBuffered( bool buffered )
+void iPhoneMultiTouch::setBuffered(bool buffered)
 {
 	mBuffered = buffered;
 }
@@ -97,81 +97,81 @@ void iPhoneMultiTouch::capture()
 #endif
 }
 
-void iPhoneMultiTouch::_touchBegan(UITouch *touch)
+void iPhoneMultiTouch::_touchBegan(UITouch* touch)
 {
-    CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
+	CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
 
-    MultiTouchState newState;
-    newState.X.abs = location.x;
-    newState.Y.abs = location.y;
-    newState.touchType |= 1 << MT_Pressed;
+	MultiTouchState newState;
+	newState.X.abs = location.x;
+	newState.Y.abs = location.y;
+	newState.touchType |= 1 << MT_Pressed;
 
-    if( mListener && mBuffered )
-    {
-        mListener->touchPressed(MultiTouchEvent(this, newState));
-    }
-    else
-    {
-        mStates.push_back(newState);
-    }
+	if(mListener && mBuffered)
+	{
+		mListener->touchPressed(MultiTouchEvent(this, newState));
+	}
+	else
+	{
+		mStates.push_back(newState);
+	}
 }
 
-void iPhoneMultiTouch::_touchEnded(UITouch *touch)
+void iPhoneMultiTouch::_touchEnded(UITouch* touch)
 {
-    CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
+	CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
 
-    MultiTouchState newState;
-    newState.X.abs = location.x;
-    newState.Y.abs = location.y;
-    newState.touchType |= 1 << MT_Released;
+	MultiTouchState newState;
+	newState.X.abs = location.x;
+	newState.Y.abs = location.y;
+	newState.touchType |= 1 << MT_Released;
 
-    if( mListener && mBuffered )
-    {
-        mListener->touchReleased(MultiTouchEvent(this, newState));
-    }
-    else
-    {
-        mStates.push_back(newState);
-    }
+	if(mListener && mBuffered)
+	{
+		mListener->touchReleased(MultiTouchEvent(this, newState));
+	}
+	else
+	{
+		mStates.push_back(newState);
+	}
 }
 
-void iPhoneMultiTouch::_touchMoved(UITouch *touch)
+void iPhoneMultiTouch::_touchMoved(UITouch* touch)
 {
-    CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
-    CGPoint previousLocation = [touch previousLocationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
+	CGPoint location		 = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
+	CGPoint previousLocation = [touch previousLocationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
 
-    MultiTouchState newState;
-    newState.X.rel = (location.x - previousLocation.x);
-    newState.Y.rel = (location.y - previousLocation.y);
-    newState.X.abs = location.x;
-    newState.Y.abs = location.y;
-    newState.touchType |= 1 << MT_Moved;
+	MultiTouchState newState;
+	newState.X.rel = (location.x - previousLocation.x);
+	newState.Y.rel = (location.y - previousLocation.y);
+	newState.X.abs = location.x;
+	newState.Y.abs = location.y;
+	newState.touchType |= 1 << MT_Moved;
 
-    if( mListener && mBuffered )
-    {
-        mListener->touchMoved(MultiTouchEvent(this, newState));
-    }
-    else
-    {
-        mStates.push_back(newState);
-    }
+	if(mListener && mBuffered)
+	{
+		mListener->touchMoved(MultiTouchEvent(this, newState));
+	}
+	else
+	{
+		mStates.push_back(newState);
+	}
 }
 
-void iPhoneMultiTouch::_touchCancelled(UITouch *touch)
+void iPhoneMultiTouch::_touchCancelled(UITouch* touch)
 {
-    CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
+	CGPoint location = [touch locationInView:static_cast<iPhoneInputManager*>(mCreator)->_getDelegate()];
 
-    MultiTouchState newState;
-    newState.X.abs = location.x;
-    newState.Y.abs = location.y;
-    newState.touchType |= 1 << MT_Cancelled;
+	MultiTouchState newState;
+	newState.X.abs = location.x;
+	newState.Y.abs = location.y;
+	newState.touchType |= 1 << MT_Cancelled;
 
-    if( mListener && mBuffered )
-    {
-        mListener->touchCancelled(MultiTouchEvent(this, newState));
-    }
-    else
-    {
-        mStates.push_back(newState);
-    }
+	if(mListener && mBuffered)
+	{
+		mListener->touchCancelled(MultiTouchEvent(this, newState));
+	}
+	else
+	{
+		mStates.push_back(newState);
+	}
 }

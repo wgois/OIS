@@ -33,11 +33,12 @@ namespace OIS
 
 	struct RemoteInfo
 	{
-		RemoteInfo() : buttons(0) {}
+		RemoteInfo() :
+		 buttons(0) {}
 
-		RemoteInfo( const RemoteInfo &other )
+		RemoteInfo(const RemoteInfo& other)
 		{
-			buttons = other.buttons;
+			buttons   = other.buttons;
 			buttonMap = other.buttonMap;
 		}
 
@@ -45,16 +46,17 @@ namespace OIS
 		std::map<std::string, int> buttonMap;
 	};
 
-	//Number of ring buffer events. should be nice sized (the structure is not very big)
-	//Will be rounded up to power of two automatically
-	#define OIS_LIRC_EVENT_BUFFER 16
+//Number of ring buffer events. should be nice sized (the structure is not very big)
+//Will be rounded up to power of two automatically
+#define OIS_LIRC_EVENT_BUFFER 16
 
 	/**	Specialty joystick - Linux Infrared Remote Support */
 	class _OISExport LIRCControl : public JoyStick
 	{
 		friend class LIRCFactoryCreator;
+
 	public:
-		LIRCControl(InputManager* creator, int id, bool buffered, LIRCFactoryCreator* local_creator, RemoteInfo &info);
+		LIRCControl(InputManager* creator, int id, bool buffered, LIRCFactoryCreator* local_creator, RemoteInfo& info);
 		~LIRCControl();
 
 		//Overrides of Object
@@ -72,10 +74,10 @@ namespace OIS
 
 	protected:
 		//! Internal method used to add a button press to the queue (called from thread)
-		void queueButtonPressed(const std::string &id);
+		void queueButtonPressed(const std::string& id);
 
 		//! The creator who created us
-		LIRCFactoryCreator *mLIRCCreator;
+		LIRCFactoryCreator* mLIRCCreator;
 
 		//! Ringbuffer is used to store events from thread and be read from capture
 		LIRCRingBuffer mRingBuffer;

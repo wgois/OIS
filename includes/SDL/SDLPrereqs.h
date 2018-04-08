@@ -26,13 +26,13 @@ restrictions:
 #include "OISPrereqs.h"
 
 #ifdef OIS_APPLE_PLATFORM
-#  include <SDL/SDL.h>
+#include <SDL/SDL.h>
 #else
-#  include <SDL.h>
+#include <SDL.h>
 #endif
 
-#define OIS_SDL_KEY_BUFF   16
+#define OIS_SDL_KEY_BUFF 16
 #define OIS_SDL_MOUSE_BUFF 50
-#define OIS_SDL_JOY_BUFF   80
+#define OIS_SDL_JOY_BUFF 80
 
 #endif

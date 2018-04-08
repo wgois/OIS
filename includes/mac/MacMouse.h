@@ -33,9 +33,9 @@
 namespace OIS
 {
 	class MacMouse : public Mouse
-    {
+	{
 	public:
-		MacMouse( InputManager* creator, bool buffered );
+		MacMouse(InputManager* creator, bool buffered);
 		virtual ~MacMouse();
 
 		/** @copydoc Object::setBuffered */
@@ -45,18 +45,18 @@ namespace OIS
 		virtual void capture();
 
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType type) {return 0;}
+		virtual Interface* queryInterface(Interface::IType type) { return 0; }
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
 
 	public:
-        void _mouseCallback( EventRef theEvent );
+		void _mouseCallback(EventRef theEvent);
 
 	protected:
 		static OSStatus WindowFocusChanged(EventHandlerCallRef nextHandler, EventRef event, void* macMouse);
 
-        // "universal procedure pointers" - required reference for callbacks
+		// "universal procedure pointers" - required reference for callbacks
 		EventHandlerUPP mouseUPP;
 		EventHandlerRef mouseEventRef;
 
@@ -69,6 +69,5 @@ namespace OIS
 		MouseState mTempState;
 	};
 }
-
 
 #endif // OIS_MacMouse_H

@@ -38,7 +38,7 @@ namespace OIS
 
 		//InputManager Overrides
 		/** @copydoc InputManager::_initialize */
-		void _initialize( ParamList &paramList );
+		void _initialize(ParamList& paramList);
 
 		//FactoryCreator Overrides
 		/** @copydoc FactoryCreator::deviceList */
@@ -51,17 +51,17 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
 
 		//Internal Items
 		//! Internal method, used for flaggin keyboard as available/unavailable for creation
-		void _setKeyboardUsed(bool used) {keyboardUsed = used; }
+		void _setKeyboardUsed(bool used) { keyboardUsed = used; }
 
 		//! Internal method, used for flaggin mouse as available/unavailable for creation
 		void _setMouseUsed(bool used) { mouseUsed = used; }
@@ -74,7 +74,7 @@ namespace OIS
 
 	protected:
 		//! internal class method for dealing with param list
-		void _parseConfigSettings( ParamList &paramList );
+		void _parseConfigSettings(ParamList& paramList);
 
 		//! internal class method for finding attached devices
 		void _enumerateDevices();

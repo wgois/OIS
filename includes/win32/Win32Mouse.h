@@ -31,7 +31,7 @@ namespace OIS
 	class Win32Mouse : public Mouse
 	{
 	public:
-		Win32Mouse( InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings );
+		Win32Mouse(InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings);
 		virtual ~Win32Mouse();
 
 		/** @copydoc Object::setBuffered */
@@ -41,13 +41,17 @@ namespace OIS
 		virtual void capture();
 
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType type) { OIS_UNUSED(type); return 0;}
+		virtual Interface* queryInterface(Interface::IType type)
+		{
+			OIS_UNUSED(type);
+			return 0;
+		}
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
 
 	protected:
-        bool _doMouseClick( int mouseButton, unsigned char di );
+		bool _doMouseClick(int mouseButton, unsigned char di);
 
 		IDirectInput8* mDirectInput;
 		IDirectInputDevice8* mMouse;

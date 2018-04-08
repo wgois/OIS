@@ -32,13 +32,13 @@ using namespace OIS;
 
 //------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------//
-template<typename T>
+template <typename T>
 T getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	return CFDictionaryGetValue(dict, OIS_CFString(keyName));
 }
 
-template<>
+template <>
 CFArrayRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	CFTypeRef temp = CFDictionaryGetValue(dict, OIS_CFString(keyName));
@@ -49,7 +49,7 @@ CFArrayRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 		return 0;
 }
 
-template<>
+template <>
 CFStringRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	CFTypeRef temp = CFDictionaryGetValue(dict, OIS_CFString(keyName));
@@ -60,7 +60,7 @@ CFStringRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 		return 0;
 }
 
-template<>
+template <>
 CFNumberRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 {
 	CFTypeRef temp = CFDictionaryGetValue(dict, OIS_CFString(keyName));
@@ -73,13 +73,13 @@ CFNumberRef getDictionaryItemAsRef(CFDictionaryRef dict, const char* keyName)
 
 //------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------//
-template<typename T>
+template <typename T>
 T getArrayItemAsRef(CFArrayRef array, CFIndex idx)
 {
 	return CFArrayGetValueAtIndex(array, idx);
 }
 
-template<>
+template <>
 CFDictionaryRef getArrayItemAsRef(CFArrayRef array, CFIndex idx)
 {
 	CFTypeRef temp = CFArrayGetValueAtIndex(array, idx);
@@ -94,7 +94,7 @@ CFDictionaryRef getArrayItemAsRef(CFArrayRef array, CFIndex idx)
 int getInt32(CFNumberRef ref)
 {
 	int r = 0;
-	if (r)
+	if(r)
 		CFNumberGetValue(ref, kCFNumberIntType, &r);
 	return r;
 }
@@ -114,7 +114,7 @@ void MacHIDManager::initialize()
 {
 	//Make the search more specific by adding usage flags
 	int usage = kHIDUsage_GD_Joystick;
-	int page = kHIDPage_GenericDesktop;
+	int page  = kHIDPage_GenericDesktop;
 
 	io_iterator_t iterator = lookUpDevices(usage, page);
 
@@ -122,7 +122,7 @@ void MacHIDManager::initialize()
 		iterateAndOpenDevices(iterator);
 
 	//Doesn't support multiple usage flags, iterate twice
-	usage = kHIDUsage_GD_GamePad;
+	usage	= kHIDUsage_GD_GamePad;
 	iterator = lookUpDevices(usage, page);
 
 	if(iterator)
@@ -144,7 +144,7 @@ io_iterator_t MacHIDManager::lookUpDevices(int usage, int page)
 
 	//IOServiceGetMatchingServices consumes the map so we do not have to release it ourself
 	io_iterator_t iterator = 0;
-	IOReturn result = IOServiceGetMatchingServices(kIOMasterPortDefault, deviceLookupMap, &iterator);
+	IOReturn result		   = IOServiceGetMatchingServices(kIOMasterPortDefault, deviceLookupMap, &iterator);
 
 	CFRelease(usageRef);
 	CFRelease(pageRef);
@@ -164,11 +164,11 @@ io_iterator_t MacHIDManager::lookUpDevices(int usage, int page)
 void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 {
 	io_object_t hidDevice = 0;
-	while ((hidDevice = IOIteratorNext(iterator)) !=0)
+	while((hidDevice = IOIteratorNext(iterator)) != 0)
 	{
 		//Get the current registry items property map
 		CFMutableDictionaryRef propertyMap = 0;
-		if (IORegistryEntryCreateCFProperties(hidDevice, &propertyMap, kCFAllocatorDefault, kNilOptions) == KERN_SUCCESS && propertyMap)
+		if(IORegistryEntryCreateCFProperties(hidDevice, &propertyMap, kCFAllocatorDefault, kNilOptions) == KERN_SUCCESS && propertyMap)
 		{
 			//Go through device to find all needed info
 			HidInfo* hid = enumerateDeviceProperties(propertyMap);
@@ -179,13 +179,13 @@ void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 				//should be able to watch for device removals also
 
 				// Testing opening / closing interface
-				IOCFPlugInInterface **pluginInterface = NULL;
-				SInt32 score = 0;
-				if (IOCreatePlugInInterfaceForService(hidDevice, kIOHIDDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) == kIOReturnSuccess)
+				IOCFPlugInInterface** pluginInterface = NULL;
+				SInt32 score						  = 0;
+				if(IOCreatePlugInInterfaceForService(hidDevice, kIOHIDDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) == kIOReturnSuccess)
 				{
-					IOHIDDeviceInterface **interface;
+					IOHIDDeviceInterface** interface;
 
-					HRESULT pluginResult = (*pluginInterface)->QueryInterface(pluginInterface, CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID), (void **)&(interface));
+					HRESULT pluginResult = (*pluginInterface)->QueryInterface(pluginInterface, CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID), (void**)&(interface));
 
 					if(pluginResult != S_OK)
 						OIS_EXCEPT(E_General, "Not able to create plugin interface");
@@ -213,19 +213,19 @@ HidInfo* MacHIDManager::enumerateDeviceProperties(CFMutableDictionaryRef propert
 	info->type = OISJoyStick;
 
 	CFStringRef str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDManufacturerKey);
-	if (str)
+	if(str)
 		info->vendor = CFStringGetCStringPtr(str, CFStringGetSystemEncoding());
 
 	str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDProductKey);
-	if (str)
+	if(str)
 		info->productKey = CFStringGetCStringPtr(str, CFStringGetSystemEncoding());
 
 	info->combinedKey = info->vendor + " " + info->productKey;
 
 	//Go through all items in this device (i.e. buttons, hats, sticks, axes, etc)
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(propertyMap, kIOHIDElementKey);
-	if (array)
-		for (int i = 0; i < CFArrayGetCount(array); i++)
+	if(array)
+		for(int i = 0; i < CFArrayGetCount(array); i++)
 			parseDeviceProperties(getArrayItemAsRef<CFDictionaryRef>(array, i));
 
 	return info;
@@ -238,15 +238,15 @@ void MacHIDManager::parseDeviceProperties(CFDictionaryRef properties)
 		return;
 
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(properties, kIOHIDElementKey);
-	if (array)
+	if(array)
 	{
-		for (int i = 0; i < CFArrayGetCount(array); i++)
+		for(int i = 0; i < CFArrayGetCount(array); i++)
 		{
 			CFDictionaryRef element = getArrayItemAsRef<CFDictionaryRef>(array, i);
-			if (element)
+			if(element)
 			{
 				if(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementTypeKey)) == kIOHIDElementTypeCollection)
-				{	//Check if we need to recurse further intoi another collection
+				{ //Check if we need to recurse further intoi another collection
 					if(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementUsagePageKey)) == kHIDPage_GenericDesktop)
 						parseDeviceProperties(element);
 				}
@@ -256,28 +256,28 @@ void MacHIDManager::parseDeviceProperties(CFDictionaryRef properties)
 					{
 						case kHIDPage_GenericDesktop:
 							switch(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementUsageKey)))
-						{
-							case kHIDUsage_GD_Pointer:
-								cout << "\tkHIDUsage_GD_Pointer\n";
-								parseDevicePropertiesGroup(element);
-								break;
-							case kHIDUsage_GD_X:
-							case kHIDUsage_GD_Y:
-							case kHIDUsage_GD_Z:
-							case kHIDUsage_GD_Rx:
-							case kHIDUsage_GD_Ry:
-							case kHIDUsage_GD_Rz:
-								cout << "\tAxis\n";
-								break;
-							case kHIDUsage_GD_Slider:
-							case kHIDUsage_GD_Dial:
-							case kHIDUsage_GD_Wheel:
-								cout << "\tUnsupported kHIDUsage_GD_Wheel\n";
-								break;
-							case kHIDUsage_GD_Hatswitch:
-								cout << "\tUnsupported - kHIDUsage_GD_Hatswitch\n";
-								break;
-						}
+							{
+								case kHIDUsage_GD_Pointer:
+									cout << "\tkHIDUsage_GD_Pointer\n";
+									parseDevicePropertiesGroup(element);
+									break;
+								case kHIDUsage_GD_X:
+								case kHIDUsage_GD_Y:
+								case kHIDUsage_GD_Z:
+								case kHIDUsage_GD_Rx:
+								case kHIDUsage_GD_Ry:
+								case kHIDUsage_GD_Rz:
+									cout << "\tAxis\n";
+									break;
+								case kHIDUsage_GD_Slider:
+								case kHIDUsage_GD_Dial:
+								case kHIDUsage_GD_Wheel:
+									cout << "\tUnsupported kHIDUsage_GD_Wheel\n";
+									break;
+								case kHIDUsage_GD_Hatswitch:
+									cout << "\tUnsupported - kHIDUsage_GD_Hatswitch\n";
+									break;
+							}
 							break;
 						case kHIDPage_Button:
 							cout << "\tkHIDPage_Button\n";
@@ -298,33 +298,33 @@ void MacHIDManager::parseDevicePropertiesGroup(CFDictionaryRef properties)
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(properties, kIOHIDElementKey);
 	if(array)
 	{
-		for (int i = 0; i < CFArrayGetCount(array); i++)
+		for(int i = 0; i < CFArrayGetCount(array); i++)
 		{
 			CFDictionaryRef element = getArrayItemAsRef<CFDictionaryRef>(array, i);
-			if (element)
+			if(element)
 			{
 				switch(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementUsagePageKey)))
 				{
 					case kHIDPage_GenericDesktop:
 						switch(getInt32(getDictionaryItemAsRef<CFNumberRef>(element, kIOHIDElementUsageKey)))
-					{
-						case kHIDUsage_GD_X:
-						case kHIDUsage_GD_Y:
-						case kHIDUsage_GD_Z:
-						case kHIDUsage_GD_Rx:
-						case kHIDUsage_GD_Ry:
-						case kHIDUsage_GD_Rz:
-							cout << "\t\tAxis\n";
-							break;
-						case kHIDUsage_GD_Slider:
-						case kHIDUsage_GD_Dial:
-						case kHIDUsage_GD_Wheel:
-							cout << "\tUnsupported - kHIDUsage_GD_Wheel\n";
-							break;
-						case kHIDUsage_GD_Hatswitch:
-							cout << "\tUnsupported - kHIDUsage_GD_Hatswitch\n";
-							break;
-					}
+						{
+							case kHIDUsage_GD_X:
+							case kHIDUsage_GD_Y:
+							case kHIDUsage_GD_Z:
+							case kHIDUsage_GD_Rx:
+							case kHIDUsage_GD_Ry:
+							case kHIDUsage_GD_Rz:
+								cout << "\t\tAxis\n";
+								break;
+							case kHIDUsage_GD_Slider:
+							case kHIDUsage_GD_Dial:
+							case kHIDUsage_GD_Wheel:
+								cout << "\tUnsupported - kHIDUsage_GD_Wheel\n";
+								break;
+							case kHIDUsage_GD_Hatswitch:
+								cout << "\tUnsupported - kHIDUsage_GD_Hatswitch\n";
+								break;
+						}
 						break;
 					case kHIDPage_Button:
 						break;
@@ -351,7 +351,7 @@ DeviceList MacHIDManager::freeDeviceList()
 //--------------------------------------------------------------------------------//
 int MacHIDManager::totalDevices(Type iType)
 {
-	int ret = 0;
+	int ret					 = 0;
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
 
 	for(; it != end; ++it)
@@ -366,7 +366,7 @@ int MacHIDManager::totalDevices(Type iType)
 //--------------------------------------------------------------------------------//
 int MacHIDManager::freeDevices(Type iType)
 {
-	int ret = 0;
+	int ret					 = 0;
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
 
 	for(; it != end; ++it)
@@ -379,7 +379,7 @@ int MacHIDManager::freeDevices(Type iType)
 }
 
 //--------------------------------------------------------------------------------//
-bool MacHIDManager::vendorExist(Type iType, const std::string & vendor)
+bool MacHIDManager::vendorExist(Type iType, const std::string& vendor)
 {
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
 
@@ -393,27 +393,26 @@ bool MacHIDManager::vendorExist(Type iType, const std::string & vendor)
 }
 
 //--------------------------------------------------------------------------------//
-Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool bufferMode,
-									const std::string & vendor)
+Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor)
 {
-	Object *obj = 0;
+	Object* obj = 0;
 
 	HidInfoList::iterator it = mDeviceList.begin(), end = mDeviceList.end();
 	for(; it != end; ++it)
 	{
 		if((*it)->inUse == false && (*it)->type == iType && (vendor == "" || (*it)->combinedKey == vendor))
 		{
-            int totalDevs = totalDevices(iType);
-            int freeDevs = freeDevices(iType);
-            int devID = totalDevs - freeDevs;
+			int totalDevs = totalDevices(iType);
+			int freeDevs  = freeDevices(iType);
+			int devID	 = totalDevs - freeDevs;
 			switch(iType)
 			{
 				case OISJoyStick:
-                {
-                    obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
-                    (*it)->inUse = true;
-                    return obj;
-                }
+				{
+					obj			 = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
+					(*it)->inUse = true;
+					return obj;
+				}
 				case OISTablet:
 					//Create MacTablet
 					break;

@@ -33,17 +33,17 @@ namespace OIS
 	class EventUtils
 	{
 	public:
-		static bool isJoyStick( int deviceID, JoyStickInfo &js );
-		static bool isMouse( int ) {return false;}
-		static bool isKeyboard( int ) {return false;}
+		static bool isJoyStick(int deviceID, JoyStickInfo& js);
+		static bool isMouse(int) { return false; }
+		static bool isKeyboard(int) { return false; }
 
 		//Double pointer is so that we can set the value of the sent pointer
-		static void enumerateForceFeedback( int deviceID, LinuxForceFeedback** ff );
-		static void removeForceFeedback( LinuxForceFeedback** ff );
+		static void enumerateForceFeedback(int deviceID, LinuxForceFeedback** ff);
+		static void removeForceFeedback(LinuxForceFeedback** ff);
 
-		static std::string getName( int deviceID );
-		static std::string getUniqueId( int deviceID );
-		static std::string getPhysicalLocation( int deviceID );
+		static std::string getName(int deviceID);
+		static std::string getUniqueId(int deviceID);
+		static std::string getPhysicalLocation(int deviceID);
 	};
 }
 #endif
