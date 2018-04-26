@@ -10,6 +10,7 @@ Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
 
  - [Doxygen doumentation](doxygen/html/)
+ - [News](./news)
 
 ### Linux
 
