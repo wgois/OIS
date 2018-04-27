@@ -1,6 +1,6 @@
 # News
 
-- back to [index](wgois.github.io/OIS)
+- back to [index](http://wgois.github.io/OIS)
 
 This page is a simple "static" blog-like thing just to post updates about where OIS's developement is going
 
