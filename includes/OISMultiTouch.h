@@ -141,8 +141,10 @@ namespace OIS
 		const std::vector<MultiTouchState> getFirstNTouchStates(int n)
 		{
 			std::vector<MultiTouchState> states;
-			for(unsigned int i = 0; i < mStates.size(); i++) {
-				if(!(mStates[i].touchIsType(MT_None))) {
+			for(unsigned int i = 0; i < mStates.size(); i++)
+			{
+				if(!(mStates[i].touchIsType(MT_None)))
+				{
 					states.push_back(mStates[i]);
 				}
 			}
@@ -154,8 +156,10 @@ namespace OIS
 		const std::vector<MultiTouchState> getMultiTouchStatesOfType(MultiTypeEventTypeID type)
 		{
 			std::vector<MultiTouchState> states;
-			for(unsigned int i = 0; i < mStates.size(); i++) {
-				if(mStates[i].touchIsType(type)) {
+			for(unsigned int i = 0; i < mStates.size(); i++)
+			{
+				if(mStates[i].touchIsType(type))
+				{
 					states.push_back(mStates[i]);
 				}
 			}

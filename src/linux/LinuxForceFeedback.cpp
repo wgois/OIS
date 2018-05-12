@@ -99,7 +99,8 @@ void LinuxForceFeedback::setMasterGain(float value)
 		 << value << " => " << event.value << endl;
 #endif
 
-	if(write(mJoyStick, &event, sizeof(event)) != sizeof(event)) {
+	if(write(mJoyStick, &event, sizeof(event)) != sizeof(event))
+	{
 		OIS_EXCEPT(E_General, "Unknown error changing master gain.");
 	}
 }
@@ -128,7 +129,8 @@ void LinuxForceFeedback::setAutoCenterMode(bool enabled)
 		 << enabled << " => 0x" << hex << event.value << dec << endl;
 #endif
 
-	if(write(mJoyStick, &event, sizeof(event)) != sizeof(event)) {
+	if(write(mJoyStick, &event, sizeof(event)) != sizeof(event))
+	{
 		OIS_EXCEPT(E_General, "Unknown error toggling auto-center.");
 	}
 }
@@ -225,7 +227,8 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect* event,
 {
 	memset(event, 0, sizeof(struct ff_effect));
 
-	if(envelope && ffenvelope && envelope->isUsed()) {
+	if(envelope && ffenvelope && envelope->isUsed())
+	{
 		ffenvelope->attack_length = LinuxDuration(envelope->attackLength);
 		ffenvelope->attack_level  = LinuxPositiveLevel(envelope->attackLevel);
 		ffenvelope->fade_length   = LinuxDuration(envelope->fadeLength);
@@ -466,7 +469,8 @@ void LinuxForceFeedback::_upload(struct ff_effect* ffeffect, const Effect* effec
 #endif
 
 		//This effect has not yet been created, so create it in the device
-		if(ioctl(mJoyStick, EVIOCSFF, ffeffect) == -1) {
+		if(ioctl(mJoyStick, EVIOCSFF, ffeffect) == -1)
+		{
 			// TODO device full check
 			// OIS_EXCEPT(E_DeviceFull, "Remove an effect before adding more!");
 			OIS_EXCEPT(E_General, "Unknown error creating effect (may be the device is full)->..");
@@ -496,7 +500,8 @@ void LinuxForceFeedback::_upload(struct ff_effect* ffeffect, const Effect* effec
 		ffeffect->id = effect->_handle;
 
 		// Update effect in the device.
-		if(ioctl(mJoyStick, EVIOCSFF, ffeffect) == -1) {
+		if(ioctl(mJoyStick, EVIOCSFF, ffeffect) == -1)
+		{
 			OIS_EXCEPT(E_General, "Unknown error updating an effect->..");
 		}
 
@@ -525,7 +530,8 @@ void LinuxForceFeedback::_stop(int handle)
 		 << ") : Stopping effect with handle " << handle << endl;
 #endif
 
-	if(write(mJoyStick, &stop, sizeof(stop)) != sizeof(stop)) {
+	if(write(mJoyStick, &stop, sizeof(stop)) != sizeof(stop))
+	{
 		OIS_EXCEPT(E_General, "Unknown error stopping effect->..");
 	}
 }
@@ -545,7 +551,8 @@ void LinuxForceFeedback::_start(int handle)
 		 << ") : Starting effect with handle " << handle << endl;
 #endif
 
-	if(write(mJoyStick, &play, sizeof(play)) != sizeof(play)) {
+	if(write(mJoyStick, &play, sizeof(play)) != sizeof(play))
+	{
 		OIS_EXCEPT(E_General, "Unknown error playing effect->..");
 	}
 }
@@ -559,7 +566,8 @@ void LinuxForceFeedback::_unload(int handle)
 		 << ") : Removing effect with handle " << handle << endl;
 #endif
 
-	if(ioctl(mJoyStick, EVIOCRMFF, handle) == -1) {
+	if(ioctl(mJoyStick, EVIOCRMFF, handle) == -1)
+	{
 		OIS_EXCEPT(E_General, "Unknown error removing effect->..");
 	}
 }

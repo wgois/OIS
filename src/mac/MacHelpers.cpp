@@ -38,7 +38,8 @@ OSStatus KeyDownWrapper(EventHandlerCallRef nextHandler,
 						void* callClass)
 {
 	// TODO find a better way. This cast isn't very safe
-	if(callClass != NULL) {
+	if(callClass != NULL)
+	{
 		((MacKeyboard*)callClass)->_keyDownCallback(theEvent);
 
 		// propagate the event down the chain
@@ -56,7 +57,8 @@ OSStatus KeyUpWrapper(EventHandlerCallRef nextHandler,
 					  EventRef theEvent,
 					  void* callClass)
 {
-	if(callClass != NULL) {
+	if(callClass != NULL)
+	{
 		((MacKeyboard*)callClass)->_keyUpCallback(theEvent);
 
 		// propagate the event down the chain
@@ -74,7 +76,8 @@ OSStatus KeyModWrapper(EventHandlerCallRef nextHandler,
 					   EventRef theEvent,
 					   void* callClass)
 {
-	if(callClass != NULL) {
+	if(callClass != NULL)
+	{
 		((MacKeyboard*)callClass)->_modChangeCallback(theEvent);
 
 		// propagate the event down the chain
