@@ -2,6 +2,7 @@
 
 The zlib/libpng License
 
+Copyright (c) 2018 Arthur Brainville
 Copyright (c) 2015 Andrew Fenn
 Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
