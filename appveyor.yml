@@ -6,9 +6,9 @@ image:
 configuration:
 - Debug
 - Release
-platform:
-- Win32
-- x64
+#platform:
+#- Win32
+#- x64
 before_build:
 - cmd: cmake -H. -B./build
 build:
