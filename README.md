@@ -5,6 +5,8 @@
 [![Build Status](https://travis-ci.org/wgois/OIS.svg?branch=master)](https://travis-ci.org/wgois/OIS)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/wgois/OIS/graphs/commit-activity)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Packaging status](https://repology.org/badge/tiny-repos/ois.svg)](https://repology.org/metapackage/ois)
+[![latest packaged version(s)](https://repology.org/badge/latest-versions/ois.svg)](https://repology.org/metapackage/ois)
 
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
