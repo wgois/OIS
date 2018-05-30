@@ -123,7 +123,7 @@ void Win32JoyStick::_initialize()
 			OIS_EXCEPT(E_General, "Win32JoyStick::_initialize() >> failed to set cooperation level!");
 
 		if(FAILED(mJoyStick->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
-			OIS_EXCEPT(E_General, "Win32Mouse::Win32Mouse >> Failed to set buffer size property");
+			OIS_EXCEPT(E_General, "Win32JoyStick::_initialize >> Failed to set buffer size property");
 
 		//Enumerate all axes/buttons/sliders/etc before aquiring
 		_enumerate();
@@ -517,7 +517,7 @@ bool Win32JoyStick::_doButtonClick(int button, DIDEVICEOBJECTDATA& di)
 //--------------------------------------------------------------------------------------------------//
 bool Win32JoyStick::_changePOV(int pov, DIDEVICEOBJECTDATA& di)
 {
-	//Some drivers report a value of 65,535, instead of —1,
+	//Some drivers report a value of 65,535, instead of Â—1,
 	//for the center position
 	if(LOWORD(di.dwData) == 0xFFFF)
 	{
