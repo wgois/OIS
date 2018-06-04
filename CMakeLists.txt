@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(OIS)
 
+set(CMAKE_CXX_STANDARD 11)
+
 set(OIS_MAJOR_VERSION 1)
 set(OIS_MINOR_VERSION 4)
 set(OIS_PATCH_VERSION 0)
