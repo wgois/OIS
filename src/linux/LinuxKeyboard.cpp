@@ -43,6 +43,46 @@ LinuxKeyboard::LinuxKeyboard(InputManager* creator, bool buffered, bool grab) :
 	keyFocusLost = false;
 
 	static_cast<LinuxInputManager*>(mCreator)->_setKeyboardUsed(true);
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Up, KC_UP));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Down, KC_DOWN));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Left, KC_LEFT));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Right, KC_RIGHT));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Divide, KC_DIVIDE));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Home, KC_NUMPAD7));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Up, KC_NUMPAD8));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Page_Up, KC_NUMPAD9));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Left, KC_NUMPAD4));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Begin, KC_NUMPAD5));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Right, KC_NUMPAD6));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_End, KC_NUMPAD1));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Down, KC_NUMPAD2));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Page_Down, KC_NUMPAD3));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Insert, KC_NUMPAD0));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Delete, KC_DECIMAL));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Page_Up, KC_PGUP));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Page_Down, KC_PGDOWN));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Home, KC_HOME));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_End, KC_END));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Print, KC_SYSRQ));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Scroll_Lock, KC_SCROLL));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Pause, KC_PAUSE));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Shift_R, KC_RSHIFT));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Shift_L, KC_LSHIFT));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Alt_R, KC_RMENU));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Alt_L, KC_LMENU));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Insert, KC_INSERT));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Delete, KC_DELETE));
+
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Super_L, KC_LWIN));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Super_R, KC_RWIN));
+	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Menu, KC_APPS));
 }
 
 //-------------------------------------------------------------------//
@@ -308,6 +348,13 @@ void LinuxKeyboard::setBuffered(bool buffered)
 	mBuffered = buffered;
 }
 
+OIS::KeyCode LinuxKeyboard::convert(KeySym kc)
+{
+	const auto result = keyConversion.find(kc);
+	if(result == keyConversion.end())
+		return KC_UNASSIGNED; //No explicit conversion for the symbol;
+	return result->second;
+}
 //-------------------------------------------------------------------//
 bool LinuxKeyboard::_injectKeyDown(KeyCode kc, int text)
 {

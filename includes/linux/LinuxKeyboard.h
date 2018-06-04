@@ -27,6 +27,7 @@ restrictions:
 #include "OISKeyboard.h"
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
+#include <unordered_map>
 
 namespace OIS
 {
@@ -89,12 +90,18 @@ namespace OIS
 		{
 			if(keySym != NoSymbol)
 			{
+				//Check for explicit convert
+				OIS::KeyCode converted = convert(keySym);
+				if(converted != KC_UNASSIGNED)
+					return converted;
+
 				::KeyCode xkc = XKeysymToKeycode(display, keySym);
 				if(xkc > 8)
 					return static_cast<KeyCode>(xkc - 8);
 			}
 			return KC_UNASSIGNED;
 		}
+
 		inline KeySym OISKeyCodeToKeySym(KeyCode kc)
 		{
 			if(kc == KC_UNASSIGNED)
@@ -104,6 +111,12 @@ namespace OIS
 
 			return XkbKeycodeToKeysym(display, xkc, 0, 0);
 		}
+
+		//! Explict convertion for non-text symbols
+		typedef std::unordered_map<KeySym, KeyCode> XtoOIS_KeyMap;
+		XtoOIS_KeyMap keyConversion;
+
+		OIS::KeyCode convert(KeySym ksym);
 
 		//! Depressed Key List
 		char KeyBuffer[256];

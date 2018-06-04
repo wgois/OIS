@@ -73,16 +73,22 @@ public:
 	~EventHandler() {}
 	bool keyPressed(const KeyEvent& arg)
 	{
-		std::cout << " KeyPressed {" << arg.key
-				  << ", " << ((Keyboard*)(arg.device))->getAsString(arg.key)
+		std::cout << " KeyPressed {" << std::hex << arg.key << std::dec
 				  << "} || Character (" << (char)arg.text << ")" << std::endl;
+
+		if(arg.key == OIS::KeyCode::KC_UP)
+		{
+			std::cout << "up key!\n";
+		}
+
 		return true;
 	}
 	bool keyReleased(const KeyEvent& arg)
 	{
 		if(arg.key == KC_ESCAPE || arg.key == KC_Q)
 			appRunning = false;
-		std::cout << "KeyReleased {" << ((Keyboard*)(arg.device))->getAsString(arg.key) << "}\n";
+		std::cout << "KeyReleased {" << std::hex << arg.key << std::dec
+				  << "}\n";
 		return true;
 	}
 	bool mouseMoved(const MouseEvent& arg)
