@@ -23,7 +23,7 @@ if(NOT CMAKE_BUILD_TYPE)
         FORCE)
 endif()
 
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(OIS_BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(OIS_BUILD_DEMOS "Build demo applications" ON)
 set(CMAKE_MACOSX_RPATH 0)
 
@@ -46,6 +46,8 @@ set(ois_source
     "${CMAKE_CURRENT_SOURCE_DIR}/src/OISForceFeedback.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/OISException.cpp"
 )
+
+set(BUILD_SHARED_LIBS ${OIS_BUILD_SHARED_LIBS})
 
 if (UNIX AND NOT APPLE)
 
