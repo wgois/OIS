@@ -153,7 +153,11 @@ if (WIN32)
         set(DIRECTX_ARCH x86)
     endif()
 
-    target_link_libraries(OIS "dinput8.lib" "dxguid.lib")
+    if (WINDOWSSDK_FOUND)
+        target_link_libraries(OIS "dinput8.lib" "dxguid.lib")
+    else()
+        target_link_libraries(OIS "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dinput8.lib" "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dxguid.lib")
+    endif()
 endif()
 
 if(UNIX)
