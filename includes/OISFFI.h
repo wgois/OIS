@@ -30,9 +30,30 @@ restrictions:
 extern "C" {
 #endif
 
-_OISExport intptr_t OIS_FFI OIS_CreateInputManager(intptr_t);
+_OISExport intptr_t OIS_FFI OIS_InputManager_Create(intptr_t);
 
-_OISExport void OIS_FFI OIS_DestroyInputManager(intptr_t);
+_OISExport void OIS_FFI OIS_InputManager_Destroy(intptr_t);
+
+_OISExport int OIS_FFI OIS_InputManager_GetNumberOfDevices(intptr_t inputManager, int iType);
+
+_OISExport void OIS_FFI OIS_InputManager_EnableAddOnFactory(intptr_t inputManager);
+
+_OISExport intptr_t OIS_FFI OIS_InputManager_CreateInputObject(intptr_t inputManager, int iType, bool buffered);
+
+_OISExport void OIS_FFI OIS_InputManager_DestroyInputObject(intptr_t inputManager, intptr_t inputObject);
+
+
+_OISExport bool OIS_FFI OIS_InputObject_GetVenderString(intptr_t inputObject, char* buf, size_t bufsize);
+
+_OISExport bool OIS_FFI OIS_InputObject_Buffered(intptr_t inputObject);
+
+_OISExport void OIS_FFI OIS_InputObject_SetBuffered(intptr_t inputObject, bool bufferd);
+
+_OISExport intptr_t OIS_FFI OIS_InputObject_GetCreator(intptr_t inputObject);
+
+_OISExport void OIS_FFI OIS_InputObject_Capture(intptr_t inputObject);
+
+_OISExport int OIS_FFI OIS_InputObject_GetID(intptr_t inputObject);
 
 #if __cplusplus
 }

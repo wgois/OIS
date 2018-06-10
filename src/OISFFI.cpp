@@ -52,5 +52,60 @@ intptr_t OIS_CreateInputManager(intptr_t wndptr)
 
 void OIS_DestroyInputManager(intptr_t inputManager)
 {
-	if(inputManager) InputManager::destroyInputSystem((InputManager *)inputManager);
+	if(inputManager) InputManager::destroyInputSystem((InputManager*)inputManager);
+}
+
+int OIS_InputManager_GetNumberOfDevices(intptr_t inputManager, int iType)
+{
+	return ((InputManager*)inputManager)->getNumberOfDevices((Type)iType);
+}
+
+void OIS_InputManager_EnableAddOnFactory(intptr_t inputManager)
+{
+	((InputManager*)inputManager)->enableAddOnFactory(InputManager::AddOn_All);
+}
+
+intptr_t OIS_InputManager_CreateInputObject(intptr_t inputManager, int iType, bool buffered)
+{
+	return (intptr_t)((InputManager*)inputManager)->createInputObject((Type)iType, buffered);
+}
+
+void OIS_InputManager_DestroyInputObject(intptr_t inputManager, intptr_t inputObject)
+{
+	((InputManager*)inputManager)->destroyInputObject((Object*)inputObject);
+}
+
+bool OIS_InputObject_GetVenderString(intptr_t inputObject, char* buf, size_t bufsize)
+{
+	auto obj = (Object*)inputObject;
+	if(obj->vendor().size() > bufsize) return false;
+	for(int i = 0; i < obj->vendor().size(); ++i) {
+		buf[i] = obj->vendor()[i];
+	}
+	return true;
+}
+
+bool OIS_InputObject_Buffered(intptr_t inputObject)
+{
+	return ((Object*)inputObject)->buffered();
+}
+
+void OIS_InputObject_SetBuffered(intptr_t inputObject, bool bufferd)
+{
+	((Object*)inputObject)->setBuffered(bufferd);
+}
+
+intptr_t OIS_InputObject_GetCreator(intptr_t inputObject)
+{
+	return (intptr_t)((Object*)inputObject)->getCreator();
+}
+
+void OIS_InputObject_Capture(intptr_t inputObject)
+{
+	((Object*)inputObject)->capture();
+}
+
+int OIS_InputObject_GetID(intptr_t inputObject)
+{
+	return ((Object*)inputObject)->getID();
 }
