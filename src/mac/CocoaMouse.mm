@@ -177,15 +177,15 @@ void CocoaMouse::capture()
 	if(mNeedsToRegainFocus)
 		return;
 
-	if((type == NSLeftMouseDown) && ([theEvent modifierFlags] & NSAlternateKeyMask))
+	if((type == NSEventTypeLeftMouseDown) && ([theEvent modifierFlags] & NSEventModifierFlagOption))
 	{
 		mouseButton = MB_Middle;
 	}
-	else if((type == NSLeftMouseDown) && ([theEvent modifierFlags] & NSControlKeyMask))
+	else if((type == NSEventTypeLeftMouseDown) && ([theEvent modifierFlags] & NSEventModifierFlagControl))
 	{
 		mouseButton = MB_Right;
 	}
-	else if(type == NSLeftMouseDown)
+	else if(type == NSEventTypeLeftMouseDown)
 	{
 		mouseButton = MB_Left;
 	}
@@ -200,15 +200,15 @@ void CocoaMouse::capture()
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 
-	if((type == NSLeftMouseUp) && ([theEvent modifierFlags] & NSAlternateKeyMask))
+	if((type == NSEventTypeLeftMouseUp) && ([theEvent modifierFlags] & NSEventModifierFlagOption))
 	{
 		mouseButton = MB_Middle;
 	}
-	else if((type == NSLeftMouseUp) && ([theEvent modifierFlags] & NSControlKeyMask))
+	else if((type == NSEventTypeLeftMouseUp) && ([theEvent modifierFlags] & NSEventModifierFlagControl))
 	{
 		mouseButton = MB_Right;
 	}
-	else if(type == NSLeftMouseUp)
+	else if(type == NSEventTypeLeftMouseUp)
 	{
 		mouseButton = MB_Left;
 	}
@@ -244,7 +244,7 @@ void CocoaMouse::capture()
 	if(mNeedsToRegainFocus)
 		return;
 
-	if(type == NSRightMouseDown)
+	if(type == NSEventTypeRightMouseDown)
 	{
 		state->buttons |= 1 << mouseButton;
 	}
@@ -259,7 +259,7 @@ void CocoaMouse::capture()
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 
-	if(type == NSRightMouseUp)
+	if(type == NSEventTypeRightMouseUp)
 	{
 		state->buttons &= ~(1 << mouseButton);
 	}
@@ -294,7 +294,7 @@ void CocoaMouse::capture()
 	if(mNeedsToRegainFocus)
 		return;
 
-	if(type == NSOtherMouseDown)
+	if(type == NSEventTypeOtherMouseDown)
 	{
 		state->buttons |= 1 << mouseButton;
 	}
@@ -309,7 +309,7 @@ void CocoaMouse::capture()
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 
-	if(type == NSOtherMouseUp)
+	if(type == NSEventTypeOtherMouseUp)
 	{
 		state->buttons &= ~(1 << mouseButton);
 	}

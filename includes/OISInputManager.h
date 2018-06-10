@@ -35,7 +35,7 @@ namespace OIS
 		Base Manager class. No longer a Singleton; so feel free to create as many InputManager's as you have
 		windows.
 	*/
-	class _OISExport InputManager
+	class OISExport InputManager
 	{
 	public:
 		/**

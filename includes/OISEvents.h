@@ -29,7 +29,7 @@ namespace OIS
 	/**
 		Base class of all events
 	*/
-	class _OISExport EventArg
+	class OISExport EventArg
 	{
 	public:
 		explicit EventArg(Object* obj) :

@@ -180,7 +180,7 @@ namespace OIS
 	/**
 		Specialised for key events
 	*/
-	class _OISExport KeyEvent : public EventArg
+	class OISExport KeyEvent : public EventArg
 	{
 	public:
 		KeyEvent(Object* obj, KeyCode kc, unsigned int txt) :
@@ -197,7 +197,7 @@ namespace OIS
 		To recieve buffered keyboard input, derive a class from this, and implement the
 		methods here. Then set the call back to your Keyboard instance with Keyboard::setEventCallback
 	*/
-	class _OISExport KeyListener
+	class OISExport KeyListener
 	{
 	public:
 		virtual ~KeyListener() {}
@@ -209,7 +209,7 @@ namespace OIS
 		Keyboard base class. To be implemented by specific system (ie. DirectX Keyboard)
 		This class is useful as you remain OS independent using this common interface.
 	*/
-	class _OISExport Keyboard : public Object
+	class OISExport Keyboard : public Object
 	{
 	public:
 		virtual ~Keyboard(){};
