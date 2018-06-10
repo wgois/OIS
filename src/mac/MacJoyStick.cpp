@@ -100,6 +100,9 @@ void MacJoyStick::capture()
 	{
 		switch(event.type)
 		{
+            default:
+            break;
+            
 			case kIOHIDElementTypeInput_Button:
 			{
 				std::vector<IOHIDElementCookie>::iterator buttonIt = std::find(mCookies.buttonCookies.begin(), mCookies.buttonCookies.end(), event.elementCookie);
@@ -263,7 +266,9 @@ void MacJoyStick::_enumerateCookies()
 	}
 	else
 	{
-		OIS_EXCEPT(E_General, "JoyStick elements could not be copied: copyMatchingElements failed with error: " + success);
+        char str[256];
+        snprintf(str, 256, "JoyStick elements could not be copied: copyMatchingElements failed with error: %d", success);
+		OIS_EXCEPT(E_General, str);
 	}
 }
 
