@@ -336,7 +336,7 @@ void doStartup()
 #endif
 
     ParamList pl;
-    pl.insert(std::make_pair(std::string("WINDOW"), std::to_string((size_t)window)));
+    pl.insert(std::make_pair(std::string("WINDOW"), wnd.str()));
 
 	//This never returns null.. it will raise an exception on errors
 	g_InputManager = InputManager::createInputSystem(pl);
