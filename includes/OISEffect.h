@@ -44,7 +44,7 @@ namespace OIS
 		In anycase, this is the main class you will be using. There is *absolutely* no
 		need to instance any of the supporting ForceEffect classes yourself.
 	*/
-	class _OISExport Effect
+	class OISExport Effect
 	{
 	public:
 		//! Type of force
@@ -164,7 +164,7 @@ namespace OIS
 	/**
 		Base class of all effect property classes
 	*/
-	class _OISExport ForceEffect
+	class OISExport ForceEffect
 	{
 	public:
 		virtual ~ForceEffect() {}
@@ -176,7 +176,7 @@ namespace OIS
 		these values are nonzero, then the envelope will be used in setting up the
 		effect.
 	*/
-	class _OISExport Envelope : public ForceEffect
+	class OISExport Envelope : public ForceEffect
 	{
 	public:
 		Envelope() :
@@ -212,7 +212,7 @@ namespace OIS
 	/**
 		Use this class when dealing with Force type of Constant
 	*/
-	class _OISExport ConstantEffect : public ForceEffect
+	class OISExport ConstantEffect : public ForceEffect
 	{
 	public:
 		ConstantEffect() :
@@ -226,7 +226,7 @@ namespace OIS
 	/**
 		Use this class when dealing with Force type of Ramp
 	*/
-	class _OISExport RampEffect : public ForceEffect
+	class OISExport RampEffect : public ForceEffect
 	{
 	public:
 		RampEffect() :
@@ -241,7 +241,7 @@ namespace OIS
 	/**
 		Use this class when dealing with Force type of Periodic
 	*/
-	class _OISExport PeriodicEffect : public ForceEffect
+	class OISExport PeriodicEffect : public ForceEffect
 	{
 	public:
 		PeriodicEffect() :
@@ -259,7 +259,7 @@ namespace OIS
 	/**
 		Use this class when dealing with Force type of Condional
 	*/
-	class _OISExport ConditionalEffect : public ForceEffect
+	class OISExport ConditionalEffect : public ForceEffect
 	{
 	public:
 		ConditionalEffect() :

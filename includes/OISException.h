@@ -52,7 +52,7 @@ namespace OIS
 		Also note that this has a source file now since OSX was not finding the OIS::Exception symbol
 		which would cause program abortion with now correponding exception type.
 	*/
-	class _OISExport Exception : public std::exception
+	class OISExport Exception : public std::exception
 	{
 	public:
 		//! Creates exception object

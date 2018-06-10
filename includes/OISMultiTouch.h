@@ -46,7 +46,7 @@ namespace OIS
 		MT_Cancelled
 	};
 
-	class _OISExport MultiTouchState
+	class OISExport MultiTouchState
 	{
 	public:
 		MultiTouchState() :
@@ -84,7 +84,7 @@ namespace OIS
 	};
 
 	/** Specialised for multi-touch events */
-	class _OISExport MultiTouchEvent : public EventArg
+	class OISExport MultiTouchEvent : public EventArg
 	{
 	public:
 		MultiTouchEvent(Object* obj, const MultiTouchState& ms) :
@@ -99,7 +99,7 @@ namespace OIS
 		To receive buffered touch input, derive a class from this, and implement the
 		methods here. Then set the call back to your MultiTouch instance with MultiTouch::setEventCallback
 	*/
-	class _OISExport MultiTouchListener
+	class OISExport MultiTouchListener
 	{
 	public:
 		virtual ~MultiTouchListener() {}
@@ -113,7 +113,7 @@ namespace OIS
 		MultiTouch base class. To be implemented by specific system (ie. iPhone UITouch)
 		This class is useful as you remain OS independent using this common interface.
 	*/
-	class _OISExport MultiTouch : public Object
+	class OISExport MultiTouch : public Object
 	{
 	public:
 		virtual ~MultiTouch() {}

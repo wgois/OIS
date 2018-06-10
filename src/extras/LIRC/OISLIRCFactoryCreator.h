@@ -35,7 +35,7 @@ namespace OIS
 	class LIRCControl;
 
 	/** LIRC Factory Creator Class */
-	class _OISExport LIRCFactoryCreator : public FactoryCreator
+	class OISExport LIRCFactoryCreator : public FactoryCreator
 	{
 	public:
 		LIRCFactoryCreator();

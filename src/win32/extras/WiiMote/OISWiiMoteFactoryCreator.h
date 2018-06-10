@@ -45,7 +45,7 @@ namespace OIS
 #define OIS_cWiiMote_MAX_WIIS 4
 
 	/** WiiMote Factory Creator Class */
-	class _OISExport WiiMoteFactoryCreator : public FactoryCreator
+	class OISExport WiiMoteFactoryCreator : public FactoryCreator
 	{
 	public:
 		WiiMoteFactoryCreator();

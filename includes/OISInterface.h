@@ -31,7 +31,7 @@ namespace OIS
 		An Object's interface is a way to gain write access to devices which support
 		it. For example, force feedack.
 	*/
-	class _OISExport Interface
+	class OISExport Interface
 	{
 	public:
 		virtual ~Interface(){};

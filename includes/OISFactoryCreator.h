@@ -31,7 +31,7 @@ namespace OIS
 		Interface for creating devices - all devices ultimately get enumerated/created via a factory.
 		A factory can create multiple types of objects.
 	*/
-	class _OISExport FactoryCreator
+	class OISExport FactoryCreator
 	{
 	public:
 		/**

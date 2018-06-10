@@ -37,7 +37,8 @@ restrictions:
 #include "OISConfig.h"
 
 // Default is blank for most OS's
-#define _OISExport
+#define OISExport
+#define OIS_FFI
 
 //-------------- Determine Compiler ---------------------------------
 #if defined( _MSC_VER )
@@ -61,18 +62,22 @@ restrictions:
 #	else
 #		define OIS_WIN32_PLATFORM
 #		if defined( OIS_DYNAMIC_LIB )
-#			undef _OISExport
+#			undef OISExport
+#           undef OIS_FFI
 			//Ignorable Dll interface warning...
 #           if !defined(OIS_MINGW_COMPILER)
 #			    pragma warning (disable : 4251)
 #           endif
 #			if defined( OIS_NONCLIENT_BUILD )
-#				define _OISExport __declspec( dllexport )
+#				define OISExport __declspec( dllexport )
+#               define OIS_FFI __stdcall
 #			else
 #               if defined(OIS_MINGW_COMPILER)
-#                   define _OISExport
+#                   define OISExport
+#                   define OIS_FFI
 #               else
-#				    define _OISExport __declspec( dllimport )
+#				    define OISExport __declspec( dllimport )
+#                   define OIS_FFI __stdcall
 #               endif
 #			endif
 #		endif
@@ -85,8 +90,8 @@ restrictions:
 #   else
 #       define OIS_APPLE_PLATFORM
 #   endif
-#   undef _OISExport
-#   define _OISExport __attribute__((visibility("default")))
+#   undef OISExport
+#   define OISExport __attribute__((visibility("default")))
 #else //Probably Linux
 #	define OIS_LINUX_PLATFORM
 #	include <unistd.h>
@@ -112,12 +117,16 @@ restrictions:
 #define OIS_MACRO_END \
 	} OIS_INLINE_PRAGMA(warning(push)) OIS_INLINE_PRAGMA(warning(disable:4127)) while (0) OIS_INLINE_PRAGMA(warning(pop))
 
+#ifdef __APPLE_CC__
+#define OIS_UNUSED(x)
+#else
 // This creative trickery taken from this StackOverflow answer:
 // http://stackoverflow.com/questions/4030959/will-a-variablename-c-statement-be-a-no-op-at-all-times/4030983#4030983
 #define OIS_UNUSED(x)\
 	OIS_MACRO_BEGIN\
 		((void)(true ? 0 : ((x), void(), 0)));\
 	OIS_MACRO_END
+#endif
 
 //-------------- Common Classes, Enums, and Typdef's -------------------------//
 #define OIS_VERSION_MAJOR @OIS_MAJOR_VERSION@
@@ -183,7 +192,7 @@ namespace OIS
 	};
 
 	//! Base of all device components (button, axis, etc)
-	class _OISExport Component
+	class OISExport Component
 	{
 	public:
 		Component() : cType(OIS_Unknown) {};
@@ -193,7 +202,7 @@ namespace OIS
 	};
 
 	//! Button can be a keyboard key, mouse button, etc
-	class _OISExport Button : public Component
+	class OISExport Button : public Component
 	{
 	public:
 		Button() : Component(OIS_Button), pushed(false) {}
@@ -203,7 +212,7 @@ namespace OIS
 	};
 
 	//! Axis component
-	class _OISExport Axis : public Component
+	class OISExport Axis : public Component
 	{
 	public:
 		Axis() : Component(OIS_Axis), abs(0), rel(0), absOnly(false) {};
@@ -222,7 +231,7 @@ namespace OIS
 	};
 
 	//! A 3D Vector component (perhaps an orientation, as in the WiiMote)
-	class _OISExport Vector3 : public Component
+	class OISExport Vector3 : public Component
 	{
 	public:
 		Vector3() {}

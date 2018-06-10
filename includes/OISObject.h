@@ -29,7 +29,7 @@ restrictions:
 namespace OIS
 {
 	/**	The base class of all input types. */
-	class _OISExport Object
+	class OISExport Object
 	{
 	public:
 		virtual ~Object() {}

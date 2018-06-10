@@ -38,7 +38,7 @@ namespace OIS
 #define OIS_WII_EVENT_BUFFER 32
 
 	/**	Specialty joystick - WiiMote controller */
-	class _OISExport WiiMote : public JoyStick
+	class OISExport WiiMote : public JoyStick
 	{
 	public:
 		WiiMote(InputManager* creator, int id, bool buffered, WiiMoteFactoryCreator* local_creator);
