@@ -19,6 +19,11 @@ using namespace std;
 ////////////////////////////////////Needed Linux Headers//////////////
 #elif defined OIS_LINUX_PLATFORM
 #include <X11/Xlib.h>
+
+////////////////////////////////////Needed Mac Headers//////////////
+#elif defined OIS_APPLE_PLATFORM
+#include <Carbon/Carbon.h>
+#import <Cocoa/Cocoa.h>
 #endif
 
 using namespace OIS;
@@ -71,6 +76,8 @@ protected:
 public:
 	Variable(double dInitValue) :
 	 _dInitValue(dInitValue) { reset(); }
+    
+    virtual ~Variable() = default;
 
 	double getValue() const { return _dValue; }
 
@@ -105,7 +112,7 @@ protected:
 
 public:
 	LimitedVariable(double dInitValue, double dMinValue, double dMaxValue) :
-	 _dMinValue(dMinValue), _dMaxValue(dMaxValue), Variable(dInitValue)
+	 Variable(dInitValue), _dMinValue(dMinValue), _dMaxValue(dMaxValue)
 	{}
 
 	virtual void setValue(double dValue)
@@ -468,7 +475,7 @@ protected:
 
 public:
 	EffectManager(JoystickManager* pJoystickMgr, unsigned int nUpdateFreq) :
-	 _pJoystickMgr(pJoystickMgr), _nUpdateFreq(nUpdateFreq), _nCurrEffectInd(-1)
+	 _pJoystickMgr(pJoystickMgr), _nCurrEffectInd(-1), _nUpdateFreq(nUpdateFreq)
 	{
 		Effect* pEffect;
 		MapVariables mapVars;
@@ -832,6 +839,41 @@ public:
 
 		wnd << _xWin;
 
+#elif defined OIS_APPLE_PLATFORM
+        
+        //Plese note, Carbon based code used to be there, this is progressively being replaced with Cocoa code.
+        
+        //This create an NS application and a cocoa window
+        [NSAutoreleasePool new];
+        [NSApplication sharedApplication];
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+        id menubar     = [[NSMenu new] autorelease];
+        id appMenuItem = [[NSMenuItem new] autorelease];
+        [menubar addItem:appMenuItem];
+        [NSApp setMainMenu:menubar];
+        id appMenu        = [[NSMenu new] autorelease];
+        id appName        = [[NSProcessInfo processInfo] processName];
+        id quitTitle    = [@"Quit " stringByAppendingString:appName];
+        id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle
+                                                      action:@selector(terminate:)
+                                               keyEquivalent:@"q"] autorelease];
+        [appMenu addItem:quitMenuItem];
+        [appMenuItem setSubmenu:appMenu];
+        
+        //This is the interesing bit
+        id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
+                                                 styleMask:NSWindowStyleMaskTitled
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:NO]
+                     autorelease];
+        [window cascadeTopLeftFromPoint:NSMakePoint(20, 20)];
+        [window setTitle:@"OIS Input"];
+        [window makeKeyAndOrderFront:nil];
+        [NSApp activateIgnoringOtherApps:YES];
+        
+        //Apparently the "id" type the window variable was declared into boils down to a simple pointer.
+        //To give it to OIS, put the numerical value of the pointer into a string, as you do with Windows and Linux
+        wnd << (size_t)window;
 #endif
 
 		// Create OIS input manager
@@ -883,6 +925,22 @@ public:
 	}
 #endif
 
+#if defined OIS_APPLE_PLATFORM
+    void checkMacEvents()
+    {
+        //TODO - Check for window resize events, and then adjust the members of mousestate
+        //EventTargetRef targetWindow = GetEventDispatcherTarget();
+        NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                            untilDate:[NSDate distantFuture]
+                                               inMode:NSDefaultRunLoopMode
+                                              dequeue:YES];
+        if(event) {
+            [NSApp sendEvent:event];
+            std::cout << "Event : " << event.type << "\n";
+        }
+    }
+#endif
+
 	int run()
 	{
 		const unsigned int nMaxEffectUpdateCnt = _nHartBeatFreq / _nEffectUpdateFreq;
@@ -931,6 +989,9 @@ public:
 #elif defined OIS_LINUX_PLATFORM
 				checkX11Events();
 				usleep(1000000.0 / _nHartBeatFreq);
+#elif defined OIS_APPLE_PLATFORM
+                checkMacEvents();
+                usleep(1000000.0 / _nHartBeatFreq);
 #endif
 			}
 		}
