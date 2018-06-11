@@ -22,6 +22,13 @@ To build and install:
     make
     make install
 ```
+
+By default, the `install` target will install OIS.pc inside `/usr/local/lib/pkgconfig`. To find OIS with pkg-config, you need to have this directory on your `PKG_CONFIGG_PATH` 
+
+```bash
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+```
+
 ### Windows
 
 Dependencies: DirectInput 8
