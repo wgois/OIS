@@ -92,10 +92,6 @@ void LinuxKeyboard::_initialize()
 	if(setlocale(LC_ALL, "") == NULL)
 		OIS_WARN(E_General, "LinuxKeyboard::_initialize: Failed to set default locale.");
 
-	// Get modifiers masks
-	capsLockMask = XkbKeysymToModifiers(display, XK_Caps_Lock);
-	numLockMask  = XkbKeysymToModifiers(display, XK_Num_Lock);
-
 	//Clear our keyboard state buffer
 	memset(&KeyBuffer, 0, 256);
 	mModifiers = 0;
@@ -107,6 +103,10 @@ void LinuxKeyboard::_initialize()
 	//Create our local X mListener connection
 	if(!(display = XOpenDisplay(0)))
 		OIS_EXCEPT(E_General, "LinuxKeyboard::_initialize >> Error opening X!");
+
+	// Get modifiers masks
+	capsLockMask = XkbKeysymToModifiers(display, XK_Caps_Lock);
+	numLockMask  = XkbKeysymToModifiers(display, XK_Num_Lock);
 
 	//Configure locale modifiers
 	if(XSetLocaleModifiers("@im=none") == NULL)
