@@ -1,0 +1,15 @@
+version: 1.4.1.{build}
+image:
+- Visual Studio 2017
+- Visual Studio 2015
+- Visual Studio 2013
+configuration:
+- Debug
+- Release
+#platform:
+#- Win32
+#- x64
+before_build:
+- cmd: cmake -H. -B./build
+build:
+  verbosity: normal

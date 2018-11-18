@@ -1,7 +1,7 @@
 /*
  The zlib/libpng License
 
- Copyright (c) 2007 Phillip
+ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
  This software is provided 'as-is', without any express or implied warranty. In no event will
  the authors be held liable for any damages arising from the use of this software.
@@ -19,7 +19,7 @@
  misrepresented as being the original software.
 
  3. This notice may not be removed or altered from any source distribution.
-*/
+ */
 #ifndef OIS_MacHIDManager_Header
 #define OIS_MacHIDManager_Header
 
@@ -40,7 +40,8 @@ namespace OIS
 	class HidInfo
 	{
 	public:
-		HidInfo() : type(OISUnknown), numButtons(0), numHats(0), numAxes(0), inUse(false), interface(0)
+		HidInfo() :
+		 type(OISUnknown), numButtons(0), numHats(0), numAxes(0), inUse(false), interface(0)
 		{
 		}
 
@@ -57,7 +58,7 @@ namespace OIS
 		bool inUse;
 
 		//Used for opening a read/write/tracking interface to device
-		IOHIDDeviceInterface **interface;
+		IOHIDDeviceInterface** interface;
 	};
 
 	typedef std::vector<HidInfo*> HidInfoList;
@@ -84,10 +85,10 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);

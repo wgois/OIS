@@ -46,7 +46,7 @@ namespace OIS
 		virtual void capture();
 
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType) {return 0;}
+		virtual Interface* queryInterface(Interface::IType) { return 0; }
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
@@ -62,13 +62,13 @@ namespace OIS
 		//Since X11 provides us with absolute values, we need to keep track of relative values
 		long oldXMouseX, oldXMouseY, oldXMouseZ;
 
-		Window window;		//The X Window
-		Display *display;	//The X display
-		Cursor cursor;		//A blank cursor
+		Window window;	//The X Window
+		Display* display; //The X display
+		Cursor cursor;	//A blank cursor
 
-		bool grabMouse;		//Are we grabbing the mouse to the window?
-		bool hideMouse;		//Are we hiding OS mouse?
-		bool mouseFocusLost;//Has the mouse just lost focus?
+		bool grabMouse;		 //Are we grabbing the mouse to the window?
+		bool hideMouse;		 //Are we hiding OS mouse?
+		bool mouseFocusLost; //Has the mouse just lost focus?
 	};
 }
 

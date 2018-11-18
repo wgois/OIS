@@ -48,20 +48,20 @@ namespace OIS
 		virtual int numKeyboards();
 
 		/** @copydoc InputManager::createInputObject */
-		Object* createInputObject( Type iType, bool bufferMode );
+		Object* createInputObject(Type iType, bool bufferMode);
 		/** @copydoc InputManager::destroyInputObject */
-		void destroyInputObject( Object* obj );
+		void destroyInputObject(Object* obj);
 
 		/** @copydoc InputManager::_initialize */
-		void _initialize( ParamList &paramList );
+		void _initialize(ParamList& paramList);
 
 		//Utility methods to coordinate between mouse and keyboard grabbing
-		bool _getGrabMode() {return mGrabbed;};
-		void _setGrabMode(bool grabbed) {mGrabbed = grabbed;}
+		bool _getGrabMode() { return mGrabbed; };
+		void _setGrabMode(bool grabbed) { mGrabbed = grabbed; }
 
 	protected:
 		//! internal class method for dealing with param list
-		void _parseConfigSettings( ParamList &paramList );
+		void _parseConfigSettings(ParamList& paramList);
 		//! internal class method for finding attached devices
 		void _enumerateDevices();
 

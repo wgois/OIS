@@ -35,60 +35,40 @@
 // so I cannot give it a class member function (unless it is static which is pointless)
 // Instead, I just pass the class* through the last paramter that gets passed to the
 // callback every time an event occurs. Then I dereference it and call the member function.
-OSStatus KeyDownWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
+OSStatus KeyDownWrapper(EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass);
 
-OSStatus KeyUpWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
+OSStatus KeyUpWrapper(EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass);
 
-OSStatus KeyModWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
+OSStatus KeyModWrapper(EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass);
 
-OSStatus MouseWrapper( EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass );
-
+OSStatus MouseWrapper(EventHandlerCallRef nextHandler, EventRef theEvent, void* callClass);
 
 // This is needed for keeping an event stack for keyboard and mouse
 namespace OIS
 {
 
-    // used in the eventStack to store the type
-    enum Mac_EventType { MAC_KEYUP = 0,
-                         MAC_KEYDOWN = 1,
-                         MAC_KEYREPEAT,
-                         MAC_MOUSEDOWN,
-                         MAC_MOUSEUP,
-                         MAC_MOUSEMOVED,
-                         MAC_MOUSESCROLL};
-    typedef enum Mac_EventType MacEventType;
+	// used in the eventStack to store the type
+	enum Mac_EventType { MAC_KEYUP   = 0,
+						 MAC_KEYDOWN = 1,
+						 MAC_KEYREPEAT,
+						 MAC_MOUSEDOWN,
+						 MAC_MOUSEUP,
+						 MAC_MOUSEMOVED,
+						 MAC_MOUSESCROLL };
+	typedef enum Mac_EventType MacEventType;
 
+	// only used by MacKeyboard
+	typedef class Mac_KeyStackEvent
+	{
+		friend class MacKeyboard;
 
-    // only used by MacKeyboard
-    typedef class Mac_KeyStackEvent
-    {
-        friend class MacKeyboard;
+	private:
+		Mac_KeyStackEvent(KeyEvent event, MacEventType type) :
+		 Event(event), Type(type) {}
 
-
-    private:
-        Mac_KeyStackEvent( KeyEvent event, MacEventType type ) : Event(event), Type(type) {}
-
-        MacEventType Type;
-        KeyEvent Event;
-    } MacKeyStackEvent;
-
-
-
-    // only used by MacMouse
-    typedef class Mac_MouseStackEvent
-    {
-        friend class MacMouse;
-
-    private:
-        Mac_MouseStackEvent( MouseEvent event, MacEventType type,  MouseButtonID button) : Event(event), Type(type), Button(button) {}
-
-        MacEventType Type;
-        MouseEvent Event;
-		MouseButtonID Button;
-
-    } MacMouseStackEvent;
-
+		MacEventType Type;
+		KeyEvent Event;
+	} MacKeyStackEvent;
 }
-
 
 #endif

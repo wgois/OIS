@@ -35,62 +35,72 @@ using namespace OIS;
 @synthesize touchObject;
 @synthesize accelerometerObject;
 
-- (id)init {
-    if((self = [super init])) {
-        touchObject = nil;
-        accelerometerObject = nil;
-    }
-    return self;
+- (id)init
+{
+	if((self = [super init])) {
+		touchObject			= nil;
+		accelerometerObject = nil;
+	}
+	return self;
 }
 
-- (void)dealloc {
-    delete touchObject; touchObject = NULL;
-    delete accelerometerObject; accelerometerObject = NULL;
+- (void)dealloc
+{
+	delete touchObject;
+	touchObject = NULL;
+	delete accelerometerObject;
+	accelerometerObject = NULL;
 
-    [super dealloc];
+	[super dealloc];
 }
 
 - (BOOL)canBecomeFirstResponder
 {
-    return YES;
+	return YES;
 }
 
 #pragma mark Accelerator Event Handling
-- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
-    accelerometerObject->didAccelerate(acceleration);
+- (void)accelerometer:(UIAccelerometer*)accelerometer didAccelerate:(UIAcceleration*)acceleration
+{
+	accelerometerObject->didAccelerate(acceleration);
 }
 
 #pragma mark Touch Event Handling
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    for(UITouch *touch in touches) {
-        touchObject->_touchEnded(touch);
-    }
+- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
+{
+	for(UITouch* touch in touches) {
+		touchObject->_touchEnded(touch);
+	}
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    for(UITouch *touch in touches) {
-        touchObject->_touchMoved(touch);
-    }
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
+{
+	for(UITouch* touch in touches) {
+		touchObject->_touchMoved(touch);
+	}
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    for(UITouch *touch in touches) {
-        touchObject->_touchCancelled(touch);
-    }
+- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event
+{
+	for(UITouch* touch in touches) {
+		touchObject->_touchCancelled(touch);
+	}
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    for(UITouch *touch in touches) {
-        touchObject->_touchBegan(touch);
-    }
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
+{
+	for(UITouch* touch in touches) {
+		touchObject->_touchBegan(touch);
+	}
 }
 
 @end
 
 //--------------------------------------------------------------------------------//
-iPhoneInputManager::iPhoneInputManager() : InputManager("iPhone Input Manager")
+iPhoneInputManager::iPhoneInputManager() :
+ InputManager("iPhone Input Manager")
 {
-    mHideMouse = true;
+	mHideMouse		   = true;
 	bAccelerometerUsed = bMultiTouchUsed = false;
 
 	// Setup our internal factories
@@ -100,46 +110,48 @@ iPhoneInputManager::iPhoneInputManager() : InputManager("iPhone Input Manager")
 //--------------------------------------------------------------------------------//
 iPhoneInputManager::~iPhoneInputManager()
 {
-    [mDelegate release]; mDelegate = nil;
-    [mWindow release]; mWindow = nil;
+	[mDelegate release];
+	mDelegate = nil;
+	[mWindow release];
+	mWindow = nil;
 }
 
 //--------------------------------------------------------------------------------//
-void iPhoneInputManager::_initialize( ParamList &paramList )
+void iPhoneInputManager::_initialize(ParamList& paramList)
 {
-	_parseConfigSettings( paramList );
+	_parseConfigSettings(paramList);
 
-    mDelegate = [[InputDelegate alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	mDelegate = [[InputDelegate alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    // Set flags that we want to accept multiple finger touches and be the only one to receive touch events
-    [mDelegate setMultipleTouchEnabled:YES];
-    [mDelegate setExclusiveTouch:YES];
-    [mDelegate becomeFirstResponder];
+	// Set flags that we want to accept multiple finger touches and be the only one to receive touch events
+	[mDelegate setMultipleTouchEnabled:YES];
+	[mDelegate setExclusiveTouch:YES];
+	[mDelegate becomeFirstResponder];
 
-    [mWindow addSubview:mDelegate];
+	[mWindow addSubview:mDelegate];
 }
 
 //--------------------------------------------------------------------------------//
-void iPhoneInputManager::_parseConfigSettings( ParamList &paramList )
+void iPhoneInputManager::_parseConfigSettings(ParamList& paramList)
 {
-    // Some carbon apps are running in a window, however full screen apps
+	// Some carbon apps are running in a window, however full screen apps
 	// do not have a window, so we need to account for that too.
 	ParamList::iterator i = paramList.find("WINDOW");
 	if(i != paramList.end())
 	{
-		mWindow = (UIWindow *)strtoul(i->second.c_str(), 0, 10);
+		mWindow = (UIWindow*)strtoul(i->second.c_str(), 0, 10);
 		if(mWindow == 0)
 			mWindow = nil;
-    }
+	}
 	else
 	{
 		// else get the main active window.. user might not have access to it through some
 		// graphics libraries, if that fails then try at the application level.
-        mWindow = [[UIApplication sharedApplication] keyWindow];
+		mWindow = [[UIApplication sharedApplication] keyWindow];
 	}
 
 	if(mWindow == nil)
-		OIS_EXCEPT( E_General, "iPhoneInputManager::_parseConfigSettings >> Unable to find a window or event target" );
+		OIS_EXCEPT(E_General, "iPhoneInputManager::_parseConfigSettings >> Unable to find a window or event target");
 }
 
 //--------------------------------------------------------------------------------//
@@ -147,10 +159,10 @@ DeviceList iPhoneInputManager::freeDeviceList()
 {
 	DeviceList ret;
 
-	if( bAccelerometerUsed == false )
+	if(bAccelerometerUsed == false)
 		ret.insert(std::make_pair(OISJoyStick, mInputSystemName));
 
-	if( bMultiTouchUsed == false )
+	if(bMultiTouchUsed == false)
 		ret.insert(std::make_pair(OISMultiTouch, mInputSystemName));
 
 	return ret;
@@ -161,9 +173,9 @@ int iPhoneInputManager::totalDevices(Type iType)
 {
 	switch(iType)
 	{
-        case OISJoyStick: return 1;
-        case OISMultiTouch: return 1;
-        default: return 0;
+		case OISJoyStick: return 1;
+		case OISMultiTouch: return 1;
+		default: return 0;
 	}
 }
 
@@ -172,46 +184,45 @@ int iPhoneInputManager::freeDevices(Type iType)
 {
 	switch(iType)
 	{
-        case OISJoyStick: return bAccelerometerUsed ? 0 : 1;
-        case OISMultiTouch: return bMultiTouchUsed ? 0 : 1;
-        default: return 0;
+		case OISJoyStick: return bAccelerometerUsed ? 0 : 1;
+		case OISMultiTouch: return bMultiTouchUsed ? 0 : 1;
+		default: return 0;
 	}
 }
 
 //--------------------------------------------------------------------------------//
-bool iPhoneInputManager::vendorExist(Type iType, const std::string & vendor)
+bool iPhoneInputManager::vendorExist(Type iType, const std::string& vendor)
 {
-	if( ( iType == OISMultiTouch || iType == OISJoyStick ) && vendor == mInputSystemName )
+	if((iType == OISMultiTouch || iType == OISJoyStick) && vendor == mInputSystemName)
 		return true;
 
 	return false;
 }
 
 //--------------------------------------------------------------------------------//
-Object* iPhoneInputManager::createObject(InputManager* creator, Type iType, bool bufferMode,
-									  const std::string & vendor)
+Object* iPhoneInputManager::createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor)
 {
-	Object *obj = 0;
+	Object* obj = 0;
 
 	switch(iType)
 	{
-        case OISJoyStick:
-        {
-            if( bAccelerometerUsed == false )
-                obj = new iPhoneAccelerometer(this, bufferMode);
-            break;
-        }
-        case OISMultiTouch:
-        {
-            if( bMultiTouchUsed == false )
-                obj = new iPhoneMultiTouch(this, bufferMode);
-            break;
-        }
-        default:
-            break;
+		case OISJoyStick:
+		{
+			if(bAccelerometerUsed == false)
+				obj = new iPhoneAccelerometer(this, bufferMode);
+			break;
+		}
+		case OISMultiTouch:
+		{
+			if(bMultiTouchUsed == false)
+				obj = new iPhoneMultiTouch(this, bufferMode);
+			break;
+		}
+		default:
+			break;
 	}
 
-	if( obj == 0 )
+	if(obj == 0)
 		OIS_EXCEPT(E_InputDeviceNonExistant, "No devices match requested type.");
 
 	return obj;

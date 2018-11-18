@@ -28,10 +28,11 @@ restrictions:
 using namespace OIS;
 
 //-----------------------------------------------------------------------------------//
-WiiMoteForceFeedback::WiiMoteForceFeedback(cWiiMote &wiiMote) : mWiiMote(wiiMote), mHandle(-1)
+WiiMoteForceFeedback::WiiMoteForceFeedback(cWiiMote& wiiMote) :
+ mWiiMote(wiiMote), mHandle(-1)
 {
 	//One and only supported effect
-	_addEffectTypes( OIS::Effect::ConstantForce, OIS::Effect::Constant );
+	_addEffectTypes(OIS::Effect::ConstantForce, OIS::Effect::Constant);
 }
 
 //-----------------------------------------------------------------------------------//
@@ -41,12 +42,12 @@ WiiMoteForceFeedback::~WiiMoteForceFeedback()
 }
 
 //-----------------------------------------------------------------------------------//
-void WiiMoteForceFeedback::upload( const Effect* effect )
+void WiiMoteForceFeedback::upload(const Effect* effect)
 {
-	if( effect )
+	if(effect)
 	{
 		//Multiple effects are useless, just return
-		if( mHandle != -1 || effect->_handle != -1) return;
+		if(mHandle != -1 || effect->_handle != -1) return;
 
 		//Ok, so we are uploading a fresh effect
 		effect->_handle = mHandle = 1;
@@ -56,18 +57,18 @@ void WiiMoteForceFeedback::upload( const Effect* effect )
 }
 
 //-----------------------------------------------------------------------------------//
-void WiiMoteForceFeedback::modify( const Effect* effect )
+void WiiMoteForceFeedback::modify(const Effect* effect)
 {
 	//Nothing to modify
 }
 
 //-----------------------------------------------------------------------------------//
-void WiiMoteForceFeedback::remove( const Effect* effect )
+void WiiMoteForceFeedback::remove(const Effect* effect)
 {
 	//We have no effects uploaded, so just return
-	if( mHandle == -1 || effect == 0) return;
+	if(mHandle == -1 || effect == 0) return;
 
-	if( mHandle == effect->_handle )
+	if(mHandle == effect->_handle)
 	{
 		mWiiMote.SetVibration(false);
 		mHandle = effect->_handle = -1;

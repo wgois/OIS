@@ -33,9 +33,9 @@ namespace OIS
 	class WiiMoteFactoryCreator;
 	class WiiMoteForceFeedback;
 
-	//Number of ring buffer events. should be nice sized (the structure is not very big)
-	//Will be rounded up to power of two automatically
-	#define OIS_WII_EVENT_BUFFER 32
+//Number of ring buffer events. should be nice sized (the structure is not very big)
+//Will be rounded up to power of two automatically
+#define OIS_WII_EVENT_BUFFER 32
 
 	/**	Specialty joystick - WiiMote controller */
 	class _OISExport WiiMote : public JoyStick
@@ -56,11 +56,11 @@ namespace OIS
 		void _threadUpdate();
 
 	protected:
-		void _doButtonCheck(bool new_state, int ois_button, unsigned int &pushed, unsigned int &released);
-		bool _doPOVCheck(const cWiiMote::tButtonStatus &bState, unsigned int &newPosition);
+		void _doButtonCheck(bool new_state, int ois_button, unsigned int& pushed, unsigned int& released);
+		bool _doPOVCheck(const cWiiMote::tButtonStatus& bState, unsigned int& newPosition);
 
 		//! The creator who created us
-		WiiMoteFactoryCreator *mWiiCreator;
+		WiiMoteFactoryCreator* mWiiCreator;
 
 		//! Actual WiiMote HID device
 		cWiiMote mWiiMote;
@@ -82,7 +82,7 @@ namespace OIS
 		int _mWiiMoteMotionDelay;
 
 		//Simple rumble force
-		WiiMoteForceFeedback *mRumble;
+		WiiMoteForceFeedback* mRumble;
 	};
 }
 #endif //OIS_WiiMote_H

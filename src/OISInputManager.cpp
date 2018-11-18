@@ -29,39 +29,39 @@ restrictions:
 
 //Bring in correct Header / InputManager for current build platform
 #if defined OIS_SDL_PLATFORM
-#  include "SDL/SDLInputManager.h"
+#include "SDL/SDLInputManager.h"
 #elif defined OIS_WIN32_PLATFORM
-#  include "win32/Win32InputManager.h"
+#include "win32/Win32InputManager.h"
 #elif defined OIS_LINUX_PLATFORM
-#  include "linux/LinuxInputManager.h"
+#include "linux/LinuxInputManager.h"
 #elif defined OIS_APPLE_PLATFORM
-#  include "mac/MacInputManager.h"
+#include "mac/CocoaInputManager.h"
+#include "mac/MacInputManager.h"
 #elif defined OIS_IPHONE_PLATFORM
-#  include "iphone/iPhoneInputManager.h"
+#include "iphone/iPhoneInputManager.h"
 #elif defined OIS_XBOX_PLATFORM
-#  include "xbox/XBoxInputManager.h"
+#include "xbox/XBoxInputManager.h"
 #endif
 
 //Bring in extra controls
 #if defined OIS_LIRC_SUPPORT
-#  include "extras/LIRC/OISLIRCFactoryCreator.h"
+#include "extras/LIRC/OISLIRCFactoryCreator.h"
 #endif
 #if defined OIS_WIN32_WIIMOTE_SUPPORT
-#  include "win32/extras/WiiMote/OISWiiMoteFactoryCreator.h"
+#include "win32/extras/WiiMote/OISWiiMoteFactoryCreator.h"
 #endif
-
 
 using namespace OIS;
 
 //----------------------------------------------------------------------------//
 InputManager::InputManager(const std::string& name) :
-	m_VersionName(OIS_VERSION_NAME),
-	mInputSystemName(name),
-	m_lircSupport(0),
-	m_wiiMoteSupport(0)
+ m_VersionName(OIS_VERSION_NAME),
+ mInputSystemName(name),
+ m_lircSupport(0),
+ m_wiiMoteSupport(0)
 {
-    mFactories.clear();
-    mFactoryObjects.clear();
+	mFactories.clear();
+	mFactoryObjects.clear();
 }
 
 //----------------------------------------------------------------------------//
@@ -83,24 +83,24 @@ unsigned int InputManager::getVersionNumber()
 }
 
 //----------------------------------------------------------------------------//
-const std::string &InputManager::getVersionName()
+const std::string& InputManager::getVersionName()
 {
 	return m_VersionName;
 }
 
 //----------------------------------------------------------------------------//
-InputManager* InputManager::createInputSystem( std::size_t windowhandle )
+InputManager* InputManager::createInputSystem(std::size_t windowhandle)
 {
 	ParamList pl;
 	std::ostringstream wnd;
 	wnd << windowhandle;
-	pl.insert(std::make_pair( std::string("WINDOW"), wnd.str() ));
+	pl.insert(std::make_pair(std::string("WINDOW"), wnd.str()));
 
-	return createInputSystem( pl );
+	return createInputSystem(pl);
 }
 
 //----------------------------------------------------------------------------//
-InputManager* InputManager::createInputSystem( ParamList &paramList )
+InputManager* InputManager::createInputSystem(ParamList& paramList)
 {
 	InputManager* im = 0;
 
@@ -113,7 +113,17 @@ InputManager* InputManager::createInputSystem( ParamList &paramList )
 #elif defined OIS_LINUX_PLATFORM
 	im = new LinuxInputManager();
 #elif defined OIS_APPLE_PLATFORM
-	im = new MacInputManager();
+	ParamList::iterator i = paramList.find("WINDOW");
+	if(i != paramList.end())
+	{
+		id obj = (id)strtoul(i->second.c_str(), 0, 10);
+		if(obj && [obj isKindOfClass:[NSWindow class]])
+			im = new CocoaInputManager();
+#ifndef __LP64__
+		else
+			im = new MacInputManager();
+#endif
+	}
 #elif defined OIS_IPHONE_PLATFORM
 	im = new iPhoneInputManager();
 #else
@@ -136,14 +146,15 @@ InputManager* InputManager::createInputSystem( ParamList &paramList )
 //----------------------------------------------------------------------------//
 void InputManager::destroyInputSystem(InputManager* manager)
 {
-	if( manager == 0 )
+	if(manager == 0)
 		return;
 
 	//Cleanup before deleting...
-	for( FactoryCreatedObject::iterator i = manager->mFactoryObjects.begin();
-		i != manager->mFactoryObjects.end(); ++i )
+	for(FactoryCreatedObject::iterator i = manager->mFactoryObjects.begin();
+		i != manager->mFactoryObjects.end();
+		++i)
 	{
-		i->second->destroyObject( i->first );
+		i->second->destroyObject(i->first);
 	}
 
 	manager->mFactoryObjects.clear();
@@ -157,12 +168,12 @@ const std::string& InputManager::inputSystemName()
 }
 
 //--------------------------------------------------------------------------------//
-int InputManager::getNumberOfDevices( Type iType )
+int InputManager::getNumberOfDevices(Type iType)
 {
 	//Count up all the factories devices
-	int factoyObjects = 0;
+	int factoyObjects		= 0;
 	FactoryList::iterator i = mFactories.begin(), e = mFactories.end();
-	for( ; i != e; ++i )
+	for(; i != e; ++i)
 		factoyObjects += (*i)->totalDevices(iType);
 
 	return factoyObjects;
@@ -173,7 +184,7 @@ DeviceList InputManager::listFreeDevices()
 {
 	DeviceList list;
 	FactoryList::iterator i = mFactories.begin(), e = mFactories.end();
-	for( ; i != e; ++i )
+	for(; i != e; ++i)
 	{
 		DeviceList temp = (*i)->freeDeviceList();
 		list.insert(temp.begin(), temp.end());
@@ -183,17 +194,17 @@ DeviceList InputManager::listFreeDevices()
 }
 
 //----------------------------------------------------------------------------//
-Object* InputManager::createInputObject( Type iType, bool bufferMode, const std::string &vendor )
+Object* InputManager::createInputObject(Type iType, bool bufferMode, const std::string& vendor)
 {
-	Object* obj = 0;
+	Object* obj				= 0;
 	FactoryList::iterator i = mFactories.begin(), e = mFactories.end();
-	for( ; i != e; ++i)
+	for(; i != e; ++i)
 	{
-		if( (*i)->freeDevices(iType) > 0 )
+		if((*i)->freeDevices(iType) > 0)
 		{
-			if( vendor == "" || (*i)->vendorExist(iType, vendor) )
+			if(vendor == "" || (*i)->vendorExist(iType, vendor))
 			{
-				obj = (*i)->createObject(this, iType, bufferMode, vendor);
+				obj					 = (*i)->createObject(this, iType, bufferMode, vendor);
 				mFactoryObjects[obj] = (*i);
 				break;
 			}
@@ -204,11 +215,11 @@ Object* InputManager::createInputObject( Type iType, bool bufferMode, const std:
 		OIS_EXCEPT(E_InputDeviceNonExistant, "No devices match requested type.");
 
 	try
-	{	//Intialize device
+	{ //Intialize device
 		obj->_initialize();
 	}
 	catch(...)
-	{	//Somekind of error, cleanup and rethrow
+	{ //Somekind of error, cleanup and rethrow
 		destroyInputObject(obj);
 		throw;
 	}
@@ -217,13 +228,13 @@ Object* InputManager::createInputObject( Type iType, bool bufferMode, const std:
 }
 
 //----------------------------------------------------------------------------//
-void InputManager::destroyInputObject( Object* obj )
+void InputManager::destroyInputObject(Object* obj)
 {
-	if( obj == 0 )
+	if(obj == 0)
 		return;
 
 	FactoryCreatedObject::iterator i = mFactoryObjects.find(obj);
-	if( i != mFactoryObjects.end() )
+	if(i != mFactoryObjects.end())
 	{
 		i->second->destroyObject(obj);
 		mFactoryObjects.erase(i);
@@ -235,21 +246,21 @@ void InputManager::destroyInputObject( Object* obj )
 }
 
 //----------------------------------------------------------------------------//
-void InputManager::addFactoryCreator( FactoryCreator* factory )
+void InputManager::addFactoryCreator(FactoryCreator* factory)
 {
 	if(factory != 0)
 		mFactories.push_back(factory);
 }
 
 //----------------------------------------------------------------------------//
-void InputManager::removeFactoryCreator( FactoryCreator* factory )
+void InputManager::removeFactoryCreator(FactoryCreator* factory)
 {
 	if(factory != 0)
 	{
 		//First, destroy all devices created with the factory
-		for( FactoryCreatedObject::iterator i = mFactoryObjects.begin(); i != mFactoryObjects.end(); ++i )
+		for(FactoryCreatedObject::iterator i = mFactoryObjects.begin(); i != mFactoryObjects.end(); ++i)
 		{
-			if( i->second == factory )
+			if(i->second == factory)
 			{
 				i->second->destroyObject(i->first);
 				mFactoryObjects.erase(i++);
@@ -258,7 +269,7 @@ void InputManager::removeFactoryCreator( FactoryCreator* factory )
 
 		//Now, remove the factory itself
 		FactoryList::iterator fact = std::find(mFactories.begin(), mFactories.end(), factory);
-		if( fact != mFactories.end() )
+		if(fact != mFactories.end())
 			mFactories.erase(fact);
 	}
 }
@@ -269,9 +280,9 @@ void InputManager::enableAddOnFactory(AddOnFactories factory)
 	OIS_UNUSED(factory);
 
 #if defined OIS_LIRC_SUPPORT
-	if( factory == AddOn_LIRC || factory == AddOn_All )
+	if(factory == AddOn_LIRC || factory == AddOn_All)
 	{
-		if( m_lircSupport == 0 )
+		if(m_lircSupport == 0)
 		{
 			m_lircSupport = new LIRCFactoryCreator();
 			addFactoryCreator(m_lircSupport);
@@ -280,9 +291,9 @@ void InputManager::enableAddOnFactory(AddOnFactories factory)
 #endif
 
 #if defined OIS_WIN32_WIIMOTE_SUPPORT
-	if( factory == AddOn_WiiMote || factory == AddOn_All )
+	if(factory == AddOn_WiiMote || factory == AddOn_All)
 	{
-		if( m_wiiMoteSupport == 0 )
+		if(m_wiiMoteSupport == 0)
 		{
 			m_wiiMoteSupport = new WiiMoteFactoryCreator();
 			addFactoryCreator(m_wiiMoteSupport);

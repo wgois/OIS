@@ -26,28 +26,29 @@ restrictions:
 using namespace OIS;
 
 //-------------------------------------------------------------//
-ForceFeedback::ForceFeedback() : mSetGainSupport(false), mSetAutoCenterSupport(false)
+ForceFeedback::ForceFeedback() :
+ mSetGainSupport(false), mSetAutoCenterSupport(false)
 {
 }
 
 //-------------------------------------------------------------//
-void ForceFeedback::_addEffectTypes( Effect::EForce force, Effect::EType type )
+void ForceFeedback::_addEffectTypes(Effect::EForce force, Effect::EType type)
 {
-	if( force <= Effect::UnknownForce || force >= Effect::_ForcesNumber
-		|| type <= Effect::Unknown || type >= Effect::_TypesNumber )
-		OIS_EXCEPT( E_General, "Can't add unknown effect Force/Type to the supported list" );
+	if(force <= Effect::UnknownForce || force >= Effect::_ForcesNumber
+	   || type <= Effect::Unknown || type >= Effect::_TypesNumber)
+		OIS_EXCEPT(E_General, "Can't add unknown effect Force/Type to the supported list");
 
 	mSupportedEffects.insert(std::pair<Effect::EForce, Effect::EType>(force, type));
 }
 
 //-------------------------------------------------------------//
-void ForceFeedback::_setGainSupport( bool on )
+void ForceFeedback::_setGainSupport(bool on)
 {
 	mSetGainSupport = on;
 }
 
 //-------------------------------------------------------------//
-void ForceFeedback::_setAutoCenterSupport( bool on )
+void ForceFeedback::_setAutoCenterSupport(bool on)
 {
 	mSetAutoCenterSupport = on;
 }
@@ -61,13 +62,13 @@ const ForceFeedback::SupportedEffectList& ForceFeedback::getSupportedEffects() c
 //-------------------------------------------------------------//
 bool ForceFeedback::supportsEffect(Effect::EForce force, Effect::EType type) const
 {
-    const std::pair<SupportedEffectList::const_iterator, SupportedEffectList::const_iterator>
-	    iterRange = mSupportedEffects.equal_range(force);
+	const std::pair<SupportedEffectList::const_iterator, SupportedEffectList::const_iterator>
+		iterRange = mSupportedEffects.equal_range(force);
 	SupportedEffectList::const_iterator iter;
-	for (iter = iterRange.first; iter != iterRange.second; iter++)
+	for(iter = iterRange.first; iter != iterRange.second; iter++)
 	{
-	  if ((*iter).second == type)
-		return true;
+		if((*iter).second == type)
+			return true;
 	}
 
 	return false;

@@ -31,15 +31,15 @@
 namespace OIS
 {
 
-    class MacInputManager : public InputManager, public FactoryCreator
-    {
-    public:
-        MacInputManager();
-        virtual ~MacInputManager();
+	class MacInputManager : public InputManager, public FactoryCreator
+	{
+	public:
+		MacInputManager();
+		virtual ~MacInputManager();
 
 		//InputManager Overrides
 		/** @copydoc InputManager::_initialize */
-		void _initialize( ParamList &paramList );
+		void _initialize(ParamList& paramList);
 
 		//FactoryCreator Overrides
 		/** @copydoc FactoryCreator::deviceList */
@@ -52,41 +52,41 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
 
 		//Internal Items
 		//! Internal method, used for flaggin keyboard as available/unavailable for creation
-		void _setKeyboardUsed(bool used) {keyboardUsed = used; }
+		void _setKeyboardUsed(bool used) { keyboardUsed = used; }
 
 		//! Internal method, used for flaggin mouse as available/unavailable for creation
 		void _setMouseUsed(bool used) { mouseUsed = used; }
 
-        //! methodfor getting the event target
-        EventTargetRef _getEventTarget() {return mEventTargetRef;}
+		//! methodfor getting the event target
+		EventTargetRef _getEventTarget() { return mEventTargetRef; }
 
-        //! method for getting window
-        WindowRef _getWindow() {return mWindow;}
+		//! method for getting window
+		WindowRef _getWindow() { return mWindow; }
 
-    protected:
-        void _parseConfigSettings( ParamList& paramList );
+	protected:
+		void _parseConfigSettings(ParamList& paramList);
 
-        void _enumerateDevices();
+		void _enumerateDevices();
 
-        static const std::string iName;
+		static const std::string iName;
 
-        // Mac stuff
+		// Mac stuff
 		EventTargetRef mEventTargetRef;
 		WindowRef mWindow;
 
-        // settings
-        bool mHideMouse;
-        bool mUseRepeat;
+		// settings
+		bool mHideMouse;
+		bool mUseRepeat;
 
 		//! Used to know if we used up keyboard
 		bool keyboardUsed;
@@ -95,7 +95,7 @@ namespace OIS
 		bool mouseUsed;
 
 		//! HID Manager class handling devices other than keyboard/mouse
-		MacHIDManager *mHIDManager;
-    };
+		MacHIDManager* mHIDManager;
+	};
 }
 #endif

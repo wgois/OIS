@@ -33,8 +33,8 @@ namespace OIS
 		int min;
 		int max;
 
-		AxisInfo(int min, int max)
-			: min(min), max(max) {}
+		AxisInfo(int min, int max) :
+		 min(min), max(max) {}
 	};
 
 	typedef struct cookie_struct
@@ -67,6 +67,7 @@ namespace OIS
 		void _enumerateCookies();
 
 		IOHIDQueueInterface** _createQueue(unsigned int depth = 8);
+
 	protected:
 		HidInfo* mInfo;
 		cookie_struct_t mCookies;

@@ -28,7 +28,7 @@ restrictions:
 #include <set>
 #include <vector>
 
-#define OIS_MAX_NUM_TOUCHES 4   // 4 finger touches are probably the highest we'll ever get
+#define OIS_MAX_NUM_TOUCHES 4 // 4 finger touches are probably the highest we'll ever get
 
 namespace OIS
 {
@@ -38,15 +38,19 @@ namespace OIS
 	*/
 
 	//! Touch Event type
-	enum MultiTypeEventTypeID
-	{
-		MT_None = 0, MT_Pressed, MT_Released, MT_Moved, MT_Cancelled
+	enum MultiTypeEventTypeID {
+		MT_None = 0,
+		MT_Pressed,
+		MT_Released,
+		MT_Moved,
+		MT_Cancelled
 	};
 
 	class _OISExport MultiTouchState
 	{
 	public:
-		MultiTouchState() : width(50), height(50), touchType(MT_None) {};
+		MultiTouchState() :
+		 width(50), height(50), touchType(MT_None){};
 
 		/** Represents the height/width of your display area.. used if touch clipping
 		or touch grabbed in case of X11 - defaults to 50.. Make sure to set this
@@ -62,11 +66,11 @@ namespace OIS
 		//! Z Axis Component
 		Axis Z;
 
-        int touchType;
+		int touchType;
 
-        inline bool touchIsType( MultiTypeEventTypeID touch ) const
+		inline bool touchIsType(MultiTypeEventTypeID touch) const
 		{
-			return ((touchType & ( 1L << touch )) == 0) ? false : true;
+			return ((touchType & (1L << touch)) == 0) ? false : true;
 		}
 
 		//! Clear all the values
@@ -75,7 +79,7 @@ namespace OIS
 			X.clear();
 			Y.clear();
 			Z.clear();
-            touchType = MT_None;
+			touchType = MT_None;
 		}
 	};
 
@@ -83,11 +87,12 @@ namespace OIS
 	class _OISExport MultiTouchEvent : public EventArg
 	{
 	public:
-		MultiTouchEvent( Object *obj, const MultiTouchState &ms ) : EventArg(obj), state(ms) {}
+		MultiTouchEvent(Object* obj, const MultiTouchState& ms) :
+		 EventArg(obj), state(ms) {}
 		virtual ~MultiTouchEvent() {}
 
 		//! The state of the touch - including axes
-		const MultiTouchState &state;
+		const MultiTouchState& state;
 	};
 
 	/**
@@ -98,10 +103,10 @@ namespace OIS
 	{
 	public:
 		virtual ~MultiTouchListener() {}
-		virtual bool touchMoved( const MultiTouchEvent &arg ) = 0;
-		virtual bool touchPressed( const MultiTouchEvent &arg ) = 0;
-		virtual bool touchReleased( const MultiTouchEvent &arg ) = 0;
-		virtual bool touchCancelled( const MultiTouchEvent &arg ) = 0;
+		virtual bool touchMoved(const MultiTouchEvent& arg)		= 0;
+		virtual bool touchPressed(const MultiTouchEvent& arg)   = 0;
+		virtual bool touchReleased(const MultiTouchEvent& arg)  = 0;
+		virtual bool touchCancelled(const MultiTouchEvent& arg) = 0;
 	};
 
 	/**
@@ -120,50 +125,56 @@ namespace OIS
 		@param touchListener
 			Send a pointer to a class derived from MultiTouchListener or 0 to clear the callback
 		*/
-		virtual void setEventCallback( MultiTouchListener *touchListener ) {mListener = touchListener;}
+		virtual void setEventCallback(MultiTouchListener* touchListener) { mListener = touchListener; }
 
 		/** @remarks Returns currently set callback.. or 0 */
-		MultiTouchListener* getEventCallback() {return mListener;}
+		MultiTouchListener* getEventCallback() { return mListener; }
 
 		/** @remarks Clear out the set of input states.  Should be called after input has been processed by the application */
-        void clearStates(void) { mStates.clear(); }
+		void clearStates(void) { mStates.clear(); }
 
 		/** @remarks Returns the state of the touch - is valid for both buffered and non buffered mode */
 		std::vector<MultiTouchState> getMultiTouchStates() const { return mStates; }
 
-        /** @remarks Returns the first n touch states.  Useful if you know your app only needs to
+		/** @remarks Returns the first n touch states.  Useful if you know your app only needs to
                 process n touches.  The return value is a vector to allow random access */
-        const std::vector<MultiTouchState> getFirstNTouchStates(int n) {
-            std::vector<MultiTouchState> states;
-            for( unsigned int i = 0; i < mStates.size(); i++ ) {
-                if(!(mStates[i].touchIsType(MT_None))) {
-                    states.push_back(mStates[i]);
-                }
-            }
-            return states;
-        }
+		const std::vector<MultiTouchState> getFirstNTouchStates(int n)
+		{
+			std::vector<MultiTouchState> states;
+			for(unsigned int i = 0; i < mStates.size(); i++)
+			{
+				if(!(mStates[i].touchIsType(MT_None)))
+				{
+					states.push_back(mStates[i]);
+				}
+			}
+			return states;
+		}
 
-        /** @remarks Returns the first n touch states.  Useful if you know your app only needs to
+		/** @remarks Returns the first n touch states.  Useful if you know your app only needs to
          process n touches.  The return value is a vector to allow random access */
-        const std::vector<MultiTouchState> getMultiTouchStatesOfType(MultiTypeEventTypeID type) {
-            std::vector<MultiTouchState> states;
-            for( unsigned int i = 0; i < mStates.size(); i++ ) {
-                if(mStates[i].touchIsType(type)) {
-                    states.push_back(mStates[i]);
-                }
-            }
-            return states;
-        }
+		const std::vector<MultiTouchState> getMultiTouchStatesOfType(MultiTypeEventTypeID type)
+		{
+			std::vector<MultiTouchState> states;
+			for(unsigned int i = 0; i < mStates.size(); i++)
+			{
+				if(mStates[i].touchIsType(type))
+				{
+					states.push_back(mStates[i]);
+				}
+			}
+			return states;
+		}
 
 	protected:
-		MultiTouch(const std::string &vendor, bool buffered, int devID, InputManager* creator)
-			: Object(vendor, OISMultiTouch, buffered, devID, creator), mListener(0) {}
+		MultiTouch(const std::string& vendor, bool buffered, int devID, InputManager* creator) :
+		 Object(vendor, OISMultiTouch, buffered, devID, creator), mListener(0) {}
 
 		//! The state of the touch device, implemented in a vector to store the state from each finger touch
-        std::vector<MultiTouchState> mStates;
+		std::vector<MultiTouchState> mStates;
 
 		//! Used for buffered/actionmapping callback
-		MultiTouchListener *mListener;
+		MultiTouchListener* mListener;
 	};
 }
 #endif

@@ -31,7 +31,7 @@ namespace OIS
 	class Win32JoyStick : public JoyStick
 	{
 	public:
-		Win32JoyStick( InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings, const JoyStickInfo &info );
+		Win32JoyStick(InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings, const JoyStickInfo& info);
 		virtual ~Win32JoyStick();
 
 		/** @copydoc Object::setBuffered */
@@ -56,7 +56,7 @@ namespace OIS
 			"IG_" (ex. "VID_045E&PID_028E&IG_00").  If it does, then it's an XInput device
 			Unfortunately this information can not be found by just using DirectInput
 		*/
-		static void CheckXInputDevices(JoyStickInfoList &joys);
+		static void CheckXInputDevices(JoyStickInfoList& joys);
 #endif
 
 	protected:
@@ -67,15 +67,15 @@ namespace OIS
 		//! Enumerate Force Feedback callback
 		static BOOL CALLBACK DIEnumEffectsCallback(LPCDIEFFECTINFO pdei, LPVOID pvRef);
 
-		bool _doButtonClick( int button, DIDEVICEOBJECTDATA& di );
-		bool _changePOV( int pov, DIDEVICEOBJECTDATA& di );
+		bool _doButtonClick(int button, DIDEVICEOBJECTDATA& di);
+		bool _changePOV(int pov, DIDEVICEOBJECTDATA& di);
 
 		IDirectInput8* mDirectInput;
 		IDirectInputDevice8* mJoyStick;
 		DIDEVCAPS mDIJoyCaps;
 		DWORD coopSetting;
 
-        JoyStickInfo mJoyInfo;
+		JoyStickInfo mJoyInfo;
 
 		//! A force feedback device
 		Win32ForceFeedback* mFfDevice;

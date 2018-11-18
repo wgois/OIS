@@ -27,6 +27,7 @@ restrictions:
 #include "OISKeyboard.h"
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
+#include <unordered_map>
 
 namespace OIS
 {
@@ -38,16 +39,16 @@ namespace OIS
 		virtual ~LinuxKeyboard();
 
 		/** @copydoc Keyboard::isKeyDown */
-		virtual bool isKeyDown( KeyCode key ) const;
+		virtual bool isKeyDown(KeyCode key) const;
 
 		/** @copydoc Keyboard::getAsString */
-		virtual const std::string& getAsString( KeyCode kc );
+		virtual const std::string& getAsString(KeyCode kc);
 
 		/** @copydoc Keyboard::getAsKeyCode */
-		virtual OIS::KeyCode getAsKeyCode( std::string str );
+		virtual OIS::KeyCode getAsKeyCode(std::string str);
 
 		/** @copydoc Keyboard::copyKeyStates */
-		virtual void copyKeyStates( char keys[256] ) const;
+		virtual void copyKeyStates(char keys[256]) const;
 
 		/** @copydoc Object::setBuffered */
 		virtual void setBuffered(bool buffered);
@@ -56,13 +57,13 @@ namespace OIS
 		virtual void capture();
 
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType) {return 0;}
+		virtual Interface* queryInterface(Interface::IType) { return 0; }
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
 
 	protected:
-		inline bool _isKeyRepeat(XEvent &event)
+		inline bool _isKeyRepeat(XEvent& event)
 		{
 			//When a key is repeated, there will be two events: released, followed by another immediate pressed. So check to see if another pressed is present
 			if(!XPending(display))
@@ -80,31 +81,30 @@ namespace OIS
 			return false;
 		}
 
-		bool _injectKeyDown( KeyCode kc, int text, int raw );
-		bool _injectKeyUp( KeyCode kc, int raw );
-		void _handleKeyPress( XEvent& event );
-		void _handleKeyRelease( XEvent& event );
+		bool _injectKeyDown(KeyCode kc, int text);
+		bool _injectKeyUp(KeyCode kc);
+		void _handleKeyPress(XEvent& event);
+		void _handleKeyRelease(XEvent& event);
 
-		inline KeyCode XKeyCodeToOISKeyCode( ::KeyCode xkc ) {
-			if (xkc > 8)
-				return static_cast<KeyCode>(xkc - 8);
-			else
-				return KC_UNASSIGNED;
-		}
-		
-		inline KeyCode KeySymToOISKeyCode( KeySym keySym )
+		inline KeyCode KeySymToOISKeyCode(KeySym keySym)
 		{
-			if (keySym != NoSymbol)
+			if(keySym != NoSymbol)
 			{
+				//Check for explicit convert
+				OIS::KeyCode converted = convert(keySym);
+				if(converted != KC_UNASSIGNED)
+					return converted;
+
 				::KeyCode xkc = XKeysymToKeycode(display, keySym);
-				if (xkc > 8)
+				if(xkc > 8)
 					return static_cast<KeyCode>(xkc - 8);
 			}
 			return KC_UNASSIGNED;
 		}
-		inline KeySym OISKeyCodeToKeySym( KeyCode kc )
+
+		inline KeySym OISKeyCodeToKeySym(KeyCode kc)
 		{
-			if (kc == KC_UNASSIGNED)
+			if(kc == KC_UNASSIGNED)
 				return NoSymbol;
 
 			::KeyCode xkc = kc + 8;
@@ -112,12 +112,18 @@ namespace OIS
 			return XkbKeycodeToKeysym(display, xkc, 0, 0);
 		}
 
+		//! Explict convertion for non-text symbols
+		typedef std::unordered_map<KeySym, KeyCode> XtoOIS_KeyMap;
+		XtoOIS_KeyMap keyConversion;
+
+		OIS::KeyCode convert(KeySym ksym);
+
 		//! Depressed Key List
 		char KeyBuffer[256];
 
 		//! X11 Stuff
 		Window window;
-		Display *display;
+		Display* display;
 		XIM xim;
 		XIMStyle ximStyle;
 		XIC xic;

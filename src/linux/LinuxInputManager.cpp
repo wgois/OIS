@@ -31,15 +31,16 @@ restrictions:
 using namespace OIS;
 
 //--------------------------------------------------------------------------------//
-LinuxInputManager::LinuxInputManager() : InputManager("X11InputManager")
+LinuxInputManager::LinuxInputManager() :
+ InputManager("X11InputManager")
 {
 	window = 0;
 
 	//Default settings
-	grabMouse = true;
+	grabMouse	= true;
 	grabKeyboard = true;
-	hideMouse = true;
-	mGrabs = true;
+	hideMouse	= true;
+	mGrabs		 = true;
 	keyboardUsed = mouseUsed = false;
 
 	//Setup our internal factories
@@ -54,41 +55,41 @@ LinuxInputManager::~LinuxInputManager()
 }
 
 //--------------------------------------------------------------------------------//
-void LinuxInputManager::_initialize( ParamList &paramList )
+void LinuxInputManager::_initialize(ParamList& paramList)
 {
-	_parseConfigSettings( paramList );
+	_parseConfigSettings(paramList);
 
 	//Enumerate all devices attached
 	_enumerateDevices();
 }
 
 //--------------------------------------------------------------------------------//
-void LinuxInputManager::_parseConfigSettings( ParamList &paramList )
+void LinuxInputManager::_parseConfigSettings(ParamList& paramList)
 {
 	ParamList::iterator i = paramList.find("WINDOW");
-	if( i == paramList.end() )
-		{
-			printf("OIS: No Window specified... Not using x11 keyboard/mouse\n");
-			return;
-		}
+	if(i == paramList.end())
+	{
+		printf("OIS: No Window specified... Not using x11 keyboard/mouse\n");
+		return;
+	}
 
-		window = strtoull(i->second.c_str(), 0, 10);
+	window = strtoull(i->second.c_str(), 0, 10);
 
 	//--------- Keyboard Settings ------------//
 	i = paramList.find("x11_keyboard_grab");
-	if( i != paramList.end() )
-		if( i->second == "false" )
+	if(i != paramList.end())
+		if(i->second == "false")
 			grabKeyboard = false;
 
 	//--------- Mouse Settings ------------//
 	i = paramList.find("x11_mouse_grab");
-	if( i != paramList.end() )
-		if( i->second == "false" )
+	if(i != paramList.end())
+		if(i->second == "false")
 			grabMouse = false;
 
 	i = paramList.find("x11_mouse_hide");
-	if( i != paramList.end() )
-		if( i->second == "false" )
+	if(i != paramList.end())
+		if(i->second == "false")
 			hideMouse = false;
 }
 
@@ -97,7 +98,7 @@ void LinuxInputManager::_enumerateDevices()
 {
 	//Enumerate all attached devices
 	unusedJoyStickList = LinuxJoyStick::_scanJoys();
-	joySticks = unusedJoyStickList.size();
+	joySticks		   = unusedJoyStickList.size();
 }
 
 //----------------------------------------------------------------------------//
@@ -125,10 +126,10 @@ int LinuxInputManager::totalDevices(Type iType)
 {
 	switch(iType)
 	{
-	case OISKeyboard: return window ? 1 : 0;
-	case OISMouse: return window ? 1 : 0;
-	case OISJoyStick: return joySticks;
-	default: return 0;
+		case OISKeyboard: return window ? 1 : 0;
+		case OISMouse: return window ? 1 : 0;
+		case OISJoyStick: return joySticks;
+		default: return 0;
 	}
 }
 
@@ -137,21 +138,21 @@ int LinuxInputManager::freeDevices(Type iType)
 {
 	switch(iType)
 	{
-	case OISKeyboard: return window ? (keyboardUsed ? 0 : 1) : 0;
-	case OISMouse: return window ? (mouseUsed ? 0 : 1) : 0;
-	case OISJoyStick: return (int)unusedJoyStickList.size();
-	default: return 0;
+		case OISKeyboard: return window ? (keyboardUsed ? 0 : 1) : 0;
+		case OISMouse: return window ? (mouseUsed ? 0 : 1) : 0;
+		case OISJoyStick: return (int)unusedJoyStickList.size();
+		default: return 0;
 	}
 }
 
 //----------------------------------------------------------------------------//
-bool LinuxInputManager::vendorExist(Type iType, const std::string & vendor)
+bool LinuxInputManager::vendorExist(Type iType, const std::string& vendor)
 {
 	if((iType == OISKeyboard || iType == OISMouse) && vendor == mInputSystemName)
 	{
 		return window ? true : false;
 	}
-	else if( iType == OISJoyStick )
+	else if(iType == OISJoyStick)
 	{
 		for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
 			if(i->vendor == vendor)
@@ -162,41 +163,41 @@ bool LinuxInputManager::vendorExist(Type iType, const std::string & vendor)
 }
 
 //----------------------------------------------------------------------------//
-Object* LinuxInputManager::createObject(InputManager *creator, Type iType, bool bufferMode, const std::string & vendor)
+Object* LinuxInputManager::createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor)
 {
-	Object *obj = 0;
+	Object* obj = 0;
 
 	switch(iType)
 	{
-	case OISKeyboard:
-	{
-		if(window && keyboardUsed == false)
-			obj = new LinuxKeyboard(this, bufferMode, grabKeyboard);
-
-		break;
-	}
-	case OISMouse:
-	{
-		if(window && mouseUsed == false)
-			obj = new LinuxMouse(this, bufferMode, grabMouse, hideMouse);
-
-		break;
-	}
-	case OISJoyStick:
-	{
-		for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
+		case OISKeyboard:
 		{
-			if(vendor == "" || i->vendor == vendor)
-			{
-				obj = new LinuxJoyStick(this, bufferMode, *i);
-				unusedJoyStickList.erase(i);
-				break;
-			}
+			if(window && keyboardUsed == false)
+				obj = new LinuxKeyboard(this, bufferMode, grabKeyboard);
+
+			break;
 		}
-		break;
-	}
-	default:
-		break;
+		case OISMouse:
+		{
+			if(window && mouseUsed == false)
+				obj = new LinuxMouse(this, bufferMode, grabMouse, hideMouse);
+
+			break;
+		}
+		case OISJoyStick:
+		{
+			for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
+			{
+				if(vendor == "" || i->vendor == vendor)
+				{
+					obj = new LinuxJoyStick(this, bufferMode, *i);
+					unusedJoyStickList.erase(i);
+					break;
+				}
+			}
+			break;
+		}
+		default:
+			break;
 	}
 
 	if(obj == 0)
@@ -206,13 +207,13 @@ Object* LinuxInputManager::createObject(InputManager *creator, Type iType, bool 
 }
 
 //----------------------------------------------------------------------------//
-void LinuxInputManager::destroyObject( Object* obj )
+void LinuxInputManager::destroyObject(Object* obj)
 {
 	if(obj)
 	{
 		if(obj->type() == OISJoyStick)
 		{
-			unusedJoyStickList.push_back( ((LinuxJoyStick*)obj)->_getJoyInfo() );
+			unusedJoyStickList.push_back(((LinuxJoyStick*)obj)->_getJoyInfo());
 		}
 
 		delete obj;

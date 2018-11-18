@@ -25,7 +25,7 @@ restrictions:
 
 //Bring in any auto generated config files
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#include "config.h"
 #endif
 
 #include "OISPrereqs.h"
@@ -45,15 +45,17 @@ namespace OIS
 	class Range
 	{
 	public:
-		Range() {};
-		Range(int _min, int _max) : min(_min), max(_max) {};
+		Range(){};
+		Range(int _min, int _max) :
+		 min(_min), max(_max){};
 		int min, max;
 	};
 
 	class JoyStickInfo
 	{
 	public:
-		JoyStickInfo(): devId(-1),joyFileD(-1),version(0),axes(0),buttons(0),hats(0) {}
+		JoyStickInfo() :
+		 devId(-1), joyFileD(-1), version(0), axes(0), buttons(0), hats(0) {}
 		//! Device number (/dev/input/j#) or /dev/input/event#
 		int devId;
 		//! File descriptor
@@ -76,7 +78,7 @@ namespace OIS
 		std::map<int, Range> axis_range;
 	};
 
-	typedef std::vector< JoyStickInfo > JoyStickInfoList;
+	typedef std::vector<JoyStickInfo> JoyStickInfoList;
 }
 
 #endif //_LINUX_INPUTSYSTEM_PREREQS_H

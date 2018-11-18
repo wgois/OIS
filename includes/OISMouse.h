@@ -28,10 +28,15 @@ restrictions:
 namespace OIS
 {
 	//! Button ID for mouse devices
-	enum MouseButtonID
-	{
-		MB_Left = 0, MB_Right, MB_Middle,
-		MB_Button3, MB_Button4,	MB_Button5, MB_Button6,	MB_Button7
+	enum MouseButtonID {
+		MB_Left = 0,
+		MB_Right,
+		MB_Middle,
+		MB_Button3,
+		MB_Button4,
+		MB_Button5,
+		MB_Button6,
+		MB_Button7
 	};
 
 	/**
@@ -41,7 +46,8 @@ namespace OIS
 	class _OISExport MouseState
 	{
 	public:
-		MouseState() : width(50), height(50), buttons(0) {};
+		MouseState() :
+		 width(50), height(50), buttons(0){};
 
 		/** Represents the height/width of your display area.. used if mouse clipping
 		or mouse grabbed in case of X11 - defaults to 50.. Make sure to set this
@@ -61,9 +67,9 @@ namespace OIS
 		int buttons;
 
 		//! Button down test
-		inline bool buttonDown( MouseButtonID button ) const
+		inline bool buttonDown(MouseButtonID button) const
 		{
-			return ((buttons & ( 1L << button )) == 0) ? false : true;
+			return ((buttons & (1L << button)) == 0) ? false : true;
 		}
 
 		//! Clear all the values
@@ -80,11 +86,12 @@ namespace OIS
 	class _OISExport MouseEvent : public EventArg
 	{
 	public:
-		MouseEvent( Object *obj, const MouseState &ms )	: EventArg(obj), state(ms) {}
+		MouseEvent(Object* obj, const MouseState& ms) :
+		 EventArg(obj), state(ms) {}
 		virtual ~MouseEvent() {}
 
 		//! The state of the mouse - including buttons and axes
-		const MouseState &state;
+		const MouseState& state;
 
 	private:
 		// Prevent copying.
@@ -100,9 +107,9 @@ namespace OIS
 	{
 	public:
 		virtual ~MouseListener() {}
-		virtual bool mouseMoved( const MouseEvent &arg ) = 0;
-		virtual bool mousePressed( const MouseEvent &arg, MouseButtonID id ) = 0;
-		virtual bool mouseReleased( const MouseEvent &arg, MouseButtonID id ) = 0;
+		virtual bool mouseMoved(const MouseEvent& arg)						= 0;
+		virtual bool mousePressed(const MouseEvent& arg, MouseButtonID id)  = 0;
+		virtual bool mouseReleased(const MouseEvent& arg, MouseButtonID id) = 0;
 	};
 
 	/**
@@ -121,23 +128,23 @@ namespace OIS
 		@param mouseListener
 			Send a pointer to a class derived from MouseListener or 0 to clear the callback
 		*/
-		virtual void setEventCallback( MouseListener *mouseListener ) {mListener = mouseListener;}
+		virtual void setEventCallback(MouseListener* mouseListener) { mListener = mouseListener; }
 
 		/** @remarks Returns currently set callback.. or 0 */
-		MouseListener* getEventCallback() const {return mListener;}
+		MouseListener* getEventCallback() const { return mListener; }
 
 		/** @remarks Returns the state of the mouse - is valid for both buffered and non buffered mode */
 		const MouseState& getMouseState() const { return mState; }
 
 	protected:
-		Mouse(const std::string &vendor, bool buffered, int devID, InputManager* creator)
-			: Object(vendor, OISMouse, buffered, devID, creator), mListener(0) {}
+		Mouse(const std::string& vendor, bool buffered, int devID, InputManager* creator) :
+		 Object(vendor, OISMouse, buffered, devID, creator), mListener(0) {}
 
 		//! The state of the mouse
 		MouseState mState;
 
 		//! Used for buffered/actionmapping callback
-		MouseListener *mListener;
+		MouseListener* mListener;
 	};
 }
 #endif

@@ -41,8 +41,8 @@ namespace OIS
 	//Forward declare local classes
 	class WiiMote;
 
-	//! Max amount of Wiis we will attempt to find
-	#define OIS_cWiiMote_MAX_WIIS 4
+//! Max amount of Wiis we will attempt to find
+#define OIS_cWiiMote_MAX_WIIS 4
 
 	/** WiiMote Factory Creator Class */
 	class _OISExport WiiMoteFactoryCreator : public FactoryCreator
@@ -62,10 +62,10 @@ namespace OIS
 		int freeDevices(Type iType);
 
 		/** @copydoc FactoryCreator::vendorExist */
-		bool vendorExist(Type iType, const std::string & vendor);
+		bool vendorExist(Type iType, const std::string& vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string& vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
@@ -87,10 +87,10 @@ namespace OIS
 		int mCount;
 
 		//! Boost thread execution object (only alive when at least 1 wiimote is alive)
-		boost::thread *mtThreadHandler;
+		boost::thread* mtThreadHandler;
 
 		//! Gaurds access to the Active WiiMote List
-		boost::mutex *mtWiiMoteListMutex;
+		boost::mutex* mtWiiMoteListMutex;
 
 		//! List of created (active) WiiMotes
 		std::vector<WiiMote*> mtInUseWiiMotes;

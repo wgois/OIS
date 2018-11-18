@@ -29,28 +29,29 @@
 // This is needed for keeping an event stack for keyboard and mouse
 namespace OIS
 {
-    // used in the eventStack to store the type
-    enum iPhone_EventType { iPhone_KEYUP = 0,
-                         iPhone_KEYDOWN = 1,
-                         iPhone_KEYREPEAT,
-                         iPhone_MOUSEDOWN,
-                         iPhone_MOUSEUP,
-                         iPhone_MOUSEMOVED,
-                         iPhone_MOUSESCROLL};
-    typedef enum iPhone_EventType iPhoneEventType;
+	// used in the eventStack to store the type
+	enum iPhone_EventType { iPhone_KEYUP   = 0,
+							iPhone_KEYDOWN = 1,
+							iPhone_KEYREPEAT,
+							iPhone_MOUSEDOWN,
+							iPhone_MOUSEUP,
+							iPhone_MOUSEMOVED,
+							iPhone_MOUSESCROLL };
+	typedef enum iPhone_EventType iPhoneEventType;
 
-    // only used by iPhoneMultiTouch
-    typedef class iPhoneMultiTouchStackEvent
-    {
-        friend class iPhoneMultiTouch;
+	// only used by iPhoneMultiTouch
+	typedef class iPhoneMultiTouchStackEvent
+	{
+		friend class iPhoneMultiTouch;
 
-    private:
-        iPhoneMultiTouchStackEvent( MultiTouchEvent event, iPhoneEventType type) : Event(event), Type(type) {}
+	private:
+		iPhoneMultiTouchStackEvent(MultiTouchEvent event, iPhoneEventType type) :
+		 Event(event), Type(type) {}
 
-        iPhoneEventType Type;
-        MultiTouchEvent Event;
+		iPhoneEventType Type;
+		MultiTouchEvent Event;
 
-    } iPhoneMultiTouchStackEvent;
+	} iPhoneMultiTouchStackEvent;
 }
 
 #endif

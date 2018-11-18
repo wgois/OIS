@@ -59,14 +59,14 @@ namespace OIS
 		JoyStickInfo _getJoyInfo();
 
 		static JoyStickInfoList _scanJoys();
-		static void _clearJoys(JoyStickInfoList &joys);
-	protected:
+		static void _clearJoys(JoyStickInfoList& joys);
 
+	protected:
 		int mJoyStick;
 		LinuxForceFeedback* ff_effect;
-		std::map <int, int> mButtonMap;
-		std::map <int, int> mAxisMap;
-		std::map <int, Range> mRanges;
+		std::map<int, int> mButtonMap;
+		std::map<int, int> mAxisMap;
+		std::map<int, Range> mRanges;
 	};
 }
 #endif //_LINUX_JOYSTICK_H_EADER_

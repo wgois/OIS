@@ -1,54 +1,64 @@
 # OIS: Object oriented Input System
 
+[![Software License](https://img.shields.io/badge/license-zlib%2Flibpng-green.svg)](LICENSE.md)
+[![Build status](https://ci.appveyor.com/api/projects/status/8yenriuecb4pa4xj?svg=true)](https://ci.appveyor.com/project/Ybalrid/ois-0qdtw)
+[![Build Status](https://travis-ci.org/wgois/OIS.svg?branch=master)](https://travis-ci.org/wgois/OIS)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/wgois/OIS/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Packaging status](https://repology.org/badge/tiny-repos/ois.svg)](https://repology.org/metapackage/ois)
+[![latest packaged version(s)](https://repology.org/badge/latest-versions/ois.svg)](https://repology.org/metapackage/ois)
+
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
 compatiable with many systems and operating systems.
 
-This is the official repository and is a continuation of the great work done by pjcast on the old sourceforge repo.
+### Linux
 
-## Todo
+Dependencies: X11
 
-- Add CMake for compiling
-- Merge pull requests/patches send in over time
-- Cleanup and remove dead-code
-- Start implementing support for new platforms and backends
+To build and install:
+```bash
+    cmake -H. -B./build
+    cd ./build
+    make
+    make install
+```
 
-## Compiling:
-Win32/
-	Contains Visual Studio .Net Solution Files
-	Contains CodeBlocks project files for OIS
+By default, the `install` target will install OIS.pc inside `/usr/local/lib/pkgconfig`. To find OIS with pkg-config, you need to have this directory on your `PKG_CONFIG_PATH` 
 
-	---- Dependencies ------------------------------------------------------
-	DirectInput 8
+```bash
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+```
 
+### Windows
 
-Linux/
-	---- Dependencies ------------------------------------------------------
-	X11
-        Newer Linux Kernel (2.6+ ?) for Event API
+Dependencies: DirectX SDK (now part of the Windows SDK)
 
-	Steps to build on Linux:
-	./bootstrap
-	./configure
-	./make && make install
+For Visual Studio:
 
-	---- Configure build options --------------------------------------------
-	./configure --help              --- List all configure options
+```batch
+    cmake -H. -B./build
+    msbuild "build\OIS.sln"
+```
 
+Or, simply open `cmake-gui`, and generate a visual studio solution in a few clicks.
 
-LinuxCB/
-        Contains CodeBlock files for building OIS and Demos with codeblocks
-        This project file looks for Ogre and other dependencies in /usr/local/lib
-        and /usr/local/include. If installed elsewhere, modify the project
-        settings. It also installs libOIS to ~/libs
+### OSX
 
-Mac/
-	XCode-2.2/
-		Working, mostly complete OSX vackend.
+For XCode:
 
+```bash
+    cmake -H. -B./build
+    cd ./build
+    make
+
+```
 ## License
 
+```
 The zlib/libpng License
 
+Copyright (c) 2018 Arthur Brainville
+Copyright (c) 2015 Andrew Fenn
 Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
 This software is provided 'as-is', without any express or implied warranty. In no
@@ -60,21 +70,11 @@ commercial applications, and to alter it and redistribute it freely, subject to 
 following restrictions:
 
     1. The origin of this software must not be misrepresented; you must not claim that
-		you wrote the original software. If you use this software in a product,
-		an acknowledgment in the product documentation would be appreciated
-		but is not required.
+        you wrote the original software. If you use this software in a product,
+        an acknowledgment in the product documentation would be appreciated
+        but is not required.
 
     2. Altered source versions must be plainly marked as such, and must not be
-		misrepresented as being the original software.
+        misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
-
-
-### License Explained
-In case the license was not clear enough... Basically, you can link with this lib
-which puts no restrictions on what you have to license your code as. You can modify
-this lib, and not have release your changes. Though, as explained above,
-**Altered source versions must be plainly marked as such, and must not be misrepresented
-as being the original software.**
-
-This is to allow users the greatest flexibility in what you can use this lib for.

@@ -29,4 +29,3 @@ const char* Exception::what() const throw()
 {
 	return eText;
 }
-

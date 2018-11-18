@@ -33,9 +33,9 @@ struct CGPoint;
 namespace OIS
 {
 	class iPhoneMultiTouch : public MultiTouch
-    {
+	{
 	public:
-		iPhoneMultiTouch( InputManager* creator, bool buffered );
+		iPhoneMultiTouch(InputManager* creator, bool buffered);
 		virtual ~iPhoneMultiTouch();
 
 		/** @copydoc Object::setBuffered */
@@ -45,20 +45,19 @@ namespace OIS
 		virtual void capture();
 
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType type) {return 0;}
+		virtual Interface* queryInterface(Interface::IType type) { return 0; }
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
 
-        void _touchBegan(UITouch *touch);
-        void _touchEnded(UITouch *touch);
-        void _touchMoved(UITouch *touch);
-        void _touchCancelled(UITouch *touch);
+		void _touchBegan(UITouch* touch);
+		void _touchEnded(UITouch* touch);
+		void _touchMoved(UITouch* touch);
+		void _touchCancelled(UITouch* touch);
 
 	protected:
 		MultiTouchState mTempState;
 	};
 }
-
 
 #endif // OIS_iPhoneTouch_H

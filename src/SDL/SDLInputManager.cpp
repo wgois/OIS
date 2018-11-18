@@ -32,7 +32,8 @@ using namespace OIS;
 const std::string SDLInputManager::iName = "SDL Input Wrapper";
 
 //--------------------------------------------------------------------------------//
-SDLInputManager::SDLInputManager() : mGrabbed(false)
+SDLInputManager::SDLInputManager() :
+ mGrabbed(false)
 {
 }
 
@@ -42,19 +43,19 @@ SDLInputManager::~SDLInputManager()
 }
 
 //--------------------------------------------------------------------------------//
-void SDLInputManager::_initialize( ParamList &paramList )
+void SDLInputManager::_initialize(ParamList& paramList)
 {
 	Uint32 flags = SDL_WasInit(0);
-	if( flags == 0 )
-		OIS_EXCEPT( E_General, "SDLInputManager::SDLInputManager >> SDL Not Initialized already!");
+	if(flags == 0)
+		OIS_EXCEPT(E_General, "SDLInputManager::SDLInputManager >> SDL Not Initialized already!");
 
 	//Ok, now we have DirectInput, parse whatever extra settings were sent to us
-	_parseConfigSettings( paramList );
+	_parseConfigSettings(paramList);
 	_enumerateDevices();
 }
 
 //--------------------------------------------------------------------------------//
-void SDLInputManager::_parseConfigSettings( ParamList &paramList )
+void SDLInputManager::_parseConfigSettings(ParamList& paramList)
 {
 }
 
@@ -82,22 +83,24 @@ int SDLInputManager::numKeyboards()
 }
 
 //----------------------------------------------------------------------------//
-Object* SDLInputManager::createInputObject( Type iType, bool bufferMode )
+Object* SDLInputManager::createInputObject(Type iType, bool bufferMode)
 {
 	Object* obj = 0;
 
-	switch( iType )
+	switch(iType)
 	{
-		case OISKeyboard: obj = new SDLKeyboard( bufferMode ); break;
-		case OISMouse: obj = new SDLMouse( bufferMode ); break;
+		case OISKeyboard: obj = new SDLKeyboard(bufferMode); break;
+		case OISMouse: obj = new SDLMouse(bufferMode); break;
 		case OISJoyStick:
-		default: OIS_EXCEPT( E_InputDeviceNotSupported, "Type not implemented");
+		default: OIS_EXCEPT(E_InputDeviceNotSupported, "Type not implemented");
 	}
 
-	try	{
+	try
+	{
 		obj->_initialize();
 	}
-	catch(...) {
+	catch(...)
+	{
 		delete obj;
 		throw; //rethrow
 	}
@@ -106,9 +109,9 @@ Object* SDLInputManager::createInputObject( Type iType, bool bufferMode )
 }
 
 //----------------------------------------------------------------------------//
-void SDLInputManager::destroyInputObject( Object* obj )
+void SDLInputManager::destroyInputObject(Object* obj)
 {
-	if( obj == 0 ) return;
+	if(obj == 0) return;
 
 	delete obj;
 }

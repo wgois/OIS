@@ -29,10 +29,10 @@
 
 namespace OIS
 {
-    class MacInputManager;
+	class MacInputManager;
 	class MacHIDManager;
 	class MacMouse;
-    class MacKeyboard;
+	class MacKeyboard;
 
 	/**
 		Simple wrapper class for CFString which will create a valid CFString and retain ownership until class instance is outof scope
@@ -43,7 +43,7 @@ namespace OIS
 	public:
 		OIS_CFString() { m_StringRef = CFStringCreateWithCString(NULL, "", kCFStringEncodingUTF8); }
 		OIS_CFString(const char* c_str) { m_StringRef = CFStringCreateWithCString(NULL, c_str, kCFStringEncodingUTF8); }
-		OIS_CFString(const std::string &s_str) { m_StringRef = CFStringCreateWithCString(NULL, s_str.c_str(), kCFStringEncodingUTF8); }
+		OIS_CFString(const std::string& s_str) { m_StringRef = CFStringCreateWithCString(NULL, s_str.c_str(), kCFStringEncodingUTF8); }
 		~OIS_CFString() { CFRelease(m_StringRef); }
 
 		//Allow this class to be autoconverted to base class of StringRef (void*)
