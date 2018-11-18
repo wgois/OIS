@@ -132,6 +132,9 @@ namespace OIS
 		int capsLockMask;
 		int numLockMask;
 
+		int capsLockMask;
+		int numLockMask;
+
 		std::string mGetString;
 	};
 }
