@@ -22,7 +22,6 @@ In alphabetical order, here's the list of contributors from the Git and GitHub h
 - Kyle Rassweiler (rassweiler)
 - Michaël (Mikarnage)
 - Ondřej Janošík (JOndras91)
-- Osamu Takasugi (SAM-tak)
 - Pavlos Touboulidis (pavlos256)
 - Phillip Castaneda (pjcast)
 - Robert (rpaciorek)

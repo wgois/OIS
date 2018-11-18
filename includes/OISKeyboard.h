@@ -191,10 +191,6 @@ namespace OIS
 		KeyCode key;
 		//! Text character, depends on current TextTranslationMode
 		unsigned int text;
-		//! Native (depends on platform) key code
-		unsigned int rawKey;
-		//! Modifiers state during the event
-		unsigned int modifiers;
 	};
 
 	/**

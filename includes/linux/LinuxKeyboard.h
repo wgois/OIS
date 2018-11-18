@@ -129,8 +129,6 @@ namespace OIS
 		XIC xic;
 		bool grabKeyboard;
 		bool keyFocusLost;
-		int capsLockMask;
-		int numLockMask;
 
 		int capsLockMask;
 		int numLockMask;

@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(OIS)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CmakeModules)
-
 set(CMAKE_CXX_STANDARD 11)
 
 set(OIS_MAJOR_VERSION 1)
@@ -23,7 +21,7 @@ if(NOT CMAKE_BUILD_TYPE)
         FORCE)
 endif()
 
-option(OIS_BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(OIS_BUILD_DEMOS "Build demo applications" ON)
 set(CMAKE_MACOSX_RPATH 0)
 
@@ -47,8 +45,6 @@ set(ois_source
     "${CMAKE_CURRENT_SOURCE_DIR}/src/OISException.cpp"
 )
 
-set(BUILD_SHARED_LIBS ${OIS_BUILD_SHARED_LIBS})
-
 if (UNIX AND NOT APPLE)
 
     find_package(X11 REQUIRED)
@@ -66,32 +62,21 @@ if (UNIX AND NOT APPLE)
 endif()
 
 if (WIN32)
-	option(OIS_WIN32_XINPUT_SUPPORT "Add support XInput." ON)
-	
-	find_package(WindowsSDK)
     # I'm assuming that this will be set under all normal circumstances
     # if not, the user can set it themselves
-    if(WINDOWSSDK_FOUND)
-        set(OIS_WIN32_DXSDK_DIR ${WINDOWSSDK_PREFERRED_DIR} CACHE PATH "Location of the DirectX SDK on your system.")
-    else()
-        set(OIS_WIN32_DXSDK_DIR "$ENV{DXSDK_DIR}" CACHE PATH "Location of the DirectX SDK on your system.")
-    endif()
+    set(DXSDK_DIR "$ENV{DXSDK_DIR}" CACHE PATH "Location of the DirectX SDK on your system.")
 
-    if("${OIS_WIN32_DXSDK_DIR}" STREQUAL "")
+    if ("${DXSDK_DIR}" STREQUAL "")
         MESSAGE(FATAL_ERROR "Could not locate DirectX SDK on this system")
     else()
-        MESSAGE(STATUS "Found DirectX SDK at ${OIS_WIN32_DXSDK_DIR}")
+        MESSAGE("Found DirectX SDK at ${DXSDK_DIR}")
     endif()
 
     if(BUILD_SHARED_LIBS)
         add_definitions(-DOIS_DYNAMIC_LIB)
-    endif()
-    
-    if(OIS_WIN32_XINPUT_SUPPORT)
-        add_definitions(-DOIS_WIN32_XINPUT_SUPPORT)
-    endif()
+    endif(BUILD_SHARED_LIBS)
 
-    include_directories("${OIS_WIN32_DXSDK_DIR}/Include")
+    include_directories("${DXSDK_DIR}/Include")
 
     set(ois_source
         ${ois_source}
@@ -128,6 +113,7 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaKeyboard.mm"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaMouse.mm"
     )
+    set(OIS_BUILD_DEMOS true)
 endif()
 
 source_group("OIS" FILES ${ois_source})
@@ -155,11 +141,7 @@ if (WIN32)
         set(DIRECTX_ARCH x86)
     endif()
 
-    if (WINDOWSSDK_FOUND)
-        target_link_libraries(OIS "dinput8.lib" "dxguid.lib")
-    else()
-        target_link_libraries(OIS "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dinput8.lib" "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dxguid.lib")
-    endif()
+    target_link_libraries(OIS "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dinput8.lib" "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dxguid.lib")
 endif()
 
 if(UNIX)
