@@ -44,7 +44,9 @@ Or, simply open `cmake-gui`, and generate a visual studio solution in a few clic
 
 ### OSX
 
-For XCode:
+For XCode: 
+
+(or use the graphical CMake tool)
 
 ```bash
     cmake -H. -B./build
@@ -52,6 +54,9 @@ For XCode:
     make
 
 ```
+
+On a 64bit mac, code will use Cocoa to interact with the input system. 
+
 ## License
 
 ```
