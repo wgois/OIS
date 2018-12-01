@@ -6,6 +6,22 @@ This page is a simple "static" blog-like thing just to post updates about where 
 
 ## Log entries
 
+### 12/01/2018
+
+#### Prepraing for OIS 1.5 release
+
+This is just a short post to notify that the release 1.5 is now in preparation!
+
+The one single feature that needed merging is now merged (added modifier bitflags for capslock and numlock state. These are toggeled at each keydown event on their respective key).
+
+I'm currently running a little pass of static analisys and fixes. build system and API doesn't have any real changes between 1.4 and 1.5, it's just that what point in time actually is 1.4 is a bit nebulous. I tried to tag the correct "commit", but between what was shipped in the "Ogre dependencies package" for a while, what was maintained in an independent fork (that was now merged in this repository, it's kind of a mess).
+
+1.5 is to get a nice "milestone" in time after a few years of accumulating dust. I was meaning to do this release in the summer, but we are december frist, so I'm a bit late... This is just equivalent to the 1.4.1 fersion mentioned last april... :smile: 
+
+Anyway, the documentation on github pages is going to be updated soon, and I'll do my best to notify package mantainers, members of the OGRE forums and any other places here and there...
+
+Stay tuned!
+
 ### 04/26/2018
 
 Hi, Ybalrid here, 
