@@ -387,7 +387,6 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 	//cout << "ModMask: " << hex << mods << endl;
 	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
 
-	// TODO test modifiers on a full keyboard to check if different mask for left/right
 	switch(change)
 	{
         case(NSEventModifierFlagShift): // shift
@@ -401,7 +400,7 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 			break;
 
         case(NSEventModifierFlagControl): // Ctrl
-			oisKeyboardObj->_getModifiers() += (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
+			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
 			[self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
 			break;
 
@@ -414,8 +413,25 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 			break;
 
         case(NSEventModifierFlagCapsLock): // caps lock
+            if(newstate == MAC_KEYDOWN)
+            {
+                if (oisKeyboardObj->_getModifiers()  & OIS::Keyboard::CapsLock)
+                    oisKeyboardObj->_getModifiers()  &= ~OIS::Keyboard::CapsLock;
+                else
+                    oisKeyboardObj->_getModifiers()  |= OIS::Keyboard::CapsLock;
+            }
 			[self injectEvent:KC_CAPITAL eventTime:time eventType:newstate];
 			break;
+        case(NSEventModifierFlagNumericPad): // num lock (rare on apple keyboards? I have no clue.)
+            if(newstate == MAC_KEYDOWN)
+            {
+                if (oisKeyboardObj->_getModifiers()  & OIS::Keyboard::NumLock)
+                    oisKeyboardObj->_getModifiers()  &= ~OIS::Keyboard::NumLock;
+                else
+                    oisKeyboardObj->_getModifiers()  |= OIS::Keyboard::NumLock;
+            }
+            [self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
+            break;
 	}
 
 	if([theEvent keyCode] == NSClearLineFunctionKey) // numlock
