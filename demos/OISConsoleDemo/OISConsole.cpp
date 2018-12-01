@@ -50,14 +50,14 @@ bool appRunning = true; //Global Exit Flag
 
 const char* g_DeviceType[6] = { "OISUnknown", "OISKeyboard", "OISMouse", "OISJoyStick", "OISTablet", "OISOther" };
 
-InputManager* g_InputManager = 0;			   //Our Input System
-Keyboard* g_kb				 = 0;			   //Keyboard Device
-Mouse* g_m					 = 0;			   //Mouse Device
-JoyStick* g_joys[4]			 = { 0, 0, 0, 0 }; //This demo supports up to 4 controllers
+InputManager* g_InputManager = nullptr;			   //Our Input System
+Keyboard* g_kb				 = nullptr;			   //Keyboard Device
+Mouse* g_m					 = nullptr;			   //Mouse Device
+JoyStick* g_joys[4]			 = { nullptr, nullptr, nullptr, nullptr }; //This demo supports up to 4 controllers
 
 //-- OS Specific Globals --//
 #if defined OIS_WIN32_PLATFORM
-HWND hWnd = 0;
+HWND hWnd = nullptr;
 #elif defined OIS_LINUX_PLATFORM
 Display* xDisp = 0;
 Window xWin	= 0;
@@ -187,7 +187,7 @@ int main()
 #if defined OIS_WIN32_PLATFORM
 			Sleep(90);
 			MSG msg;
-			while(PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+			while(PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
 			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
@@ -228,7 +228,7 @@ int main()
 	catch(const Exception& ex)
 	{
 #if defined OIS_WIN32_PLATFORM
-		MessageBox(NULL, ex.eText, "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+		MessageBox(nullptr, ex.eText, "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
 		std::cout << "\nOIS Exception Caught!\n"
 				  << "\t" << ex.eText << "[Line "
@@ -261,8 +261,8 @@ void doStartup()
 
 #if defined OIS_WIN32_PLATFORM
 	//Create a capture window for Input Grabbing
-	hWnd = CreateDialog(0, MAKEINTRESOURCE(IDD_DIALOG1), 0, (DLGPROC)DlgProc);
-	if(hWnd == NULL)
+	hWnd = CreateDialog(nullptr, MAKEINTRESOURCE(IDD_DIALOG1), nullptr, (DLGPROC)DlgProc);
+	if(hWnd == nullptr)
 		OIS_EXCEPT(E_General, "Failed to create Win32 Window Dialog!");
 
 	ShowWindow(hWnd, SW_SHOW);

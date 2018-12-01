@@ -32,8 +32,8 @@ using namespace OIS;
 Win32InputManager::Win32InputManager() :
  InputManager("Win32InputManager")
 {
-	hWnd		 = 0;
-	mDirectInput = 0;
+	hWnd		 = nullptr;
+	mDirectInput = nullptr;
 
 	kbSettings	= 0;
 	mouseSettings = 0;
@@ -52,14 +52,14 @@ Win32InputManager::~Win32InputManager()
 	if(mDirectInput)
 	{
 		mDirectInput->Release();
-		mDirectInput = 0;
+		mDirectInput = nullptr;
 	}
 }
 
 //--------------------------------------------------------------------------------//
 void Win32InputManager::_initialize(ParamList& paramList)
 {
-	HINSTANCE hInst = 0;
+	HINSTANCE hInst = nullptr;
 	HRESULT hr;
 
 	//First of all, get the Windows Handle and Instance
@@ -68,16 +68,16 @@ void Win32InputManager::_initialize(ParamList& paramList)
 		OIS_EXCEPT(E_InvalidParam, "Win32InputManager::Win32InputManager >> No HWND found!");
 
 	// Get number as 64 bit and then convert. Handles the case of 32 or 64 bit HWND
-	unsigned __int64 handle = strtoull(i->second.c_str(), 0, 10);
-	hWnd					= (HWND)handle;
+	unsigned __int64 handle = strtoull(i->second.c_str(), nullptr, 10);
+	hWnd					= HWND(handle);
 
 	if(IsWindow(hWnd) == 0)
 		OIS_EXCEPT(E_General, "Win32InputManager::Win32InputManager >> The sent HWND is not valid!");
 
-	hInst = GetModuleHandle(0);
+	hInst = GetModuleHandle(nullptr);
 
 	//Create the device
-	hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&mDirectInput, NULL);
+	hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&mDirectInput, nullptr);
 	if(FAILED(hr))
 		OIS_EXCEPT(E_General, "Win32InputManager::Win32InputManager >> Not able to init DirectX8 Input!");
 
@@ -100,7 +100,8 @@ void Win32InputManager::_parseConfigSettings(ParamList& paramList)
 	temp["DISCL_NOWINKEY"]	 = DISCL_NOWINKEY;
 
 	//Check for pairs: ie. ("w32_keyboard","DISCL_NOWINKEY")("w32_keyboard","DISCL_FOREGROUND")
-	ParamList::iterator i = paramList.begin(), e = paramList.end();
+	ParamList::iterator i = paramList.begin();
+	const ParamList::iterator e = paramList.end();
 	for(; i != e; ++i)
 	{
 		if(i->first == "w32_keyboard")
@@ -169,10 +170,10 @@ DeviceList Win32InputManager::freeDeviceList()
 {
 	DeviceList ret;
 
-	if(keyboardUsed == false)
+	if(!keyboardUsed)
 		ret.insert(std::make_pair(OISKeyboard, mInputSystemName));
 
-	if(mouseUsed == false)
+	if(!mouseUsed)
 		ret.insert(std::make_pair(OISMouse, mInputSystemName));
 
 	for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
@@ -227,19 +228,19 @@ Object* Win32InputManager::createObject(InputManager* creator, Type iType, bool 
 {
 	OIS_UNUSED(creator);
 
-	Object* obj = 0;
+	Object* obj = nullptr;
 
 	switch(iType)
 	{
 		case OISKeyboard:
 		{
-			if(keyboardUsed == false)
+			if(!keyboardUsed)
 				obj = new Win32Keyboard(this, mDirectInput, bufferMode, kbSettings);
 			break;
 		}
 		case OISMouse:
 		{
-			if(mouseUsed == false)
+			if(!mouseUsed)
 				obj = new Win32Mouse(this, mDirectInput, bufferMode, mouseSettings);
 			break;
 		}
@@ -247,7 +248,7 @@ Object* Win32InputManager::createObject(InputManager* creator, Type iType, bool 
 		{
 			for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
 			{
-				if(vendor == "" || i->vendor == vendor)
+				if(vendor.empty() || i->vendor == vendor)
 				{
 					obj = new Win32JoyStick(this, mDirectInput, bufferMode, joySettings, *i);
 					unusedJoyStickList.erase(i);
@@ -260,7 +261,7 @@ Object* Win32InputManager::createObject(InputManager* creator, Type iType, bool 
 			break;
 	}
 
-	if(obj == 0)
+	if(obj == nullptr)
 		OIS_EXCEPT(E_InputDeviceNonExistant, "No devices match requested type.");
 
 	return obj;

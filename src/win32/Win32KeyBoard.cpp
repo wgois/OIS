@@ -32,7 +32,7 @@ using namespace OIS;
 Win32Keyboard::Win32Keyboard(InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings) :
  Keyboard(creator->inputSystemName(), buffered, 0, creator)
 {
-	mKeyboard	= 0;
+	mKeyboard	= nullptr;
 	mDirectInput = pDI;
 	coopSetting  = coopSettings;
 
@@ -54,7 +54,7 @@ void Win32Keyboard::_initialize()
 	if(FAILED(mKeyboard->SetDataFormat(&c_dfDIKeyboard)))
 		OIS_EXCEPT(E_General, "Win32Keyboard::Win32Keyboard >> format error!");
 
-	HWND hwin = ((Win32InputManager*)mCreator)->getWindowHandle();
+	const HWND hwin = static_cast<Win32InputManager*>(mCreator)->getWindowHandle();
 
 	if(FAILED(mKeyboard->SetCooperativeLevel(hwin, coopSetting)))
 		OIS_EXCEPT(E_General, "Win32Keyboard::Win32Keyboard >> coop error!");
@@ -84,7 +84,7 @@ Win32Keyboard::~Win32Keyboard()
 	{
 		mKeyboard->Unacquire();
 		mKeyboard->Release();
-		mKeyboard = 0;
+		mKeyboard = nullptr;
 	}
 	static_cast<Win32InputManager*>(mCreator)->_setKeyboardUsed(false);
 }
@@ -323,7 +323,7 @@ const std::string& Win32Keyboard::getAsString(KeyCode kc)
 	if(SUCCEEDED(mKeyboard->GetProperty(DIPROP_KEYNAME, &prop.diph)))
 	{
 		// convert the WCHAR in "wsz" to multibyte
-		if(WideCharToMultiByte(CP_ACP, 0, prop.wsz, -1, temp, sizeof(temp), NULL, NULL))
+		if(WideCharToMultiByte(CP_ACP, 0, prop.wsz, -1, temp, sizeof(temp), nullptr, nullptr))
 			return mGetString.assign(temp);
 	}
 

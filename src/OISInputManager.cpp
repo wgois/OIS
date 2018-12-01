@@ -57,8 +57,8 @@ using namespace OIS;
 InputManager::InputManager(const std::string& name) :
  m_VersionName(OIS_VERSION_NAME),
  mInputSystemName(name),
- m_lircSupport(0),
- m_wiiMoteSupport(0)
+ m_lircSupport(nullptr),
+ m_wiiMoteSupport(nullptr)
 {
 	mFactories.clear();
 	mFactoryObjects.clear();
@@ -92,9 +92,7 @@ const std::string& InputManager::getVersionName()
 InputManager* InputManager::createInputSystem(std::size_t windowhandle)
 {
 	ParamList pl;
-	std::ostringstream wnd;
-	wnd << windowhandle;
-	pl.insert(std::make_pair(std::string("WINDOW"), wnd.str()));
+	pl.insert(std::make_pair(std::string("WINDOW"), std::to_string(windowhandle)));
 
 	return createInputSystem(pl);
 }
@@ -102,7 +100,7 @@ InputManager* InputManager::createInputSystem(std::size_t windowhandle)
 //----------------------------------------------------------------------------//
 InputManager* InputManager::createInputSystem(ParamList& paramList)
 {
-	InputManager* im = 0;
+	InputManager* im = nullptr;
 
 #if defined OIS_SDL_PLATFORM
 	im = new SDLInputManager();
@@ -146,7 +144,7 @@ InputManager* InputManager::createInputSystem(ParamList& paramList)
 //----------------------------------------------------------------------------//
 void InputManager::destroyInputSystem(InputManager* manager)
 {
-	if(manager == 0)
+	if(manager == nullptr)
 		return;
 
 	//Cleanup before deleting...
@@ -196,13 +194,13 @@ DeviceList InputManager::listFreeDevices()
 //----------------------------------------------------------------------------//
 Object* InputManager::createInputObject(Type iType, bool bufferMode, const std::string& vendor)
 {
-	Object* obj				= 0;
+	Object* obj				= nullptr;
 	FactoryList::iterator i = mFactories.begin(), e = mFactories.end();
 	for(; i != e; ++i)
 	{
 		if((*i)->freeDevices(iType) > 0)
 		{
-			if(vendor == "" || (*i)->vendorExist(iType, vendor))
+			if(vendor.empty() || (*i)->vendorExist(iType, vendor))
 			{
 				obj					 = (*i)->createObject(this, iType, bufferMode, vendor);
 				mFactoryObjects[obj] = (*i);
@@ -230,7 +228,7 @@ Object* InputManager::createInputObject(Type iType, bool bufferMode, const std::
 //----------------------------------------------------------------------------//
 void InputManager::destroyInputObject(Object* obj)
 {
-	if(obj == 0)
+	if(obj == nullptr)
 		return;
 
 	FactoryCreatedObject::iterator i = mFactoryObjects.find(obj);
@@ -248,14 +246,14 @@ void InputManager::destroyInputObject(Object* obj)
 //----------------------------------------------------------------------------//
 void InputManager::addFactoryCreator(FactoryCreator* factory)
 {
-	if(factory != 0)
+	if(factory != nullptr)
 		mFactories.push_back(factory);
 }
 
 //----------------------------------------------------------------------------//
 void InputManager::removeFactoryCreator(FactoryCreator* factory)
 {
-	if(factory != 0)
+	if(factory != nullptr)
 	{
 		//First, destroy all devices created with the factory
 		for(FactoryCreatedObject::iterator i = mFactoryObjects.begin(); i != mFactoryObjects.end(); ++i)

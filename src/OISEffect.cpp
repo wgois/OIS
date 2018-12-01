@@ -80,7 +80,7 @@ Effect::Effect(EForce ef, EType et) :
  _handle(-1),
  axes(1)
 {
-	effect = 0;
+	effect = nullptr;
 
 	switch(ef)
 	{
@@ -102,7 +102,7 @@ Effect::~Effect()
 ForceEffect* Effect::getForceEffect() const
 {
 	//If no effect was created in constructor, then we raise an error here
-	if(effect == 0)
+	if(effect == nullptr)
 		OIS_EXCEPT(E_NotSupported, "Requested ForceEffect is null!");
 
 	return effect;

@@ -105,7 +105,7 @@ protected:
 
 public:
 	LimitedVariable(double dInitValue, double dMinValue, double dMaxValue) :
-	 _dMinValue(dMinValue), _dMaxValue(dMaxValue), Variable(dInitValue)
+	 Variable(dInitValue), _dMinValue(dMinValue), _dMaxValue(dMaxValue)
 	{}
 
 	virtual void setValue(double dValue)
@@ -303,7 +303,7 @@ public:
 					 << " * Number of force feedback axes : "
 					 << pFFDev->getFFAxesNumber() << endl;
 				const ForceFeedback::SupportedEffectList& lstFFEffects = pFFDev->getSupportedEffects();
-				if(lstFFEffects.size() > 0)
+				if(!lstFFEffects.empty())
 				{
 					cout << " * Supported effects :";
 					ForceFeedback::SupportedEffectList::const_iterator itFFEff;
@@ -368,7 +368,7 @@ public:
 
 	ForceFeedback* getCurrentFFDevice()
 	{
-		return (_nCurrJoyInd >= 0) ? _vecFFDev[_nCurrJoyInd] : 0;
+		return (_nCurrJoyInd >= 0) ? _vecFFDev[_nCurrJoyInd] : nullptr;
 	}
 
 	void changeMasterGain(float dDeltaPercent)
@@ -396,7 +396,7 @@ public:
 			if(eHow == eToggle)
 				_bAutoCenter = !_bAutoCenter;
 			else
-				_bAutoCenter = (eHow == eOn ? true : false);
+				_bAutoCenter = (eHow == eOn);
 			_vecFFDev[_nCurrJoyInd]->setAutoCenterMode(_bAutoCenter);
 		}
 	}
@@ -468,7 +468,7 @@ protected:
 
 public:
 	EffectManager(JoystickManager* pJoystickMgr, unsigned int nUpdateFreq) :
-	 _pJoystickMgr(pJoystickMgr), _nUpdateFreq(nUpdateFreq), _nCurrEffectInd(-1)
+	 _pJoystickMgr(pJoystickMgr), _nCurrEffectInd(-1), _nUpdateFreq(nUpdateFreq)
 	{
 		Effect* pEffect;
 		MapVariables mapVars;
@@ -774,14 +774,14 @@ protected:
 public:
 	Application(int argc, const char* argv[])
 	{
-		_pInputMgr	= 0;
-		_pEventHdlr   = 0;
-		_pKeyboard	= 0;
-		_pJoystickMgr = 0;
-		_pEffectMgr   = 0;
+		_pInputMgr	= nullptr;
+		_pEventHdlr   = nullptr;
+		_pKeyboard	= nullptr;
+		_pJoystickMgr = nullptr;
+		_pEffectMgr   = nullptr;
 
 #if defined OIS_WIN32_PLATFORM
-		_hWnd = 0;
+		_hWnd = nullptr;
 #elif defined OIS_LINUX_PLATFORM
 		_pXDisp = 0;
 		_xWin   = 0;
@@ -800,8 +800,8 @@ public:
 #if defined OIS_WIN32_PLATFORM
 
 		//Create a capture window for Input Grabbing
-		_hWnd = CreateDialog(0, MAKEINTRESOURCE(IDD_DIALOG1), 0, (DLGPROC)DlgProc);
-		if(_hWnd == NULL)
+		_hWnd = CreateDialog(nullptr, MAKEINTRESOURCE(IDD_DIALOG1), nullptr, (DLGPROC)DlgProc);
+		if(_hWnd == nullptr)
 			OIS_EXCEPT(E_General, "Failed to create Win32 Window Dialog!");
 
 		ShowWindow(_hWnd, SW_SHOW);
@@ -923,7 +923,7 @@ public:
 #if defined OIS_WIN32_PLATFORM
 				Sleep((DWORD)(1000.0 / _nHartBeatFreq));
 				MSG msg;
-				while(PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+				while(PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
 				{
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
@@ -937,7 +937,7 @@ public:
 		catch(const Exception& ex)
 		{
 #if defined OIS_WIN32_PLATFORM
-			MessageBox(0, ex.eText, "Exception Raised!", MB_OK);
+			MessageBox(nullptr, ex.eText, "Exception Raised!", MB_OK);
 #else
 			cout << endl
 				 << "OIS Exception Caught!" << endl
@@ -960,24 +960,24 @@ public:
 		if(_pInputMgr)
 		{
 			_pInputMgr->destroyInputObject(_pKeyboard);
-			_pKeyboard = 0;
+			_pKeyboard = nullptr;
 			if(_pJoystickMgr)
 			{
 				delete _pJoystickMgr;
-				_pJoystickMgr = 0;
+				_pJoystickMgr = nullptr;
 			}
 			InputManager::destroyInputSystem(_pInputMgr);
-			_pInputMgr = 0;
+			_pInputMgr = nullptr;
 		}
 		if(_pEffectMgr)
 		{
 			delete _pEffectMgr;
-			_pEffectMgr = 0;
+			_pEffectMgr = nullptr;
 		}
 		if(_pEventHdlr)
 		{
 			delete _pEventHdlr;
-			_pEventHdlr = 0;
+			_pEventHdlr = nullptr;
 		}
 
 #if defined OIS_LINUX_PLATFORM
