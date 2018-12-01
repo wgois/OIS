@@ -144,6 +144,23 @@ void Win32Keyboard::_readBuffered()
 			else if(kc == KC_LMENU || kc == KC_RMENU)
 				mModifiers |= Alt;
 
+			//These ones are toggled when
+			else if (kc == KC_NUMLOCK)
+			{
+				if (mModifiers & NumLock)
+					mModifiers &= ~NumLock;
+				else
+					mModifiers |= NumLock;
+			}
+
+			else if (kc == KC_CAPITAL)
+			{
+				if (mModifiers & CapsLock)
+					mModifiers &= ~CapsLock;
+				else
+					mModifiers |= CapsLock;
+			}
+
 			if(mListener)
 				ret = mListener->keyPressed(KeyEvent(this, kc, _translateText(kc)));
 		}
@@ -162,7 +179,7 @@ void Win32Keyboard::_readBuffered()
 				ret = mListener->keyReleased(KeyEvent(this, kc, 0));
 		}
 
-		if(ret == false)
+		if(!ret)
 			break;
 	}
 
@@ -192,7 +209,7 @@ void Win32Keyboard::_readBuffered()
 			}
 
 			//If user returned false from callback, return immediately
-			if(ret == false)
+			if(!ret)
 				return;
 		}
 
@@ -311,7 +328,7 @@ const std::string& Win32Keyboard::getAsString(KeyCode kc)
 	}
 
 	std::stringstream ss;
-	ss << "Key_" << (int)kc;
+	ss << "Key_" << int(kc);
 	return mGetString.assign(ss.str());
 }
 
@@ -331,7 +348,7 @@ void Win32Keyboard::setBuffered(bool buffered)
 		{
 			mKeyboard->Unacquire();
 			mKeyboard->Release();
-			mKeyboard = 0;
+			mKeyboard = nullptr;
 		}
 
 		mBuffered = buffered;
