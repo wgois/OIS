@@ -387,35 +387,51 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 	//cout << "ModMask: " << hex << mods << endl;
 	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
 
-	// TODO test modifiers on a full keyboard to check if different mask for left/right
 	switch(change)
 	{
-		case(NSShiftKeyMask): // shift
+        case(NSEventModifierFlagShift): // shift
 			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Shift : ~OIS::Keyboard::Shift;
 			[self injectEvent:KC_LSHIFT eventTime:time eventType:newstate];
 			break;
 
-		case(NSAlternateKeyMask): // option (alt)
+        case(NSEventModifierFlagOption): // option (alt)
 			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Alt : -OIS::Keyboard::Alt;
 			[self injectEvent:KC_LMENU eventTime:time eventType:newstate];
 			break;
 
-		case(NSControlKeyMask): // Ctrl
-			oisKeyboardObj->_getModifiers() += (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
+        case(NSEventModifierFlagControl): // Ctrl
+			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
 			[self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
 			break;
 
-		case(NSCommandKeyMask): // apple
+        case(NSEventModifierFlagCommand): // apple
 			[self injectEvent:KC_LWIN eventTime:time eventType:newstate];
 			break;
 
-		case(NSFunctionKeyMask): // fn key
+        case(NSEventModifierFlagFunction): // fn key
 			[self injectEvent:KC_APPS eventTime:time eventType:newstate];
 			break;
 
-		case(NSAlphaShiftKeyMask): // caps lock
+        case(NSEventModifierFlagCapsLock): // caps lock
+            if(newstate == MAC_KEYDOWN)
+            {
+                if (oisKeyboardObj->_getModifiers()  & OIS::Keyboard::CapsLock)
+                    oisKeyboardObj->_getModifiers()  &= ~OIS::Keyboard::CapsLock;
+                else
+                    oisKeyboardObj->_getModifiers()  |= OIS::Keyboard::CapsLock;
+            }
 			[self injectEvent:KC_CAPITAL eventTime:time eventType:newstate];
 			break;
+        case(NSEventModifierFlagNumericPad): // num lock (rare on apple keyboards? I have no clue.)
+            if(newstate == MAC_KEYDOWN)
+            {
+                if (oisKeyboardObj->_getModifiers()  & OIS::Keyboard::NumLock)
+                    oisKeyboardObj->_getModifiers()  &= ~OIS::Keyboard::NumLock;
+                else
+                    oisKeyboardObj->_getModifiers()  |= OIS::Keyboard::NumLock;
+            }
+            [self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
+            break;
 	}
 
 	if([theEvent keyCode] == NSClearLineFunctionKey) // numlock
