@@ -1,30 +1,4 @@
 var searchData=
 [
-  ['ois_2eh',['OIS.h',['../_o_i_s_8h.html',1,'']]],
-  ['oisconfig_2eh',['OISConfig.h',['../_o_i_s_config_8h.html',1,'']]],
-  ['oiseffect_2ecpp',['OISEffect.cpp',['../_o_i_s_effect_8cpp.html',1,'']]],
-  ['oiseffect_2eh',['OISEffect.h',['../_o_i_s_effect_8h.html',1,'']]],
-  ['oisevents_2eh',['OISEvents.h',['../_o_i_s_events_8h.html',1,'']]],
-  ['oisexception_2ecpp',['OISException.cpp',['../_o_i_s_exception_8cpp.html',1,'']]],
-  ['oisexception_2eh',['OISException.h',['../_o_i_s_exception_8h.html',1,'']]],
-  ['oisfactorycreator_2eh',['OISFactoryCreator.h',['../_o_i_s_factory_creator_8h.html',1,'']]],
-  ['oisforcefeedback_2ecpp',['OISForceFeedback.cpp',['../_o_i_s_force_feedback_8cpp.html',1,'']]],
-  ['oisforcefeedback_2eh',['OISForceFeedback.h',['../_o_i_s_force_feedback_8h.html',1,'']]],
-  ['oisinputmanager_2ecpp',['OISInputManager.cpp',['../_o_i_s_input_manager_8cpp.html',1,'']]],
-  ['oisinputmanager_2eh',['OISInputManager.h',['../_o_i_s_input_manager_8h.html',1,'']]],
-  ['oisinterface_2eh',['OISInterface.h',['../_o_i_s_interface_8h.html',1,'']]],
-  ['oisjoystick_2ecpp',['OISJoyStick.cpp',['../_o_i_s_joy_stick_8cpp.html',1,'']]],
-  ['oisjoystick_2eh',['OISJoyStick.h',['../_o_i_s_joy_stick_8h.html',1,'']]],
-  ['oiskeyboard_2ecpp',['OISKeyboard.cpp',['../_o_i_s_keyboard_8cpp.html',1,'']]],
-  ['oiskeyboard_2eh',['OISKeyboard.h',['../_o_i_s_keyboard_8h.html',1,'']]],
-  ['oislirc_2ecpp',['OISLIRC.cpp',['../_o_i_s_l_i_r_c_8cpp.html',1,'']]],
-  ['oislirc_2eh',['OISLIRC.h',['../_o_i_s_l_i_r_c_8h.html',1,'']]],
-  ['oislircfactorycreator_2ecpp',['OISLIRCFactoryCreator.cpp',['../_o_i_s_l_i_r_c_factory_creator_8cpp.html',1,'']]],
-  ['oislircfactorycreator_2eh',['OISLIRCFactoryCreator.h',['../_o_i_s_l_i_r_c_factory_creator_8h.html',1,'']]],
-  ['oislircringbuffer_2eh',['OISLIRCRingBuffer.h',['../_o_i_s_l_i_r_c_ring_buffer_8h.html',1,'']]],
-  ['oismouse_2eh',['OISMouse.h',['../_o_i_s_mouse_8h.html',1,'']]],
-  ['oismultitouch_2eh',['OISMultiTouch.h',['../_o_i_s_multi_touch_8h.html',1,'']]],
-  ['oisobject_2ecpp',['OISObject.cpp',['../_o_i_s_object_8cpp.html',1,'']]],
-  ['oisobject_2eh',['OISObject.h',['../_o_i_s_object_8h.html',1,'']]],
-  ['oisprereqs_2eh',['OISPrereqs.h',['../_o_i_s_prereqs_8h.html',1,'']]]
+  ['license_2emd',['LICENSE.md',['../_l_i_c_e_n_s_e_8md.html',1,'']]]
 ];

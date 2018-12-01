@@ -10,11 +10,13 @@ var searchData=
   ['addon_5fwiimote',['AddOn_WiiMote',['../class_o_i_s_1_1_input_manager.html#a422695619d72ac3d31443fadc5415fb1a9b02c7d4de82761afb71a65c85de03db',1,'OIS::InputManager']]],
   ['addonfactories',['AddOnFactories',['../class_o_i_s_1_1_input_manager.html#a422695619d72ac3d31443fadc5415fb1',1,'OIS::InputManager']]],
   ['alt',['Alt',['../class_o_i_s_1_1_keyboard.html#a7f5d9d08beb384bb5569c117c3243479a673676bc74eacd8387cf35c205e15f83',1,'OIS::Keyboard']]],
-  ['architecture_5fid',['ARCHITECTURE_ID',['../build_2_c_make_files_23_810_81_2_compiler_id_c_2_c_make_c_compiler_id_8c.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCCompilerId.c'],['../build_2_c_make_files_23_810_81_2_compiler_id_c_x_x_2_c_make_c_x_x_compiler_id_8cpp.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCXXCompilerId.cpp'],['../build__gcc_2_c_make_files_23_810_81_2_compiler_id_c_2_c_make_c_compiler_id_8c.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCCompilerId.c'],['../build__gcc_2_c_make_files_23_810_81_2_compiler_id_c_x_x_2_c_make_c_x_x_compiler_id_8cpp.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCXXCompilerId.cpp'],['../codeblocks_2_c_make_files_23_810_81_2_compiler_id_c_2_c_make_c_compiler_id_8c.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCCompilerId.c'],['../codeblocks_2_c_make_files_23_810_81_2_compiler_id_c_x_x_2_c_make_c_x_x_compiler_id_8cpp.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCXXCompilerId.cpp']]],
+  ['architecture_5fid',['ARCHITECTURE_ID',['../_c_make_c_compiler_id_8c.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCCompilerId.c'],['../_c_make_c_x_x_compiler_id_8cpp.html#aba35d0d200deaeb06aee95ca297acb28',1,'ARCHITECTURE_ID():&#160;CMakeCXXCompilerId.cpp']]],
   ['ascii',['Ascii',['../class_o_i_s_1_1_keyboard.html#ab9ea37e9eef464ec594fab5b3edb7e08a6c95fe6baa888e4a23115de06c9eac41',1,'OIS::Keyboard']]],
   ['attacklength',['attackLength',['../class_o_i_s_1_1_envelope.html#a386482ad86f31a0c561a59ff9dcbd40b',1,'OIS::Envelope']]],
   ['attacklevel',['attackLevel',['../class_o_i_s_1_1_envelope.html#acc59fef8646d2fd0bf33c28870f40f1b',1,'OIS::Envelope']]],
+  ['authors_2emd',['AUTHORS.md',['../_a_u_t_h_o_r_s_8md.html',1,'']]],
   ['axes',['axes',['../class_o_i_s_1_1_effect.html#afac65fd2cc148c478097b68b03ac6704',1,'OIS::Effect']]],
   ['axis',['Axis',['../class_o_i_s_1_1_axis.html',1,'OIS::Axis'],['../class_o_i_s_1_1_axis.html#a4fdc79ae6152950eb6deca24b997db2c',1,'OIS::Axis::Axis()']]],
-  ['axismoved',['axisMoved',['../class_o_i_s_1_1_joy_stick_listener.html#a6fd97f57cdf893604893fd917c8675d5',1,'OIS::JoyStickListener']]]
+  ['axismoved',['axisMoved',['../class_o_i_s_1_1_joy_stick_listener.html#a6fd97f57cdf893604893fd917c8675d5',1,'OIS::JoyStickListener']]],
+  ['authors',['Authors',['../md__c_1__users__ybalrid_git__o_i_s__a_u_t_h_o_r_s.html',1,'']]]
 ];

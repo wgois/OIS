@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['object_2doriented_20input_20system',['Object-oriented Input System',['../index.html',1,'']]],
-  ['ois_3a_20object_20oriented_20input_20system',['OIS: Object oriented Input System',['../md__c_1__users_arthu__o_i_s_docs_index.html',1,'']]],
-  ['ois_3a_20object_20oriented_20input_20system',['OIS: Object oriented Input System',['../md__c_1__users_arthu__o_i_s__r_e_a_d_m_e.html',1,'']]]
+  ['contributor_20covenant_20code_20of_20conduct',['Contributor Covenant Code of Conduct',['../md__c_1__users__ybalrid_git__o_i_s__c_o_d_e__o_f__c_o_n_d_u_c_t.html',1,'']]],
+  ['contributing_20to_20ois',['Contributing to OIS',['../md__c_1__users__ybalrid_git__o_i_s__c_o_n_t_r_i_b_u_t_i_n_g.html',1,'']]]
 ];

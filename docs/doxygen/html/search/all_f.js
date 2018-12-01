@@ -1,8 +1,8 @@
 var searchData=
 [
   ['object_2doriented_20input_20system',['Object-oriented Input System',['../index.html',1,'']]],
-  ['ois_3a_20object_20oriented_20input_20system',['OIS: Object oriented Input System',['../md__c_1__users_arthu__o_i_s_docs_index.html',1,'']]],
-  ['ois_3a_20object_20oriented_20input_20system',['OIS: Object oriented Input System',['../md__c_1__users_arthu__o_i_s__r_e_a_d_m_e.html',1,'']]],
+  ['ois_3a_20object_20oriented_20input_20system',['OIS: Object oriented Input System',['../md__c_1__users__ybalrid_git__o_i_s_docs_index.html',1,'']]],
+  ['ois_3a_20object_20oriented_20input_20system',['OIS: Object oriented Input System',['../md__c_1__users__ybalrid_git__o_i_s__r_e_a_d_m_e.html',1,'']]],
   ['object',['Object',['../class_o_i_s_1_1_object.html',1,'OIS::Object'],['../class_o_i_s_1_1_object.html#ac77f8aa5310be49efc70eadec0768f33',1,'OIS::Object::Object()']]],
   ['off',['Off',['../class_o_i_s_1_1_keyboard.html#ab9ea37e9eef464ec594fab5b3edb7e08a52347558f5fbd3f6e846e633e64c0618',1,'OIS::Keyboard']]],
   ['offset',['offset',['../class_o_i_s_1_1_periodic_effect.html#a496db21078f6d9540525626618beecb6',1,'OIS::PeriodicEffect']]],
