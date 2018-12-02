@@ -226,6 +226,10 @@ install(TARGETS OIS
   FRAMEWORK DESTINATION Library/Frameworks
 )
 
+if(MSVC)
+  install(FILES $<TARGET_PDB_FILE:OIS> DESTINATION bin OPTIONAL)
+endif(MSVC)
+
 if(UNIX)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OIS.pc.in ${CMAKE_BINARY_DIR}/OIS.pc @ONLY)
     install(FILES ${CMAKE_BINARY_DIR}/OIS.pc DESTINATION ${OIS_LIB_DIRECTORY}/pkgconfig)
