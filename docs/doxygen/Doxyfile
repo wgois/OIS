@@ -38,7 +38,7 @@ PROJECT_NAME           = OIS
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 1.4.x
+PROJECT_NUMBER         = 1.5
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -236,8 +236,7 @@ TAB_SIZE               = 4
 # will allow you to put the command \sideeffect (or @sideeffect) in the
 # documentation, which will result in a user-defined paragraph with heading
 # "Side Effects:". You can put \n's in the value part of an alias to insert
-# newlines (in the resulting output). You can put ^^ in the value part of an
-# alias to insert a newline as if a physical newline was in the original file.
+# newlines.
 
 ALIASES                = 
 
@@ -1081,6 +1080,36 @@ USE_HTAGS              = NO
 
 VERBATIM_HEADERS       = YES
 
+# If the CLANG_ASSISTED_PARSING tag is set to YES then doxygen will use the
+# clang parser (see: http://clang.llvm.org/) for more accurate parsing at the
+# cost of reduced performance. This can be particularly helpful with template
+# rich C++ code for which doxygen's built-in parser lacks the necessary type
+# information.
+# Note: The availability of this option depends on whether or not doxygen was
+# generated with the -Duse-libclang=ON option for CMake.
+# The default value is: NO.
+
+CLANG_ASSISTED_PARSING = NO
+
+# If clang assisted parsing is enabled you can provide the compiler with command
+# line options that you would normally use when invoking the compiler. Note that
+# the include paths will already be set by doxygen for the files and directories
+# specified with INPUT and INCLUDE_PATH.
+# This tag requires that the tag CLANG_ASSISTED_PARSING is set to YES.
+
+CLANG_OPTIONS          = 
+
+# If clang assisted parsing is enabled you can provide the clang parser with the
+# path to the compilation database (see:
+# http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html) used when the files
+# were built. This is equivalent to specifying the "-p" option to a clang tool,
+# such as clang-check. These options will then be pased to the parser.
+# Note: The availability of this option depends on whether or not doxygen was
+# generated with the -Duse-libclang=ON option for CMake.
+# The default value is: 0.
+
+CLANG_COMPILATION_DATABASE_PATH= 0
+
 #---------------------------------------------------------------------------
 # Configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
@@ -1553,7 +1582,7 @@ MATHJAX_FORMAT         = HTML-CSS
 # Content Delivery Network so you can quickly see the result without installing
 # MathJax. However, it is strongly recommended to install a local copy of
 # MathJax from https://www.mathjax.org before deployment.
-# The default value is: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/.
+# The default value is: http://cdn.mathjax.org/mathjax/latest.
 # This tag requires that the tag USE_MATHJAX is set to YES.
 
 MATHJAX_RELPATH        = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/
