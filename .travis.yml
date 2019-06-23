@@ -24,7 +24,7 @@ matrix:
                     - clang-9
                     - cmake
           env:
-            - MATRIX_EVAL="CC=clang-9 && CXX=clang++9"
+            - MATRIX_EVAL="CC=clang-9 && CXX=clang++-9"
         - os: osx
           compiler: gcc
         - os: osx
