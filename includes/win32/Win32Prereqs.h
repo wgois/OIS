@@ -33,7 +33,7 @@ following restrictions:
 #include <dinput.h>
 
 #ifdef OIS_WIN32_XINPUT_SUPPORT
-#include <XInput.h>
+#include <xinput.h>
 #endif
 
 //Max number of elements to collect from buffered DirectInput

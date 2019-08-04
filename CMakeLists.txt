@@ -70,32 +70,49 @@ if (UNIX AND NOT APPLE)
 endif()
 
 if (WIN32)
-	option(OIS_WIN32_XINPUT_SUPPORT "Add support XInput." ON)
-	
-	find_package(WindowsSDK)
-    # I'm assuming that this will be set under all normal circumstances
-    # if not, the user can set it themselves
-    if(WINDOWSSDK_FOUND)
-        set(OIS_WIN32_DXSDK_DIR ${WINDOWSSDK_PREFERRED_DIR} CACHE PATH "Location of the DirectX SDK on your system.")
-    else()
-        set(OIS_WIN32_DXSDK_DIR "$ENV{DXSDK_DIR}" CACHE PATH "Location of the DirectX SDK on your system.")
-    endif()
+    option(OIS_WIN32_XINPUT_SUPPORT "Add support XInput." ON)
 
-    if("${OIS_WIN32_DXSDK_DIR}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "Could not locate DirectX SDK on this system")
+    if(CMAKE_CROSSCOMPILING)
+        MESSAGE(STATUS "Cross-compiling ... search libraries instead of WindowsSDK")
+        find_library(DINPUT8_LIBRARY NAMES libdinput8.a dinput8.lib)
+        find_library(XINPUT8_LIBRARY NAMES libxinput.a)
+        find_library(DXGUID_LIBRARY  NAMES libdxguid.a)
+        if (NOT DINPUT8_LIBRARY)
+            MESSAGE(FATAL_ERROR " could not locate dinput8 DirectX library")
+        endif()
+        if (NOT XINPUT8_LIBRARY)
+            MESSAGE(FATAL_ERROR " could not locate xinput DirectX library")
+        endif()
+        if (NOT DXGUID_LIBRARY)
+            MESSAGE(FATAL_ERROR " could not locate dxguid DirectX library")
+        endif()
+        MESSAGE(STATUS " using " ${DINPUT8_LIBRARY} ", " ${XINPUT8_LIBRARY} " and " ${DXGUID_LIBRARY})
     else()
-        MESSAGE(STATUS "Found DirectX SDK at ${OIS_WIN32_DXSDK_DIR}")
+        find_package(WindowsSDK)
+        # I'm assuming that this will be set under all normal circumstances
+        # if not, the user can set it themselves
+        if(WINDOWSSDK_FOUND)
+            set(OIS_WIN32_DXSDK_DIR ${WINDOWSSDK_PREFERRED_DIR} CACHE PATH "Location of the DirectX SDK on your system.")
+        else()
+            set(OIS_WIN32_DXSDK_DIR "$ENV{DXSDK_DIR}" CACHE PATH "Location of the DirectX SDK on your system.")
+        endif()
+
+        if("${OIS_WIN32_DXSDK_DIR}" STREQUAL "")
+            MESSAGE(FATAL_ERROR "Could not locate DirectX SDK on this system")
+        else()
+            MESSAGE(STATUS "Found DirectX SDK at ${OIS_WIN32_DXSDK_DIR}")
+        endif()
+
+        include_directories("${OIS_WIN32_DXSDK_DIR}/Include")
     endif()
 
     if(BUILD_SHARED_LIBS)
         add_definitions(-DOIS_DYNAMIC_LIB)
     endif()
-    
+
     if(OIS_WIN32_XINPUT_SUPPORT)
         add_definitions(-DOIS_WIN32_XINPUT_SUPPORT)
     endif()
-
-    include_directories("${OIS_WIN32_DXSDK_DIR}/Include")
 
     set(ois_source
         ${ois_source}
@@ -161,6 +178,8 @@ if (WIN32)
 
     if (WINDOWSSDK_FOUND)
         target_link_libraries(OIS "dinput8.lib" "dxguid.lib")
+    elseif(CMAKE_CROSSCOMPILING)
+        target_link_libraries(OIS "${DINPUT8_LIBRARY}" "${XINPUT8_LIBRARY}" "${DXGUID_LIBRARY}")
     else()
         target_link_libraries(OIS "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dinput8.lib" "${DXSDK_DIR}/Lib/${DIRECTX_ARCH}/dxguid.lib")
     endif()
