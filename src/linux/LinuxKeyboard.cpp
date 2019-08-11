@@ -35,6 +35,10 @@ following restrictions:
 using namespace OIS;
 #include <iostream>
 
+#define ADD_KEY_CONVERSION(x_key, ois_key) \
+	keyConversionToOIS.insert(XtoOIS_KeyMap::value_type(x_key, ois_key)); \
+	keyConversionFromOIS.insert(OIStoX_KeyMap::value_type(ois_key, x_key));
+
 //-------------------------------------------------------------------//
 LinuxKeyboard::LinuxKeyboard(InputManager* creator, bool buffered, bool grab) :
  Keyboard(creator->inputSystemName(), buffered, 0, creator), xim(0), ximStyle(0), xic(0)
@@ -47,45 +51,46 @@ LinuxKeyboard::LinuxKeyboard(InputManager* creator, bool buffered, bool grab) :
 
 	static_cast<LinuxInputManager*>(mCreator)->_setKeyboardUsed(true);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Up, KC_UP));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Down, KC_DOWN));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Left, KC_LEFT));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Right, KC_RIGHT));
+	
+	ADD_KEY_CONVERSION(XK_Up, KC_UP);
+	ADD_KEY_CONVERSION(XK_Down, KC_DOWN);
+	ADD_KEY_CONVERSION(XK_Left, KC_LEFT);
+	ADD_KEY_CONVERSION(XK_Right, KC_RIGHT);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Divide, KC_DIVIDE));
+	ADD_KEY_CONVERSION(XK_KP_Divide, KC_DIVIDE);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Home, KC_NUMPAD7));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Up, KC_NUMPAD8));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Page_Up, KC_NUMPAD9));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Left, KC_NUMPAD4));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Begin, KC_NUMPAD5));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Right, KC_NUMPAD6));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_End, KC_NUMPAD1));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Down, KC_NUMPAD2));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Page_Down, KC_NUMPAD3));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Insert, KC_NUMPAD0));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_KP_Delete, KC_DECIMAL));
+	ADD_KEY_CONVERSION(XK_KP_Home, KC_NUMPAD7);
+	ADD_KEY_CONVERSION(XK_KP_Up, KC_NUMPAD8);
+	ADD_KEY_CONVERSION(XK_KP_Page_Up, KC_NUMPAD9);
+	ADD_KEY_CONVERSION(XK_KP_Left, KC_NUMPAD4);
+	ADD_KEY_CONVERSION(XK_KP_Begin, KC_NUMPAD5);
+	ADD_KEY_CONVERSION(XK_KP_Right, KC_NUMPAD6);
+	ADD_KEY_CONVERSION(XK_KP_End, KC_NUMPAD1);
+	ADD_KEY_CONVERSION(XK_KP_Down, KC_NUMPAD2);
+	ADD_KEY_CONVERSION(XK_KP_Page_Down, KC_NUMPAD3);
+	ADD_KEY_CONVERSION(XK_KP_Insert, KC_NUMPAD0);
+	ADD_KEY_CONVERSION(XK_KP_Delete, KC_DECIMAL);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Page_Up, KC_PGUP));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Page_Down, KC_PGDOWN));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Home, KC_HOME));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_End, KC_END));
+	ADD_KEY_CONVERSION(XK_Page_Up, KC_PGUP);
+	ADD_KEY_CONVERSION(XK_Page_Down, KC_PGDOWN);
+	ADD_KEY_CONVERSION(XK_Home, KC_HOME);
+	ADD_KEY_CONVERSION(XK_End, KC_END);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Print, KC_SYSRQ));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Scroll_Lock, KC_SCROLL));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Pause, KC_PAUSE));
+	ADD_KEY_CONVERSION(XK_Print, KC_SYSRQ);
+	ADD_KEY_CONVERSION(XK_Scroll_Lock, KC_SCROLL);
+	ADD_KEY_CONVERSION(XK_Pause, KC_PAUSE);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Shift_R, KC_RSHIFT));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Shift_L, KC_LSHIFT));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Alt_R, KC_RMENU));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Alt_L, KC_LMENU));
+	ADD_KEY_CONVERSION(XK_Shift_R, KC_RSHIFT);
+	ADD_KEY_CONVERSION(XK_Shift_L, KC_LSHIFT);
+	ADD_KEY_CONVERSION(XK_Alt_R, KC_RMENU);
+	ADD_KEY_CONVERSION(XK_Alt_L, KC_LMENU);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Insert, KC_INSERT));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Delete, KC_DELETE));
+	ADD_KEY_CONVERSION(XK_Insert, KC_INSERT);
+	ADD_KEY_CONVERSION(XK_Delete, KC_DELETE);
 
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Super_L, KC_LWIN));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Super_R, KC_RWIN));
-	keyConversion.insert(XtoOIS_KeyMap::value_type(XK_Menu, KC_APPS));
+	ADD_KEY_CONVERSION(XK_Super_L, KC_LWIN);
+	ADD_KEY_CONVERSION(XK_Super_R, KC_RWIN);
+	ADD_KEY_CONVERSION(XK_Menu, KC_APPS);
 }
 
 //-------------------------------------------------------------------//
@@ -367,9 +372,16 @@ void LinuxKeyboard::setBuffered(bool buffered)
 
 OIS::KeyCode LinuxKeyboard::convert(KeySym kc)
 {
-	const auto result = keyConversion.find(kc);
-	if(result == keyConversion.end())
+	const auto result = keyConversionToOIS.find(kc);
+	if(result == keyConversionToOIS.end())
 		return KC_UNASSIGNED; //No explicit conversion for the symbol;
+	return result->second;
+}
+KeySym LinuxKeyboard::convert(OIS::KeyCode kc)
+{
+	const auto result = keyConversionFromOIS.find(kc);
+	if(result == keyConversionFromOIS.end())
+		return NoSymbol; //No explicit conversion for the symbol;
 	return result->second;
 }
 //-------------------------------------------------------------------//
@@ -435,7 +447,7 @@ OIS::KeyCode LinuxKeyboard::getAsKeyCode(std::string str)
 	/*
  * TODO fixme!
     KeySym X11Key = XStringToKeysym(str.c_str());
-    mGetKeyCode = keyConversion.at(X11Key);
+    mGetKeyCode = keyConversionToOIS.at(X11Key);
 */
 	return mGetKeyCode;
 }
