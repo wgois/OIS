@@ -371,20 +371,6 @@ void LinuxKeyboard::setBuffered(bool buffered)
 	mBuffered = buffered;
 }
 
-OIS::KeyCode LinuxKeyboard::convert(KeySym kc)
-{
-	const auto result = keyConversionToOIS.find(kc);
-	if(result == keyConversionToOIS.end())
-		return KC_UNASSIGNED; //No explicit conversion for the symbol;
-	return result->second;
-}
-KeySym LinuxKeyboard::convert(OIS::KeyCode kc)
-{
-	const auto result = keyConversionFromOIS.find(kc);
-	if(result == keyConversionFromOIS.end())
-		return NoSymbol; //No explicit conversion for the symbol;
-	return result->second;
-}
 //-------------------------------------------------------------------//
 bool LinuxKeyboard::_injectKeyDown(KeyCode kc, int text)
 {

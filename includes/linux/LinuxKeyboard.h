@@ -94,10 +94,10 @@ namespace OIS
 			if(keySym != NoSymbol)
 			{
 				//Check for explicit convert
-				OIS::KeyCode converted = convert(keySym);
-				if(converted != KC_UNASSIGNED)
-					return converted;
-
+				const auto result = keyConversionToOIS.find(keySym);
+				if(result != keyConversionToOIS.end())
+					return result->second;
+				
 				::KeyCode xkc = XKeysymToKeycode(display, keySym);
 				if(xkc > 8)
 					return static_cast<KeyCode>(xkc - 8);
@@ -109,11 +109,11 @@ namespace OIS
 		{
 			if(kc == KC_UNASSIGNED)
 				return NoSymbol;
-
+			
 			//Check for explicit convert
-			KeySym converted = convert(kc);
-			if(converted != NoSymbol)
-				return converted;
+			const auto result = keyConversionFromOIS.find(kc);
+			if(result != keyConversionFromOIS.end())
+				return result->second;
 			
 			::KeyCode xkc = kc + 8;
 			return XkbKeycodeToKeysym(display, xkc, 0, 0);
@@ -127,9 +127,6 @@ namespace OIS
 		OIStoX_KeyMap keyConversionFromOIS;
 		
 		void addKeyConversion(KeySym x_key, KeyCode ois_key);
-
-		OIS::KeyCode convert(KeySym ksym);
-		KeySym convert(OIS::KeyCode ksym);
 
 		//! Depressed Key List
 		char KeyBuffer[256];
