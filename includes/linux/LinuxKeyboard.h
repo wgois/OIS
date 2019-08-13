@@ -125,6 +125,8 @@ namespace OIS
 		
 		typedef std::unordered_map<KeyCode, KeySym> OIStoX_KeyMap;
 		OIStoX_KeyMap keyConversionFromOIS;
+		
+		void addKeyConversion(KeySym x_key, KeyCode ois_key);
 
 		OIS::KeyCode convert(KeySym ksym);
 		KeySym convert(OIS::KeyCode ksym);
