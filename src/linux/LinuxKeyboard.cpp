@@ -430,13 +430,8 @@ const std::string& LinuxKeyboard::getAsString(KeyCode kc)
 //-------------------------------------------------------------------//
 OIS::KeyCode LinuxKeyboard::getAsKeyCode(std::string str)
 {
-	OIS::KeyCode mGetKeyCode;
-	/*
- * TODO fixme!
-    KeySym X11Key = XStringToKeysym(str.c_str());
-    mGetKeyCode = keyConversionToOIS.at(X11Key);
-*/
-	return mGetKeyCode;
+	KeySym X11Key = XStringToKeysym(str.c_str());
+	return KeySymToOISKeyCode(X11Key);
 }
 
 //-------------------------------------------------------------------//
