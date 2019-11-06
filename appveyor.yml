@@ -10,7 +10,11 @@ configuration:
 #platform:
 #- Win32
 #- x64
+environment:
+  matrix:
+  - OIS_BUILD_SHARED_LIBS: 0
+  - OIS_BUILD_SHARED_LIBS: 1
 before_build:
-- cmd: cmake -H. -B./build
+- cmd: cmake -H. -B./build -DOIS_BUILD_SHARED_LIBS=%OIS_BUILD_SHARED_LIBS%
 build:
   verbosity: normal
