@@ -123,7 +123,7 @@ namespace OIS
 		typedef std::unordered_map<KeySym, KeyCode> XtoOIS_KeyMap;
 		XtoOIS_KeyMap keyConversionToOIS;
 		
-		typedef std::unordered_map<KeyCode, KeySym> OIStoX_KeyMap;
+		typedef std::unordered_map<KeyCode, KeySym, std::hash<int>> OIStoX_KeyMap;
 		OIStoX_KeyMap keyConversionFromOIS;
 		
 		void addKeyConversion(KeySym x_key, KeyCode ois_key);
