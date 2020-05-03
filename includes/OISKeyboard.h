@@ -278,11 +278,20 @@ namespace OIS
 
 		//! Enum of bit position of modifer
 		enum Modifier {
-			Shift	= 0x0000001,
+			Shift	 = 0x0000001,
+			LShift	 = 0x0000002,
+			RShift	 = 0x0000004,
 			Ctrl	 = 0x0000010,
-			Alt		 = 0x0000100,
+			LCtrl	 = 0x0000020,
+			RCtrl	 = 0x0000040,
+			Alt	 = 0x0000100,
+			LAlt	 = 0x0000200,
+			RAlt	 = 0x0000400,
 			CapsLock = 0x0001000,
-			NumLock  = 0x0010000
+			NumLock  = 0x0010000,
+			Win	 = 0x0100000,
+			LWin	 = 0x0200000,
+			RWin	 = 0x0400000
 		};
 
 		/**
@@ -302,6 +311,12 @@ namespace OIS
 			Check modifier status
 		*/
 		bool isModifierDown(Modifier mod) const;
+		
+		/**
+		@remarks
+			Returns the full modifiers status bit field
+		*/
+		unsigned int getModifiers() const;
 
 		/**
 		@remarks
@@ -315,7 +330,7 @@ namespace OIS
 		 Object(vendor, OISKeyboard, buffered, devID, creator),
 		 mModifiers(0), mListener(0), mTextMode(Unicode) {}
 
-		//! Bit field that holds status of Alt, Ctrl, Shift
+		//! Bit field that holds status of Alt, Ctrl, Shift, Win, CapsLock, and NumLock as well as Left and Right variants
 		unsigned int mModifiers;
 
 		//! Used for buffered/actionmapping callback

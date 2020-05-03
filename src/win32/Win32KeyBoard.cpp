@@ -140,12 +140,34 @@ void Win32Keyboard::_readBuffered()
 		if(diBuff[i].dwData & 0x80)
 		{
 			//Turn on modifier
-			if(kc == KC_LCONTROL || kc == KC_RCONTROL)
+			if(kc == KC_LCONTROL || kc == KC_RCONTROL) {
 				mModifiers |= Ctrl;
-			else if(kc == KC_LSHIFT || kc == KC_RSHIFT)
+				if (kc == KC_LCONTROL)
+					mModifiers |= LCtrl;
+				else if (kc == KC_RCONTROL)
+					mModifiers |= RCtrl;
+			}
+			else if(kc == KC_LSHIFT || kc == KC_RSHIFT) {
 				mModifiers |= Shift;
-			else if(kc == KC_LMENU || kc == KC_RMENU)
+				if (kc == KC_LSHIFT)
+					mModifiers |= LShift;
+				else if (kc == KC_RSHIFT)
+					mModifiers |= RShift;
+			}
+			else if(kc == KC_LMENU || kc == KC_RMENU) {
 				mModifiers |= Alt;
+				if (kc == KC_LMENU)
+					mModifiers |= LAlt;
+				else if (kc == KC_RMENU)
+					mModifiers |= RAlt;
+			}
+			else if(kc == KC_LWIN || kc == KC_RWIN) {
+				mModifiers |= Win;
+				if (kc == KC_LWIN)
+					mModifiers |= LWin;
+				else if (kc == KC_RWIN)
+					mModifiers |= RWin;
+			}
 
 			//These ones are toggled when
 			else if (kc == KC_NUMLOCK)
@@ -170,12 +192,42 @@ void Win32Keyboard::_readBuffered()
 		else
 		{
 			//Turn off modifier
-			if(kc == KC_LCONTROL || kc == KC_RCONTROL)
-				mModifiers &= ~Ctrl;
-			else if(kc == KC_LSHIFT || kc == KC_RSHIFT)
-				mModifiers &= ~Shift;
-			else if(kc == KC_LMENU || kc == KC_RMENU)
-				mModifiers &= ~Alt;
+			if(kc == KC_LCONTROL || kc == KC_RCONTROL) {
+				if (kc == KC_LCONTROL)
+					mModifiers &= ~LCtrl;
+				else if (kc == KC_RCONTROL)
+					mModifiers &= ~RCtrl;
+				//Only disable combined modifier if both L/R are disabled
+				if (!(mModifiers & LCtrl) && !(mModifiers & RCtrl))
+					mModifiers &= ~Ctrl;
+			}
+			else if(kc == KC_LSHIFT || kc == KC_RSHIFT) {
+				if (kc == KC_LSHIFT)
+					mModifiers &= ~LShift;
+				else if (kc == KC_RSHIFT)
+					mModifiers &= ~RShift;
+				//Only disable combined modifier if both L/R are disabled
+				if (!(mModifiers & LShift) && !(mModifiers & RShift))
+					mModifiers &= ~Shift;
+			}
+			else if(kc == KC_LMENU || kc == KC_RMENU) {
+				if (kc == KC_LMENU)
+					mModifiers &= ~LAlt;
+				else if (kc == KC_RMENU)
+					mModifiers &= ~RAlt;
+				//Only disable combined modifier if both L/R are disabled
+				if (!(mModifiers & LAlt) && !(mModifiers & RAlt))
+					mModifiers &= ~Alt;
+			}
+			else if(kc == KC_LWIN || kc == KC_RWIN) {
+				if (kc == KC_LWIN)
+					mModifiers &= ~LWin;
+				else if (kc == KC_RWIN)
+					mModifiers &= ~RWin;
+				//Only disable combined modifier if both L/R are disabled
+				if (!(mModifiers & LWin) && !(mModifiers & RWin))
+					mModifiers &= ~Win;
+			}
 
 			//Fire off event
 			if(mListener)
@@ -232,14 +284,36 @@ void Win32Keyboard::_read()
 			mKeyboard->GetDeviceState(sizeof(KeyBuffer), &KeyBuffer);
 	}
 
-	//Set Shift, Ctrl, Alt
+	//Set Shift, Ctrl, Alt, Win, CapsLock, and NumLock as well as Left and Right variants
 	mModifiers = 0;
 	if(isKeyDown(KC_LCONTROL) || isKeyDown(KC_RCONTROL))
 		mModifiers |= Ctrl;
+	if(isKeyDown(KC_LCONTROL))
+		mModifiers |= LCtrl;
+	if(isKeyDown(KC_RCONTROL))
+		mModifiers |= RCtrl;
 	if(isKeyDown(KC_LSHIFT) || isKeyDown(KC_RSHIFT))
 		mModifiers |= Shift;
+	if(isKeyDown(KC_LSHIFT))
+		mModifiers |= LShift;
+	if(isKeyDown(KC_RSHIFT))
+		mModifiers |= RShift;
 	if(isKeyDown(KC_LMENU) || isKeyDown(KC_RMENU))
 		mModifiers |= Alt;
+	if(isKeyDown(KC_LMENU))
+		mModifiers |= LAlt;
+	if(isKeyDown(KC_RMENU))
+		mModifiers |= RAlt;
+	if(isKeyDown(KC_LWIN) || isKeyDown(KC_RWIN))
+		mModifiers |= Win;
+	if(isKeyDown(KC_LWIN))
+		mModifiers |= LWin;
+	if(isKeyDown(KC_RWIN))
+		mModifiers |= RWin;
+	if(isKeyDown(KC_CAPITAL))
+		mModifiers |= CapsLock;
+	if(isKeyDown(KC_NUMLOCK))
+		mModifiers |= NumLock;
 }
 
 //--------------------------------------------------------------------------------------------------//
