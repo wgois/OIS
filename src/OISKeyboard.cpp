@@ -46,3 +46,9 @@ bool Keyboard::isModifierDown(Modifier mod) const
 #pragma warning(pop)
 #endif
 }
+
+//----------------------------------------------------------------------//
+unsigned int Keyboard::getModifiers() const
+{
+	return mModifiers;
+}
