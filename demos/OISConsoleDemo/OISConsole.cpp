@@ -160,6 +160,14 @@ public:
 					  << arg.device->vendor() << ". Axis # " << axis << " Value: " << arg.state.mAxes[axis].abs;
 		return true;
 	}
+	bool sliderMoved(const JoyStickEvent& arg, int index)
+	{
+		std::cout << std::endl
+				  << arg.device->vendor() << ". Slider # " << index 
+				  << " X Value: " << arg.state.mSliders[index].abX
+				  << " Y Value: " << arg.state.mSliders[index].abY;
+		return true;
+	}
 	bool povMoved(const JoyStickEvent& arg, int pov)
 	{
 		std::cout << std::endl
