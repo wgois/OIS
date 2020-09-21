@@ -127,7 +127,7 @@ void Win32InputManager::_enumerateDevices()
 
 #ifdef OIS_WIN32_XINPUT_SUPPORT
 	//let's check how many possible XInput devices we may have (max 4)...
-	for(int i = 0; i < 3; ++i)
+	for(int i = 0; i < 4; ++i)
 	{
 		XINPUT_STATE state;
 		if(XInputGetState(i, &state) != ERROR_DEVICE_NOT_CONNECTED)
