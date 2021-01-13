@@ -360,6 +360,10 @@ void Win32JoyStick::capture()
 
 					if(axis >= 0 && axis < (int)mState.mAxes.size())
 					{
+						if (!axisMoved[axis])
+							mState.mAxes[axis].rel = 0;
+						mState.mAxes[axis].rel += (int)diBuff[i].dwData - mState.mAxes[axis].abs;
+						mState.mAxes[axis].absOnly = false;
 						mState.mAxes[axis].abs = diBuff[i].dwData;
 						axisMoved[axis]		   = true;
 					}
