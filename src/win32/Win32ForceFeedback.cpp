@@ -28,7 +28,13 @@ following restrictions:
 #include <math.h>
 
 // 0 = No trace; 1 = Important traces; 2 = Debug traces
+#ifndef OIS_WIN32_JOYFF_DEBUG
+#ifdef _DEBUG
 #define OIS_WIN32_JOYFF_DEBUG 1
+#else
+#define OIS_WIN32_JOYFF_DEBUG 0
+#endif
+#endif
 
 #if(defined(_DEBUG) || defined(OIS_WIN32_JOYFF_DEBUG))
 #include <iostream>
@@ -279,7 +285,7 @@ void Win32ForceFeedback::_updateConditionalEffect(const Effect* effect)
 	DICONDITION cf;
 	DIEFFECT diEffect;
 
-	cf.lOffset				= eff->deadband;
+	cf.lOffset				= eff->center;
 	cf.lPositiveCoefficient = eff->rightCoeff;
 	cf.lNegativeCoefficient = eff->leftCoeff;
 	cf.dwPositiveSaturation = eff->rightSaturation;
