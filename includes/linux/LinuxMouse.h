@@ -65,9 +65,9 @@ namespace OIS
 		//Since X11 provides us with absolute values, we need to keep track of relative values
 		long oldXMouseX, oldXMouseY, oldXMouseZ;
 
-		Window window;	//The X Window
+		Window window;	  //The X Window
 		Display* display; //The X display
-		Cursor cursor;	//A blank cursor
+		Cursor cursor;	  //A blank cursor
 
 		bool grabMouse;		 //Are we grabbing the mouse to the window?
 		bool hideMouse;		 //Are we hiding OS mouse?

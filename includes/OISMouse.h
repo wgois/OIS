@@ -50,7 +50,7 @@ namespace OIS
 	{
 	public:
 		MouseState() :
-		 width(50), height(50), buttons(0){};
+		 width(50), height(50), buttons(0) {};
 
 		/** Represents the height/width of your display area.. used if mouse clipping
 		or mouse grabbed in case of X11 - defaults to 50.. Make sure to set this
@@ -90,8 +90,8 @@ namespace OIS
 	{
 	public:
 		MouseEvent(Object* obj, const MouseState& ms) :
-		 EventArg(obj), state(ms) {}
-		virtual ~MouseEvent() {}
+		 EventArg(obj), state(ms) { }
+		virtual ~MouseEvent() { }
 
 		//! The state of the mouse - including buttons and axes
 		const MouseState& state;
@@ -109,9 +109,9 @@ namespace OIS
 	class _OISExport MouseListener
 	{
 	public:
-		virtual ~MouseListener() {}
+		virtual ~MouseListener() { }
 		virtual bool mouseMoved(const MouseEvent& arg)						= 0;
-		virtual bool mousePressed(const MouseEvent& arg, MouseButtonID id)  = 0;
+		virtual bool mousePressed(const MouseEvent& arg, MouseButtonID id)	= 0;
 		virtual bool mouseReleased(const MouseEvent& arg, MouseButtonID id) = 0;
 	};
 
@@ -122,7 +122,7 @@ namespace OIS
 	class _OISExport Mouse : public Object
 	{
 	public:
-		virtual ~Mouse() {}
+		virtual ~Mouse() { }
 
 		/**
 		@remarks
@@ -141,7 +141,7 @@ namespace OIS
 
 	protected:
 		Mouse(const std::string& vendor, bool buffered, int devID, InputManager* creator) :
-		 Object(vendor, OISMouse, buffered, devID, creator), mListener(0) {}
+		 Object(vendor, OISMouse, buffered, devID, creator), mListener(0) { }
 
 		//! The state of the mouse
 		MouseState mState;

@@ -99,11 +99,11 @@ namespace OIS
 
 			//2 bytes per short
 			bufferSize = (int)numEntries;
-			buffer	 = new LIRCEvent[numEntries];
+			buffer	   = new LIRCEvent[numEntries];
 
 			Flush();
 
-			bigMask   = (int)(numEntries * 2) - 1;
+			bigMask	  = (int)(numEntries * 2) - 1;
 			smallMask = (int)(numEntries)-1;
 		}
 

@@ -79,18 +79,18 @@ bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, 
 	HANDLE hDevInfo;
 	ULONG Required;
 
-	Length	 = 0;
+	Length	   = 0;
 	detailData = NULL;
-	mHandle	= NULL;
+	mHandle	   = NULL;
 
 	HidD_GetHidGuid(&HidGuid);
 	hDevInfo = SetupDiGetClassDevs(&HidGuid, NULL, NULL, DIGCF_PRESENT | DIGCF_INTERFACEDEVICE);
 
 	devInfoData.cbSize = sizeof(devInfoData);
 
-	MemberIndex  = 0;
+	MemberIndex	 = 0;
 	MembersFound = 0;
-	LastDevice   = FALSE;
+	LastDevice	 = FALSE;
 
 	do
 	{
@@ -128,9 +128,9 @@ bool cHIDDevice::OpenDevice(unsigned short device_id, unsigned short vendor_id, 
 						PrepareForOverlappedTransfer();
 
 						mEvent				   = CreateEvent(NULL, TRUE, TRUE, "");
-						mOverlapped.Offset	 = 0;
+						mOverlapped.Offset	   = 0;
 						mOverlapped.OffsetHigh = 0;
-						mOverlapped.hEvent	 = mEvent;
+						mOverlapped.hEvent	   = mEvent;
 					}
 					else
 					{

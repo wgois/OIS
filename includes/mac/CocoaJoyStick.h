@@ -37,7 +37,7 @@ namespace OIS
 		int max;
 
 		AxisInfo(int min, int max) :
-		 min(min), max(max) {}
+		 min(min), max(max) { }
 	};
 
 	typedef struct cookie_struct

@@ -97,7 +97,7 @@ namespace OIS
 				const auto result = keyConversionToOIS.find(keySym);
 				if(result != keyConversionToOIS.end())
 					return result->second;
-				
+
 				::KeyCode xkc = XKeysymToKeycode(display, keySym);
 				if(xkc > 8)
 					return static_cast<KeyCode>(xkc - 8);
@@ -109,12 +109,12 @@ namespace OIS
 		{
 			if(kc == KC_UNASSIGNED)
 				return NoSymbol;
-			
+
 			//Check for explicit convert
 			const auto result = keyConversionFromOIS.find(kc);
 			if(result != keyConversionFromOIS.end())
 				return result->second;
-			
+
 			::KeyCode xkc = kc + 8;
 			return XkbKeycodeToKeysym(display, xkc, 0, 0);
 		}
@@ -122,10 +122,10 @@ namespace OIS
 		//! Explict convertion for non-text symbols
 		typedef std::unordered_map<KeySym, KeyCode> XtoOIS_KeyMap;
 		XtoOIS_KeyMap keyConversionToOIS;
-		
+
 		typedef std::unordered_map<KeyCode, KeySym, std::hash<int>> OIStoX_KeyMap;
 		OIStoX_KeyMap keyConversionFromOIS;
-		
+
 		void addKeyConversion(KeySym x_key, KeyCode ois_key);
 
 		//! Depressed Key List

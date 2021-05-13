@@ -206,7 +206,7 @@ void Win32ForceFeedback::_updateConstantEffect(const Effect* effect)
 {
 	ConstantEffect* eff = static_cast<ConstantEffect*>(effect->getForceEffect());
 
-	DWORD rgdwAxes[2]	= { DIJOFS_X, DIJOFS_Y };
+	DWORD rgdwAxes[2]	 = { DIJOFS_X, DIJOFS_Y };
 	LONG rglDirection[2] = { 0, 0 };
 	DIENVELOPE diEnvelope;
 	DICONSTANTFORCE cf;
@@ -230,7 +230,7 @@ void Win32ForceFeedback::_updateRampEffect(const Effect* effect)
 {
 	RampEffect* eff = static_cast<RampEffect*>(effect->getForceEffect());
 
-	DWORD rgdwAxes[2]	= { DIJOFS_X, DIJOFS_Y };
+	DWORD rgdwAxes[2]	 = { DIJOFS_X, DIJOFS_Y };
 	LONG rglDirection[2] = { 0, 0 };
 	DIENVELOPE diEnvelope;
 	DIRAMPFORCE rf;
@@ -238,7 +238,7 @@ void Win32ForceFeedback::_updateRampEffect(const Effect* effect)
 
 	//Currently only support 1 axis
 	rf.lStart = eff->startLevel;
-	rf.lEnd   = eff->endLevel;
+	rf.lEnd	  = eff->endLevel;
 
 	_setCommonProperties(&diEffect, rgdwAxes, rglDirection, &diEnvelope, sizeof(DIRAMPFORCE), &rf, effect, &eff->envelope);
 	_upload(GUID_RampForce, &diEffect, effect);
@@ -249,7 +249,7 @@ void Win32ForceFeedback::_updatePeriodicEffect(const Effect* effect)
 {
 	PeriodicEffect* eff = static_cast<PeriodicEffect*>(effect->getForceEffect());
 
-	DWORD rgdwAxes[2]	= { DIJOFS_X, DIJOFS_Y };
+	DWORD rgdwAxes[2]	 = { DIJOFS_X, DIJOFS_Y };
 	LONG rglDirection[2] = { 0, 0 };
 	DIENVELOPE diEnvelope;
 	DIPERIODIC pf;
@@ -257,9 +257,9 @@ void Win32ForceFeedback::_updatePeriodicEffect(const Effect* effect)
 
 	//Currently only support 1 axis
 	pf.dwMagnitude = eff->magnitude;
-	pf.lOffset	 = eff->offset;
-	pf.dwPhase	 = eff->phase;
-	pf.dwPeriod	= eff->period;
+	pf.lOffset	   = eff->offset;
+	pf.dwPhase	   = eff->phase;
+	pf.dwPeriod	   = eff->period;
 
 	_setCommonProperties(&diEffect, rgdwAxes, rglDirection, &diEnvelope, sizeof(DIPERIODIC), &pf, effect, &eff->envelope);
 
@@ -279,7 +279,7 @@ void Win32ForceFeedback::_updateConditionalEffect(const Effect* effect)
 {
 	ConditionalEffect* eff = static_cast<ConditionalEffect*>(effect->getForceEffect());
 
-	DWORD rgdwAxes[2]	= { DIJOFS_X, DIJOFS_Y };
+	DWORD rgdwAxes[2]	 = { DIJOFS_X, DIJOFS_Y };
 	LONG rglDirection[2] = { 0, 0 };
 	DIENVELOPE diEnvelope;
 	DICONDITION cf;
@@ -343,7 +343,7 @@ void Win32ForceFeedback::_setCommonProperties(
 		 << " => " << diEffect->dwTriggerRepeatInterval << endl;
 #endif
 
-	diEffect->cAxes	= 1; // effect->getNumAxes();
+	diEffect->cAxes	   = 1; // effect->getNumAxes();
 	diEffect->rgdwAxes = rgdwAxes;
 
 	diEffect->rglDirection = rglDirection; // TODO: conversion from effect->direction
@@ -361,8 +361,8 @@ void Win32ForceFeedback::_setCommonProperties(
 		diEnvelope->dwSize		  = sizeof(DIENVELOPE);
 		diEnvelope->dwAttackLevel = envelope->attackLevel;
 		diEnvelope->dwAttackTime  = envelope->attackLength;
-		diEnvelope->dwFadeLevel   = envelope->fadeLevel;
-		diEnvelope->dwFadeTime	= envelope->fadeLength;
+		diEnvelope->dwFadeLevel	  = envelope->fadeLevel;
+		diEnvelope->dwFadeTime	  = envelope->fadeLength;
 		diEffect->lpEnvelope	  = diEnvelope;
 	}
 	else
@@ -385,7 +385,7 @@ void Win32ForceFeedback::_setCommonProperties(
 
 	diEffect->dwSamplePeriod = 0;
 	diEffect->dwDuration	 = effect->replay_length;
-	diEffect->dwStartDelay   = effect->replay_delay;
+	diEffect->dwStartDelay	 = effect->replay_delay;
 
 #if(OIS_WIN32_JOYFF_DEBUG > 1)
 	cout << "  Replay :" << endl
@@ -395,7 +395,7 @@ void Win32ForceFeedback::_setCommonProperties(
 		 << " => " << diEffect->dwStartDelay << endl;
 #endif
 
-	diEffect->cbTypeSpecificParams  = struct_size;
+	diEffect->cbTypeSpecificParams	= struct_size;
 	diEffect->lpvTypeSpecificParams = struct_type;
 }
 

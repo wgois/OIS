@@ -39,7 +39,7 @@ namespace OIS
 	{
 	public:
 		ForceFeedback();
-		virtual ~ForceFeedback() {}
+		virtual ~ForceFeedback() { }
 
 		/**
 		@remarks

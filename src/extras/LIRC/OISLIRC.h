@@ -37,11 +37,11 @@ namespace OIS
 	struct RemoteInfo
 	{
 		RemoteInfo() :
-		 buttons(0) {}
+		 buttons(0) { }
 
 		RemoteInfo(const RemoteInfo& other)
 		{
-			buttons   = other.buttons;
+			buttons	  = other.buttons;
 			buttonMap = other.buttonMap;
 		}
 

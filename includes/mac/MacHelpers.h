@@ -51,7 +51,7 @@ namespace OIS
 {
 
 	// used in the eventStack to store the type
-	enum Mac_EventType { MAC_KEYUP   = 0,
+	enum Mac_EventType { MAC_KEYUP	 = 0,
 						 MAC_KEYDOWN = 1,
 						 MAC_KEYREPEAT,
 						 MAC_MOUSEDOWN,
@@ -67,7 +67,7 @@ namespace OIS
 
 	private:
 		Mac_KeyStackEvent(KeyEvent event, MacEventType type) :
-		 Event(event), Type(type) {}
+		 Event(event), Type(type) { }
 
 		MacEventType Type;
 		KeyEvent Event;

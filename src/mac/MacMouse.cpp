@@ -198,8 +198,7 @@ void MacMouse::_mouseCallback(EventRef theEvent)
 	switch(kind)
 	{
 		case kEventMouseDragged:
-		case kEventMouseMoved:
-		{
+		case kEventMouseMoved: {
 			//HIPoint location = {0.0f, 0.0f};
 			HIPoint delta = { 0.0f, 0.0f };
 			//Rect clipRect = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -256,8 +255,7 @@ void MacMouse::_mouseCallback(EventRef theEvent)
 
 			break;
 		}
-		case kEventMouseDown:
-		{
+		case kEventMouseDown: {
 			EventMouseButton button = 0;
 			int mouseButton			= 3;
 			UInt32 modifiers		= 0;
@@ -290,8 +288,7 @@ void MacMouse::_mouseCallback(EventRef theEvent)
 
 			break;
 		}
-		case kEventMouseUp:
-		{
+		case kEventMouseUp: {
 			EventMouseButton button = 0;
 			int mouseButton			= 3;
 			UInt32 modifiers		= 0;
@@ -351,8 +348,7 @@ void MacMouse::_mouseCallback(EventRef theEvent)
 
 			break;
 		}
-		case kEventMouseWheelMoved:
-		{
+		case kEventMouseWheelMoved: {
 			SInt32 wheelDelta			  = 0;
 			EventMouseWheelAxis wheelAxis = 0;
 

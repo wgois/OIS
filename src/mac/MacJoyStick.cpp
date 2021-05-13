@@ -80,7 +80,7 @@ class FindAxisCookie : public std::unary_function<std::pair<IOHIDElementCookie, 
 {
 public:
 	FindAxisCookie(IOHIDElementCookie cookie) :
-	 m_Cookie(cookie) {}
+	 m_Cookie(cookie) { }
 	bool operator()(const std::pair<IOHIDElementCookie, AxisInfo>& pair) const
 	{
 		return pair.first == m_Cookie;
@@ -103,8 +103,7 @@ void MacJoyStick::capture()
 	{
 		switch(event.type)
 		{
-			case kIOHIDElementTypeInput_Button:
-			{
+			case kIOHIDElementTypeInput_Button: {
 				std::vector<IOHIDElementCookie>::iterator buttonIt = std::find(mCookies.buttonCookies.begin(), mCookies.buttonCookies.end(), event.elementCookie);
 				int button										   = std::distance(mCookies.buttonCookies.begin(), buttonIt);
 				mState.mButtons[button]							   = (event.value == 1);
@@ -127,7 +126,7 @@ void MacJoyStick::capture()
 				//Copied from LinuxJoyStickEvents.cpp, line 149
 				const AxisInfo& axisInfo = axisIt->second;
 				float proportion		 = (float)(event.value - axisInfo.max) / (float)(axisInfo.min - axisInfo.max);
-				mState.mAxes[axis].abs   = -JoyStick::MIN_AXIS - (JoyStick::MAX_AXIS * 2 * proportion);
+				mState.mAxes[axis].abs	 = -JoyStick::MIN_AXIS - (JoyStick::MAX_AXIS * 2 * proportion);
 
 				if(mBuffered && mListener) mListener->axisMoved(JoyStickEvent(this, mState), axis);
 				break;
@@ -262,7 +261,7 @@ void MacJoyStick::_enumerateCookies()
 		}
 
 		mInfo->numButtons = mCookies.buttonCookies.size();
-		mInfo->numAxes	= mCookies.axisCookies.size();
+		mInfo->numAxes	  = mCookies.axisCookies.size();
 	}
 	else
 	{

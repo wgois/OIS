@@ -32,7 +32,7 @@ namespace OIS
 {
 	//! Keyboard scan codes
 	enum KeyCode {
-		KC_UNASSIGNED   = 0x00,
+		KC_UNASSIGNED	= 0x00,
 		KC_ESCAPE		= 0x01,
 		KC_1			= 0x02,
 		KC_2			= 0x03,
@@ -72,7 +72,7 @@ namespace OIS
 		KC_K			= 0x25,
 		KC_L			= 0x26,
 		KC_SEMICOLON	= 0x27,
-		KC_APOSTROPHE   = 0x28,
+		KC_APOSTROPHE	= 0x28,
 		KC_GRAVE		= 0x29, // accent
 		KC_LSHIFT		= 0x2A,
 		KC_BACKSLASH	= 0x2B,
@@ -138,17 +138,17 @@ namespace OIS
 		KC_AX			= 0x96, //                     (Japan AX)
 		KC_UNLABELED	= 0x97, //                        (J3100)
 		KC_NEXTTRACK	= 0x99, // Next Track
-		KC_NUMPADENTER  = 0x9C, // Enter on numeric keypad
+		KC_NUMPADENTER	= 0x9C, // Enter on numeric keypad
 		KC_RCONTROL		= 0x9D,
 		KC_MUTE			= 0xA0, // Mute
-		KC_CALCULATOR   = 0xA1, // Calculator
+		KC_CALCULATOR	= 0xA1, // Calculator
 		KC_PLAYPAUSE	= 0xA2, // Play / Pause
 		KC_MEDIASTOP	= 0xA4, // Media Stop
-		KC_TWOSUPERIOR  = 0xAA, // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
-		KC_VOLUMEDOWN   = 0xAE, // Volume -
+		KC_TWOSUPERIOR	= 0xAA, // ² on French AZERTY keyboard (same place as ~ ` on QWERTY)
+		KC_VOLUMEDOWN	= 0xAE, // Volume -
 		KC_VOLUMEUP		= 0xB0, // Volume +
 		KC_WEBHOME		= 0xB2, // Web home
-		KC_NUMPADCOMMA  = 0xB3, // , on numeric keypad (NEC PC98)
+		KC_NUMPADCOMMA	= 0xB3, // , on numeric keypad (NEC PC98)
 		KC_DIVIDE		= 0xB5, // / on numeric keypad
 		KC_SYSRQ		= 0xB7,
 		KC_RMENU		= 0xB8, // right Alt
@@ -171,13 +171,13 @@ namespace OIS
 		KC_WAKE			= 0xE3, // System Wake
 		KC_WEBSEARCH	= 0xE5, // Web Search
 		KC_WEBFAVORITES = 0xE6, // Web Favorites
-		KC_WEBREFRESH   = 0xE7, // Web Refresh
+		KC_WEBREFRESH	= 0xE7, // Web Refresh
 		KC_WEBSTOP		= 0xE8, // Web Stop
-		KC_WEBFORWARD   = 0xE9, // Web Forward
+		KC_WEBFORWARD	= 0xE9, // Web Forward
 		KC_WEBBACK		= 0xEA, // Web Back
-		KC_MYCOMPUTER   = 0xEB, // My Computer
+		KC_MYCOMPUTER	= 0xEB, // My Computer
 		KC_MAIL			= 0xEC, // Mail
-		KC_MEDIASELECT  = 0xED, // Media Select
+		KC_MEDIASELECT	= 0xED, // Media Select
 	};
 
 	/**
@@ -187,8 +187,8 @@ namespace OIS
 	{
 	public:
 		KeyEvent(Object* obj, KeyCode kc, unsigned int txt) :
-		 EventArg(obj), key(kc), text(txt) {}
-		virtual ~KeyEvent() {}
+		 EventArg(obj), key(kc), text(txt) { }
+		virtual ~KeyEvent() { }
 
 		//! KeyCode of event
 		KeyCode key;
@@ -203,7 +203,7 @@ namespace OIS
 	class _OISExport KeyListener
 	{
 	public:
-		virtual ~KeyListener() {}
+		virtual ~KeyListener() { }
 		virtual bool keyPressed(const KeyEvent& arg)  = 0;
 		virtual bool keyReleased(const KeyEvent& arg) = 0;
 	};
@@ -215,7 +215,7 @@ namespace OIS
 	class _OISExport Keyboard : public Object
 	{
 	public:
-		virtual ~Keyboard(){};
+		virtual ~Keyboard() {};
 
 		/**
 		@remarks
@@ -284,12 +284,12 @@ namespace OIS
 			Ctrl	 = 0x0000010,
 			LCtrl	 = 0x0000020,
 			RCtrl	 = 0x0000040,
-			Alt	 = 0x0000100,
+			Alt		 = 0x0000100,
 			LAlt	 = 0x0000200,
 			RAlt	 = 0x0000400,
 			CapsLock = 0x0001000,
-			NumLock  = 0x0010000,
-			Win	 = 0x0100000,
+			NumLock	 = 0x0010000,
+			Win		 = 0x0100000,
 			LWin	 = 0x0200000,
 			RWin	 = 0x0400000
 		};
@@ -311,7 +311,7 @@ namespace OIS
 			Check modifier status
 		*/
 		bool isModifierDown(Modifier mod) const;
-		
+
 		/**
 		@remarks
 			Returns the full modifiers status bit field
@@ -328,7 +328,7 @@ namespace OIS
 	protected:
 		Keyboard(const std::string& vendor, bool buffered, int devID, InputManager* creator) :
 		 Object(vendor, OISKeyboard, buffered, devID, creator),
-		 mModifiers(0), mListener(0), mTextMode(Unicode) {}
+		 mModifiers(0), mListener(0), mTextMode(Unicode) { }
 
 		//! Bit field that holds status of Alt, Ctrl, Shift, Win, CapsLock, and NumLock as well as Left and Right variants
 		unsigned int mModifiers;

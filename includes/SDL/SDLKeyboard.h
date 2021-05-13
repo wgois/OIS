@@ -68,7 +68,7 @@ namespace OIS
 		virtual void setTextTranslation(TextTranslationMode mode);
 
 	protected:
-		SDLKeyboard() {}
+		SDLKeyboard() { }
 
 		typedef std::map<SDLKey, KeyCode> KeyMap;
 		KeyMap mKeyMap;

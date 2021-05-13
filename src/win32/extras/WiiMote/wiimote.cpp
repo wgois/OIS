@@ -23,17 +23,17 @@ const unsigned char OUTPUT_ENABLE_IR2 = 0x1a;
 
 //report request types
 const unsigned char REQUEST_CONTINUOUS_REPORTS = 0x4;
-const unsigned char REQUEST_SINGLE_REPORTS	 = 0x0;
+const unsigned char REQUEST_SINGLE_REPORTS	   = 0x0;
 
 //input channels
-const unsigned char INPUT_CHANNEL_BUTTONS_ONLY   = 0x30;
+const unsigned char INPUT_CHANNEL_BUTTONS_ONLY	 = 0x30;
 const unsigned char INPUT_CHANNEL_BUTTONS_MOTION = 0x31;
-const unsigned char INPUT_CHANNEL_WRITE_CONFIRM  = 0x22;
+const unsigned char INPUT_CHANNEL_WRITE_CONFIRM	 = 0x22;
 const unsigned char INPUT_CHANNEL_EXPANSION_PORT = 0x20;
 
 const unsigned char INPUT_CHANNEL_MOTION_IR		  = 0x33;
 const unsigned char INPUT_CHANNEL_MOTION_CHUCK_IR = 0x37;
-const unsigned char INPUT_CHANNEL_MOTION_CHUCK	= 0x35;
+const unsigned char INPUT_CHANNEL_MOTION_CHUCK	  = 0x35;
 
 //the ID values for a wiimote
 const unsigned short mVendorID = 0x057E;
@@ -60,9 +60,9 @@ const unsigned long IR_SENS_ADDR_2 = 0x04b0001a;
 const unsigned char IR_SENS_MIDRANGE_PART1[] = { 0x02, 0x00, 0x00, 0x71, 0x01, 0x00, 0xaa, 0x00, 0x64 };
 const unsigned char IR_SENS_MIDRANGE_PART2[] = { 0x63, 0x03 };
 
-const unsigned char IR_MODE_OFF  = 0;
-const unsigned char IR_MODE_STD  = 1;
-const unsigned char IR_MODE_EXP  = 3;
+const unsigned char IR_MODE_OFF	 = 0;
+const unsigned char IR_MODE_STD	 = 1;
+const unsigned char IR_MODE_EXP	 = 3;
 const unsigned char IR_MODE_FULL = 5;
 
 cWiiMote::cWiiMote()
@@ -121,7 +121,7 @@ bool cWiiMote::SendReportMode()
 			channel = INPUT_CHANNEL_BUTTONS_MOTION;
 			break;
 		case REPORT_MODE_EVENT_BUTTONS:
-			channel	= INPUT_CHANNEL_BUTTONS_ONLY;
+			channel	   = INPUT_CHANNEL_BUTTONS_ONLY;
 			continuous = false;
 			break;
 		default:
@@ -206,7 +206,7 @@ bool cWiiMote::UpdateOutput()
 
 bool cWiiMote::HeartBeat(int timeout)
 {
-	bool retval	= true;
+	bool retval	   = true;
 	int bytes_read = 0;
 
 	//most of these reports aren't implemented yet. I don't have a sensor bar or a nunchuck :)
@@ -311,12 +311,12 @@ void cWiiMote::ParseButtonReport(const unsigned char* data)
 	mLastButtonStatus.mB	 = (data[1] & 0x04) != 0;
 	mLastButtonStatus.m1	 = (data[1] & 0x02) != 0;
 	mLastButtonStatus.m2	 = (data[1] & 0x01) != 0;
-	mLastButtonStatus.mPlus  = (data[0] & 0x10) != 0;
+	mLastButtonStatus.mPlus	 = (data[0] & 0x10) != 0;
 	mLastButtonStatus.mMinus = (data[1] & 0x10) != 0;
-	mLastButtonStatus.mHome  = (data[1] & 0x80) != 0;
-	mLastButtonStatus.mUp	= (data[0] & 0x08) != 0;
-	mLastButtonStatus.mDown  = (data[0] & 0x04) != 0;
-	mLastButtonStatus.mLeft  = (data[0] & 0x01) != 0;
+	mLastButtonStatus.mHome	 = (data[1] & 0x80) != 0;
+	mLastButtonStatus.mUp	 = (data[0] & 0x08) != 0;
+	mLastButtonStatus.mDown	 = (data[0] & 0x04) != 0;
+	mLastButtonStatus.mLeft	 = (data[0] & 0x01) != 0;
 	mLastButtonStatus.mRight = (data[0] & 0x02) != 0;
 }
 
@@ -487,9 +487,9 @@ bool cWiiMote::ReadCalibrationData()
 		mAccelCalibrationData.mXZero = buffer[0];
 		mAccelCalibrationData.mYZero = buffer[1];
 		mAccelCalibrationData.mZZero = buffer[2];
-		mAccelCalibrationData.mXG	= buffer[4];
-		mAccelCalibrationData.mYG	= buffer[5];
-		mAccelCalibrationData.mZG	= buffer[6];
+		mAccelCalibrationData.mXG	 = buffer[4];
+		mAccelCalibrationData.mYG	 = buffer[5];
+		mAccelCalibrationData.mZG	 = buffer[6];
 		retval						 = true;
 	}
 
@@ -595,15 +595,15 @@ bool cWiiMote::InitNunchuck()
 			mNunchuckAccelCalibrationData.mXZero = 0x7E;
 			mNunchuckAccelCalibrationData.mYZero = 0x7A;
 			mNunchuckAccelCalibrationData.mZZero = 0x7D;
-			mNunchuckAccelCalibrationData.mXG	= 0xB0;
-			mNunchuckAccelCalibrationData.mYG	= 0xAF;
-			mNunchuckAccelCalibrationData.mZG	= 0xB1;
-			mNunchuckStickCalibrationData.mXmax  = 0xe5;
-			mNunchuckStickCalibrationData.mXmin  = 0x21;
-			mNunchuckStickCalibrationData.mXmid  = 0x7c;
-			mNunchuckStickCalibrationData.mYmax  = 0xe7;
-			mNunchuckStickCalibrationData.mYmin  = 0x23;
-			mNunchuckStickCalibrationData.mYmid  = 0x7a;
+			mNunchuckAccelCalibrationData.mXG	 = 0xB0;
+			mNunchuckAccelCalibrationData.mYG	 = 0xAF;
+			mNunchuckAccelCalibrationData.mZG	 = 0xB1;
+			mNunchuckStickCalibrationData.mXmax	 = 0xe5;
+			mNunchuckStickCalibrationData.mXmin	 = 0x21;
+			mNunchuckStickCalibrationData.mXmid	 = 0x7c;
+			mNunchuckStickCalibrationData.mYmax	 = 0xe7;
+			mNunchuckStickCalibrationData.mYmin	 = 0x23;
+			mNunchuckStickCalibrationData.mYmid	 = 0x7a;
 			retval								 = true;
 		}
 	}
@@ -699,12 +699,12 @@ bool cWiiMote::DisableIR()
 
 void cWiiMote::ParseIRReport(const unsigned char* data)
 {
-	mLastIRReport.mP1X	= data[0] << 2 | (data[2] & 0x30) >> 4;
-	mLastIRReport.mP1Y	= data[1] << 2 | (data[2] & 0xc0) >> 6;
+	mLastIRReport.mP1X	  = data[0] << 2 | (data[2] & 0x30) >> 4;
+	mLastIRReport.mP1Y	  = data[1] << 2 | (data[2] & 0xc0) >> 6;
 	mLastIRReport.mP1Size = data[2] & 0xf;
 
-	mLastIRReport.mP2X	= data[3] << 2 | (data[5] & 0x30) >> 4;
-	mLastIRReport.mP2Y	= data[4] << 2 | (data[5] & 0xc0) >> 6;
+	mLastIRReport.mP2X	  = data[3] << 2 | (data[5] & 0x30) >> 4;
+	mLastIRReport.mP2Y	  = data[4] << 2 | (data[5] & 0xc0) >> 6;
 	mLastIRReport.mP2Size = data[5] & 0xf;
 
 	mLastIRReport.mP1Found = !(data[0] == 0xff && data[1] == 0xff && data[2] == 0xff);
@@ -716,8 +716,8 @@ bool cWiiMote::GetIRP1(float& x, float& y) const
 	bool retval = false;
 	if(mIRRunning && mLastIRReport.mP1Found)
 	{
-		x	  = mLastIRReport.mP1X / 1024.f;
-		y	  = mLastIRReport.mP1Y / 1024.f;
+		x	   = mLastIRReport.mP1X / 1024.f;
+		y	   = mLastIRReport.mP1Y / 1024.f;
 		retval = true;
 	}
 	return retval;
@@ -728,8 +728,8 @@ bool cWiiMote::GetIRP2(float& x, float& y) const
 	bool retval = false;
 	if(mIRRunning && mLastIRReport.mP2Found)
 	{
-		x	  = mLastIRReport.mP2X / 1024.f;
-		y	  = mLastIRReport.mP2Y / 1024.f;
+		x	   = mLastIRReport.mP2X / 1024.f;
+		y	   = mLastIRReport.mP2Y / 1024.f;
 		retval = true;
 	}
 	return retval;

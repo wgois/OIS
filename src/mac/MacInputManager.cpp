@@ -180,20 +180,17 @@ Object* MacInputManager::createObject(InputManager* creator, Type iType, bool bu
 
 	switch(iType)
 	{
-		case OISKeyboard:
-		{
+		case OISKeyboard: {
 			if(keyboardUsed == false)
 				obj = new MacKeyboard(this, bufferMode, mUseRepeat);
 			break;
 		}
-		case OISMouse:
-		{
+		case OISMouse: {
 			if(mouseUsed == false)
 				obj = new MacMouse(this, bufferMode);
 			break;
 		}
-		default:
-		{
+		default: {
 			obj = mHIDManager->createObject(creator, iType, bufferMode, vendor);
 			break;
 		}

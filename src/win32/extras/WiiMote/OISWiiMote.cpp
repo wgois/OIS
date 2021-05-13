@@ -126,9 +126,9 @@ void WiiMote::_threadUpdate()
 	_doButtonCheck(bState.m2, 1, newEvent.pushedButtons, newEvent.releasedButtons);		//2
 	_doButtonCheck(bState.mA, 2, newEvent.pushedButtons, newEvent.releasedButtons);		//A
 	_doButtonCheck(bState.mB, 3, newEvent.pushedButtons, newEvent.releasedButtons);		//B
-	_doButtonCheck(bState.mPlus, 4, newEvent.pushedButtons, newEvent.releasedButtons);  //+
+	_doButtonCheck(bState.mPlus, 4, newEvent.pushedButtons, newEvent.releasedButtons);	//+
 	_doButtonCheck(bState.mMinus, 5, newEvent.pushedButtons, newEvent.releasedButtons); //-
-	_doButtonCheck(bState.mHome, 6, newEvent.pushedButtons, newEvent.releasedButtons);  //Home
+	_doButtonCheck(bState.mHome, 6, newEvent.pushedButtons, newEvent.releasedButtons);	//Home
 
 	//Check POV
 	newEvent.povChanged = _doPOVCheck(bState, newEvent.povDirection);

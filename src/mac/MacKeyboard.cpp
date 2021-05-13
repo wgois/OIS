@@ -37,10 +37,10 @@ following restrictions:
 #include <list>
 #include <string>
 
-const EventTypeSpec DownSpec[] = { { kEventClassKeyboard, kEventRawKeyDown },	 //non - repeats
+const EventTypeSpec DownSpec[] = { { kEventClassKeyboard, kEventRawKeyDown },	  //non - repeats
 								   { kEventClassKeyboard, kEventRawKeyRepeat } }; //repeats
-const EventTypeSpec UpSpec	 = { kEventClassKeyboard, kEventRawKeyUp },
-					ModSpec	= { kEventClassKeyboard, kEventRawKeyModifiersChanged };
+const EventTypeSpec UpSpec	   = { kEventClassKeyboard, kEventRawKeyUp },
+					ModSpec	   = { kEventClassKeyboard, kEventRawKeyModifiersChanged };
 
 const EventTypeSpec AllSpecs[] = { { kEventClassKeyboard, kEventRawKeyDown },
 								   { kEventClassKeyboard, kEventRawKeyRepeat },
@@ -54,8 +54,8 @@ MacKeyboard::MacKeyboard(InputManager* creator, bool buffered, bool repeat) :
  Keyboard(creator->inputSystemName(), buffered, 0, creator)
 {
 	keyDownEventRef = NULL;
-	keyUpEventRef   = NULL;
-	keyModEventRef  = NULL;
+	keyUpEventRef	= NULL;
+	keyModEventRef	= NULL;
 
 	useRepeat = repeat;
 
@@ -99,7 +99,7 @@ void MacKeyboard::_initialize()
 	EventTargetRef event = ((MacInputManager*)mCreator)->_getEventTarget();
 
 	memset(&KeyBuffer, 0, 256);
-	mModifiers  = 0;
+	mModifiers	= 0;
 	prevModMask = 0;
 
 	// just in case this gets called after the first time.. better safe
@@ -113,8 +113,8 @@ void MacKeyboard::_initialize()
 		RemoveEventHandler(keyModEventRef);
 
 	keyDownEventRef = NULL;
-	keyUpEventRef   = NULL;
-	keyModEventRef  = NULL;
+	keyUpEventRef	= NULL;
+	keyModEventRef	= NULL;
 
 	OSStatus status;
 	// send both elements of downspec array... second index is for repeat events
@@ -274,7 +274,7 @@ void MacKeyboard::_modChangeCallback(EventRef theEvent)
 	// find the changed bit
 	UInt32 change		  = prevModMask ^ mods;
 	MacEventType newstate = ((change & prevModMask) > 0) ? MAC_KEYUP : MAC_KEYDOWN;
-	unsigned int time	 = (int)GetEventTime(theEvent);
+	unsigned int time	  = (int)GetEventTime(theEvent);
 
 	//cout << "preMask: " << hex << prevModMask << endl;
 	//cout << "ModMask: " << hex << mods << endl;

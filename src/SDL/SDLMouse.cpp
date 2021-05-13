@@ -35,7 +35,7 @@ SDLMouse::SDLMouse(bool buffered) :
  mGrabbed(false), mRegainFocus(false)
 {
 	mBuffered = buffered;
-	mType	 = OISMouse;
+	mType	  = OISMouse;
 	listener  = 0;
 }
 
@@ -79,8 +79,7 @@ void SDLMouse::capture()
 		switch(events[i].type)
 		{
 			case SDL_MOUSEMOTION: mouseXYMoved = true; break;
-			case SDL_MOUSEBUTTONDOWN:
-			{
+			case SDL_MOUSEBUTTONDOWN: {
 				mRegainFocus  = true;
 				int sdlButton = events[i].button.button;
 				if(sdlButton <= SDL_BUTTON_RIGHT)
@@ -100,8 +99,7 @@ void SDLMouse::capture()
 				}
 				break;
 			}
-			case SDL_MOUSEBUTTONUP:
-			{
+			case SDL_MOUSEBUTTONUP: {
 				int sdlButton = events[i].button.button;
 				if(sdlButton <= SDL_BUTTON_RIGHT)
 				{ //Left, Right, or Middle

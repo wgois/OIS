@@ -35,9 +35,9 @@ using namespace OIS;
 Win32Keyboard::Win32Keyboard(InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings) :
  Keyboard(creator->inputSystemName(), buffered, 0, creator)
 {
-	mKeyboard	= nullptr;
+	mKeyboard	 = nullptr;
 	mDirectInput = pDI;
-	coopSetting  = coopSettings;
+	coopSetting	 = coopSettings;
 
 	//Clear our keyboard state buffer
 	memset(&KeyBuffer, 0, 256);
@@ -49,7 +49,7 @@ Win32Keyboard::Win32Keyboard(InputManager* creator, IDirectInput8* pDI, bool buf
 void Win32Keyboard::_initialize()
 {
 	mModifiers = 0;
-	deadKey	= '\0';
+	deadKey	   = '\0';
 
 	if(FAILED(mDirectInput->CreateDevice(GUID_SysKeyboard, &mKeyboard, NULL)))
 		OIS_EXCEPT(E_General, "Win32Keyboard::Win32Keyboard >> Could not init device!");
@@ -140,47 +140,51 @@ void Win32Keyboard::_readBuffered()
 		if(diBuff[i].dwData & 0x80)
 		{
 			//Turn on modifier
-			if(kc == KC_LCONTROL || kc == KC_RCONTROL) {
+			if(kc == KC_LCONTROL || kc == KC_RCONTROL)
+			{
 				mModifiers |= Ctrl;
-				if (kc == KC_LCONTROL)
+				if(kc == KC_LCONTROL)
 					mModifiers |= LCtrl;
-				else if (kc == KC_RCONTROL)
+				else if(kc == KC_RCONTROL)
 					mModifiers |= RCtrl;
 			}
-			else if(kc == KC_LSHIFT || kc == KC_RSHIFT) {
+			else if(kc == KC_LSHIFT || kc == KC_RSHIFT)
+			{
 				mModifiers |= Shift;
-				if (kc == KC_LSHIFT)
+				if(kc == KC_LSHIFT)
 					mModifiers |= LShift;
-				else if (kc == KC_RSHIFT)
+				else if(kc == KC_RSHIFT)
 					mModifiers |= RShift;
 			}
-			else if(kc == KC_LMENU || kc == KC_RMENU) {
+			else if(kc == KC_LMENU || kc == KC_RMENU)
+			{
 				mModifiers |= Alt;
-				if (kc == KC_LMENU)
+				if(kc == KC_LMENU)
 					mModifiers |= LAlt;
-				else if (kc == KC_RMENU)
+				else if(kc == KC_RMENU)
 					mModifiers |= RAlt;
 			}
-			else if(kc == KC_LWIN || kc == KC_RWIN) {
+			else if(kc == KC_LWIN || kc == KC_RWIN)
+			{
 				mModifiers |= Win;
-				if (kc == KC_LWIN)
+				if(kc == KC_LWIN)
 					mModifiers |= LWin;
-				else if (kc == KC_RWIN)
+				else if(kc == KC_RWIN)
 					mModifiers |= RWin;
 			}
 
 			//These ones are toggled when
-			else if (kc == KC_NUMLOCK)
+			else if(kc == KC_NUMLOCK)
 			{
-				if (mModifiers & NumLock)
+				if(mModifiers & NumLock)
 					mModifiers &= ~NumLock;
 				else
 					mModifiers |= NumLock;
 			}
 
-			else if (kc == KC_CAPITAL)
+			else if(kc == KC_CAPITAL)
 			{
-				if (mModifiers & CapsLock)
+				if(mModifiers & CapsLock)
 					mModifiers &= ~CapsLock;
 				else
 					mModifiers |= CapsLock;
@@ -192,40 +196,44 @@ void Win32Keyboard::_readBuffered()
 		else
 		{
 			//Turn off modifier
-			if(kc == KC_LCONTROL || kc == KC_RCONTROL) {
-				if (kc == KC_LCONTROL)
+			if(kc == KC_LCONTROL || kc == KC_RCONTROL)
+			{
+				if(kc == KC_LCONTROL)
 					mModifiers &= ~LCtrl;
-				else if (kc == KC_RCONTROL)
+				else if(kc == KC_RCONTROL)
 					mModifiers &= ~RCtrl;
 				//Only disable combined modifier if both L/R are disabled
-				if (!(mModifiers & LCtrl) && !(mModifiers & RCtrl))
+				if(!(mModifiers & LCtrl) && !(mModifiers & RCtrl))
 					mModifiers &= ~Ctrl;
 			}
-			else if(kc == KC_LSHIFT || kc == KC_RSHIFT) {
-				if (kc == KC_LSHIFT)
+			else if(kc == KC_LSHIFT || kc == KC_RSHIFT)
+			{
+				if(kc == KC_LSHIFT)
 					mModifiers &= ~LShift;
-				else if (kc == KC_RSHIFT)
+				else if(kc == KC_RSHIFT)
 					mModifiers &= ~RShift;
 				//Only disable combined modifier if both L/R are disabled
-				if (!(mModifiers & LShift) && !(mModifiers & RShift))
+				if(!(mModifiers & LShift) && !(mModifiers & RShift))
 					mModifiers &= ~Shift;
 			}
-			else if(kc == KC_LMENU || kc == KC_RMENU) {
-				if (kc == KC_LMENU)
+			else if(kc == KC_LMENU || kc == KC_RMENU)
+			{
+				if(kc == KC_LMENU)
 					mModifiers &= ~LAlt;
-				else if (kc == KC_RMENU)
+				else if(kc == KC_RMENU)
 					mModifiers &= ~RAlt;
 				//Only disable combined modifier if both L/R are disabled
-				if (!(mModifiers & LAlt) && !(mModifiers & RAlt))
+				if(!(mModifiers & LAlt) && !(mModifiers & RAlt))
 					mModifiers &= ~Alt;
 			}
-			else if(kc == KC_LWIN || kc == KC_RWIN) {
-				if (kc == KC_LWIN)
+			else if(kc == KC_LWIN || kc == KC_RWIN)
+			{
+				if(kc == KC_LWIN)
 					mModifiers &= ~LWin;
-				else if (kc == KC_RWIN)
+				else if(kc == KC_RWIN)
 					mModifiers &= ~RWin;
 				//Only disable combined modifier if both L/R are disabled
-				if (!(mModifiers & LWin) && !(mModifiers & RWin))
+				if(!(mModifiers & LWin) && !(mModifiers & RWin))
 					mModifiers &= ~Win;
 			}
 
@@ -332,7 +340,7 @@ int Win32Keyboard::_translateText(KeyCode kc)
 		return 0;
 
 	WCHAR buff[3] = { 0 };
-	int ascii	 = ToUnicodeEx(vk, kc, keyState, buff, 3, 0, layout);
+	int ascii	  = ToUnicodeEx(vk, kc, keyState, buff, 3, 0, layout);
 
 	if(ascii == 1 && deadKey != '\0')
 	{

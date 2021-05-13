@@ -40,7 +40,7 @@ namespace OIS
 		/**
 			@remarks Virtual Destructor
 		*/
-		virtual ~FactoryCreator(){};
+		virtual ~FactoryCreator() {};
 
 		/**
 			@remarks Return a list of all unused devices the factory maintains

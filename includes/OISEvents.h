@@ -36,8 +36,8 @@ namespace OIS
 	{
 	public:
 		explicit EventArg(Object* obj) :
-		 device(obj) {}
-		virtual ~EventArg() {}
+		 device(obj) { }
+		virtual ~EventArg() { }
 
 		//! Pointer to the Input Device
 		const Object* device;

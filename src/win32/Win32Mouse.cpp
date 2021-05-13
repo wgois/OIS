@@ -36,7 +36,7 @@ Win32Mouse::Win32Mouse(InputManager* creator, IDirectInput8* pDI, bool buffered,
 {
 	mMouse		 = nullptr;
 	mDirectInput = pDI;
-	coopSetting  = coopSettings;
+	coopSetting	 = coopSettings;
 	mHwnd		 = nullptr;
 
 	static_cast<Win32InputManager*>(mCreator)->_setMouseUsed(true);

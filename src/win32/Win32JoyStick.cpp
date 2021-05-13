@@ -66,14 +66,14 @@ using namespace OIS;
 
 //--------------------------------------------------------------------------------------------------//
 Win32JoyStick::Win32JoyStick(InputManager* creator, IDirectInput8* pDI, bool buffered, DWORD coopSettings, const JoyStickInfo& info) :
-	JoyStick(info.vendor, buffered, info.devId, creator),
-	mDirectInput(pDI),
-	mJoyStick(nullptr),
-	mDIJoyCaps(),
-	coopSetting(coopSettings),
-	mJoyInfo(info),
-	mFfDevice(nullptr),
-	_AxisNumber(0)
+ JoyStick(info.vendor, buffered, info.devId, creator),
+ mDirectInput(pDI),
+ mJoyStick(nullptr),
+ mDIJoyCaps(),
+ coopSetting(coopSettings),
+ mJoyInfo(info),
+ mFfDevice(nullptr),
+ _AxisNumber(0)
 {
 }
 
@@ -285,7 +285,7 @@ void Win32JoyStick::capture()
 			return;
 	}
 
-	bool axisMoved[24]  = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+	bool axisMoved[24]	= { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 	bool sliderMoved[4] = { false, false, false, false };
 
 	//Loop through all the events
@@ -360,18 +360,18 @@ void Win32JoyStick::capture()
 
 					if(axis >= 0 && axis < (int)mState.mAxes.size())
 					{
-						if (!axisMoved[axis])
+						if(!axisMoved[axis])
 							mState.mAxes[axis].rel = 0;
 						mState.mAxes[axis].rel += (int)diBuff[i].dwData - mState.mAxes[axis].abs;
 						mState.mAxes[axis].absOnly = false;
-						mState.mAxes[axis].abs = diBuff[i].dwData;
-						axisMoved[axis]		   = true;
+						mState.mAxes[axis].abs	   = diBuff[i].dwData;
+						axisMoved[axis]			   = true;
 					}
 				}
 
 				break;
 		} //end case
-	}	 //end for
+	}	  //end for
 
 	//Check to see if any of the axes values have changed.. if so send events
 	if(mBuffered && mListener && entries > 0)
@@ -574,8 +574,8 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList& joys)
 {
 	IWbemLocator* pIWbemLocator		   = nullptr;
 	IEnumWbemClassObject* pEnumDevices = nullptr;
-	IWbemClassObject* pDevices[20]	 = { nullptr };
-	IWbemServices* pIWbemServices	  = nullptr;
+	IWbemClassObject* pDevices[20]	   = { nullptr };
+	IWbemServices* pIWbemServices	   = nullptr;
 	BSTR bstrNamespace				   = nullptr;
 	BSTR bstrDeviceID				   = nullptr;
 	BSTR bstrClassName				   = nullptr;
@@ -658,7 +658,7 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList& joys)
 					{
 						if(!i->isXInput && dwVidPid == i->productGuid.Data1)
 						{
-							i->isXInput  = true;
+							i->isXInput	 = true;
 							i->xInputDev = xDevice;
 							++xDevice;
 						}

@@ -35,7 +35,7 @@ namespace OIS
 	class _OISExport Object
 	{
 	public:
-		virtual ~Object() {}
+		virtual ~Object() { }
 
 		/**	@remarks Get the type of device	*/
 		Type type() const { return mType; }
@@ -76,7 +76,7 @@ namespace OIS
 		 mType(iType),
 		 mBuffered(buffered),
 		 mDevID(devID),
-		 mCreator(creator) {}
+		 mCreator(creator) { }
 
 		//! Vendor name if applicable/known
 		std::string mVendor;

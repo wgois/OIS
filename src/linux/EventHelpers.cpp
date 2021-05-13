@@ -196,8 +196,8 @@ bool EventUtils::isJoyStick(int deviceID, JoyStickInfo& js)
 	if(joyButtonFound)
 	{
 		js.joyFileD = deviceID;
-		js.vendor   = getName(deviceID);
-		js.buttons  = buttons;
+		js.vendor	= getName(deviceID);
+		js.buttons	= buttons;
 		js.axes		= info.relAxes.size() + info.absAxes.size();
 		js.hats		= info.hats.size();
 #ifdef OIS_LINUX_JOY_DEBUG
@@ -290,30 +290,30 @@ void EventUtils::enumerateForceFeedback(int deviceID, LinuxForceFeedback** ff)
 	map<int, Effect::EType> typeMap;
 	typeMap[FF_CONSTANT] = Effect::Constant;
 	typeMap[FF_RAMP]	 = Effect::Ramp;
-	typeMap[FF_SPRING]   = Effect::Spring;
+	typeMap[FF_SPRING]	 = Effect::Spring;
 	typeMap[FF_FRICTION] = Effect::Friction;
-	typeMap[FF_SQUARE]   = Effect::Square;
+	typeMap[FF_SQUARE]	 = Effect::Square;
 	typeMap[FF_TRIANGLE] = Effect::Triangle;
 	typeMap[FF_SINE]	 = Effect::Sine;
-	typeMap[FF_SAW_UP]   = Effect::SawToothUp;
+	typeMap[FF_SAW_UP]	 = Effect::SawToothUp;
 	typeMap[FF_SAW_DOWN] = Effect::SawToothDown;
-	typeMap[FF_DAMPER]   = Effect::Damper;
-	typeMap[FF_INERTIA]  = Effect::Inertia;
-	typeMap[FF_CUSTOM]   = Effect::Custom;
+	typeMap[FF_DAMPER]	 = Effect::Damper;
+	typeMap[FF_INERTIA]	 = Effect::Inertia;
+	typeMap[FF_CUSTOM]	 = Effect::Custom;
 
 	map<int, Effect::EForce> forceMap;
 	forceMap[FF_CONSTANT] = Effect::ConstantForce;
-	forceMap[FF_RAMP]	 = Effect::RampForce;
-	forceMap[FF_SPRING]   = Effect::ConditionalForce;
+	forceMap[FF_RAMP]	  = Effect::RampForce;
+	forceMap[FF_SPRING]	  = Effect::ConditionalForce;
 	forceMap[FF_FRICTION] = Effect::ConditionalForce;
-	forceMap[FF_SQUARE]   = Effect::PeriodicForce;
+	forceMap[FF_SQUARE]	  = Effect::PeriodicForce;
 	forceMap[FF_TRIANGLE] = Effect::PeriodicForce;
-	forceMap[FF_SINE]	 = Effect::PeriodicForce;
-	forceMap[FF_SAW_UP]   = Effect::PeriodicForce;
+	forceMap[FF_SINE]	  = Effect::PeriodicForce;
+	forceMap[FF_SAW_UP]	  = Effect::PeriodicForce;
 	forceMap[FF_SAW_DOWN] = Effect::PeriodicForce;
-	forceMap[FF_DAMPER]   = Effect::ConditionalForce;
+	forceMap[FF_DAMPER]	  = Effect::ConditionalForce;
 	forceMap[FF_INERTIA]  = Effect::ConditionalForce;
-	forceMap[FF_CUSTOM]   = Effect::CustomForce;
+	forceMap[FF_CUSTOM]	  = Effect::CustomForce;
 
 	//Remove any previously existing memory and create fresh
 	removeForceFeedback(ff);

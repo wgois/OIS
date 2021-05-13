@@ -38,11 +38,11 @@ Win32InputManager::Win32InputManager() :
 	hWnd		 = nullptr;
 	mDirectInput = nullptr;
 
-	kbSettings	= 0;
+	kbSettings	  = 0;
 	mouseSettings = 0;
-	joySettings   = 0;
+	joySettings	  = 0;
 
-	joySticks	= 0;
+	joySticks	 = 0;
 	keyboardUsed = mouseUsed = false;
 
 	//Setup our internal factories
@@ -97,13 +97,13 @@ void Win32InputManager::_parseConfigSettings(ParamList& paramList)
 	//Here we pick up settings such as a device's cooperation mode
 	std::map<std::string, DWORD> temp;
 	temp["DISCL_BACKGROUND"]   = DISCL_BACKGROUND;
-	temp["DISCL_EXCLUSIVE"]	= DISCL_EXCLUSIVE;
+	temp["DISCL_EXCLUSIVE"]	   = DISCL_EXCLUSIVE;
 	temp["DISCL_FOREGROUND"]   = DISCL_FOREGROUND;
 	temp["DISCL_NONEXCLUSIVE"] = DISCL_NONEXCLUSIVE;
-	temp["DISCL_NOWINKEY"]	 = DISCL_NOWINKEY;
+	temp["DISCL_NOWINKEY"]	   = DISCL_NOWINKEY;
 
 	//Check for pairs: ie. ("w32_keyboard","DISCL_NOWINKEY")("w32_keyboard","DISCL_FOREGROUND")
-	ParamList::iterator i = paramList.begin();
+	ParamList::iterator i		= paramList.begin();
 	const ParamList::iterator e = paramList.end();
 	for(; i != e; ++i)
 	{
@@ -148,10 +148,10 @@ BOOL CALLBACK Win32InputManager::_DIEnumDevCallback(LPCDIDEVICEINSTANCE lpddi, L
 	if(GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_JOYSTICK || GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_GAMEPAD || GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_1STPERSON || GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_DRIVING || GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_FLIGHT || GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_SUPPLEMENTAL)
 	{
 		JoyStickInfo jsInfo;
-		jsInfo.isXInput	= false;
+		jsInfo.isXInput	   = false;
 		jsInfo.productGuid = lpddi->guidProduct;
-		jsInfo.deviceID	= lpddi->guidInstance;
-		jsInfo.vendor	  = lpddi->tszInstanceName;
+		jsInfo.deviceID	   = lpddi->guidInstance;
+		jsInfo.vendor	   = lpddi->tszInstanceName;
 		jsInfo.devId	   = _this_->joySticks;
 
 		_this_->joySticks++;
@@ -235,20 +235,17 @@ Object* Win32InputManager::createObject(InputManager* creator, Type iType, bool 
 
 	switch(iType)
 	{
-		case OISKeyboard:
-		{
+		case OISKeyboard: {
 			if(!keyboardUsed)
 				obj = new Win32Keyboard(this, mDirectInput, bufferMode, kbSettings);
 			break;
 		}
-		case OISMouse:
-		{
+		case OISMouse: {
 			if(!mouseUsed)
 				obj = new Win32Mouse(this, mDirectInput, bufferMode, mouseSettings);
 			break;
 		}
-		case OISJoyStick:
-		{
+		case OISJoyStick: {
 			for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
 			{
 				if(vendor.empty() || i->vendor == vendor)

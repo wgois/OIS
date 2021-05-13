@@ -76,7 +76,7 @@ LIRCFactoryCreator::LIRCFactoryCreator() :
 {
 	mWrapped = new BoostWrapper();
 
-	mIP   = (getenv("OIS_LIRC_IP") != 0) ? getenv("OIS_LIRC_IP") : "127.0.0.1";
+	mIP	  = (getenv("OIS_LIRC_IP") != 0) ? getenv("OIS_LIRC_IP") : "127.0.0.1";
 	mPort = (getenv("OIS_LIRC_PORT") != 0) ? getenv("OIS_LIRC_PORT") : "8765";
 
 	try
@@ -266,7 +266,7 @@ void LIRCFactoryCreator::threadUpdate()
 			{
 				boost::asio::read_until(mWrapped->mSocket, buffer, '\n');
 
-				stream >> code;   //64 bit value, ignorable
+				stream >> code;	  //64 bit value, ignorable
 				stream >> repeat; //Repeat rate starting at zero (we ignore, for now)
 				stream >> button; //Button name
 				stream >> remote; //Remote name

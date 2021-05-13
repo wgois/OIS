@@ -38,13 +38,13 @@ namespace OIS
 	{
 	public:
 		Pov() :
-		 Component(OIS_POV), direction(0) {}
+		 Component(OIS_POV), direction(0) { }
 
 		static const int Centered  = 0x00000000;
-		static const int North	 = 0x00000001;
-		static const int South	 = 0x00000010;
-		static const int East	  = 0x00000100;
-		static const int West	  = 0x00001000;
+		static const int North	   = 0x00000001;
+		static const int South	   = 0x00000010;
+		static const int East	   = 0x00000100;
+		static const int West	   = 0x00001000;
 		static const int NorthEast = 0x00000101;
 		static const int SouthEast = 0x00000110;
 		static const int NorthWest = 0x00001001;
@@ -58,7 +58,7 @@ namespace OIS
 	{
 	public:
 		Slider() :
-		 Component(OIS_Slider), abX(0), abY(0){};
+		 Component(OIS_Slider), abX(0), abY(0) {};
 		//! true if pushed, false otherwise
 		int abX, abY;
 	};
@@ -121,8 +121,8 @@ namespace OIS
 	{
 	public:
 		JoyStickEvent(Object* obj, const JoyStickState& st) :
-		 EventArg(obj), state(st) {}
-		virtual ~JoyStickEvent() {}
+		 EventArg(obj), state(st) { }
+		virtual ~JoyStickEvent() { }
 
 		const JoyStickState& state;
 
@@ -142,7 +142,7 @@ namespace OIS
 	class _OISExport JoyStickListener
 	{
 	public:
-		virtual ~JoyStickListener() {}
+		virtual ~JoyStickListener() { }
 		/** @remarks Joystick button down event */
 		virtual bool buttonPressed(const JoyStickEvent& arg, int button) = 0;
 
@@ -185,7 +185,7 @@ namespace OIS
 	class _OISExport JoyStick : public Object
 	{
 	public:
-		virtual ~JoyStick() {}
+		virtual ~JoyStick() { }
 
 		/**
 		@remarks

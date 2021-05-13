@@ -34,7 +34,7 @@ namespace OIS
 {
 	class Win32ForceFeedback : public ForceFeedback
 	{
-		Win32ForceFeedback() {}
+		Win32ForceFeedback() { }
 
 	public:
 		Win32ForceFeedback(IDirectInputDevice8* pDIJoy, const DIDEVCAPS* pDIJoyCaps);

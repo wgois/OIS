@@ -49,7 +49,7 @@ namespace OIS
 
 	private:
 		iPhoneMultiTouchStackEvent(MultiTouchEvent event, iPhoneEventType type) :
-		 Event(event), Type(type) {}
+		 Event(event), Type(type) { }
 
 		iPhoneEventType Type;
 		MultiTouchEvent Event;

@@ -125,7 +125,7 @@ void MacHIDManager::initialize()
 		iterateAndOpenDevices(iterator);
 
 	//Doesn't support multiple usage flags, iterate twice
-	usage	= kHIDUsage_GD_GamePad;
+	usage	 = kHIDUsage_GD_GamePad;
 	iterator = lookUpDevices(usage, page);
 
 	if(iterator)
@@ -140,7 +140,7 @@ io_iterator_t MacHIDManager::lookUpDevices(int usage, int page)
 		OIS_EXCEPT(E_General, "Could not setup HID device search parameters");
 
 	CFNumberRef usageRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &usage);
-	CFNumberRef pageRef  = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &page);
+	CFNumberRef pageRef	 = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &page);
 
 	CFDictionarySetValue(deviceLookupMap, CFSTR(kIOHIDPrimaryUsageKey), usageRef);
 	CFDictionarySetValue(deviceLookupMap, CFSTR(kIOHIDPrimaryUsagePageKey), pageRef);
@@ -407,11 +407,10 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 		{
 			int totalDevs = totalDevices(iType);
 			int freeDevs  = freeDevices(iType);
-			int devID	 = totalDevs - freeDevs;
+			int devID	  = totalDevs - freeDevs;
 			switch(iType)
 			{
-				case OISJoyStick:
-				{
+				case OISJoyStick: {
 					obj			 = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
 					(*it)->inUse = true;
 					return obj;

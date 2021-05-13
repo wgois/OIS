@@ -110,16 +110,16 @@ public:
 		return oss.str();
 	}
 
-	virtual void update(){};
+	virtual void update() {};
 };
 
 class Constant : public Variable
 {
 public:
 	Constant(double dInitValue) :
-	 Variable(dInitValue) {}
+	 Variable(dInitValue) { }
 
-	virtual void setValue(double dValue) {}
+	virtual void setValue(double dValue) { }
 };
 
 class LimitedVariable : public Variable
@@ -131,7 +131,7 @@ protected:
 public:
 	LimitedVariable(double dInitValue, double dMinValue, double dMaxValue) :
 	 Variable(dInitValue), _dMinValue(dMinValue), _dMaxValue(dMaxValue)
-	{}
+	{ }
 
 	virtual void setValue(double dValue)
 	{
@@ -158,7 +158,7 @@ protected:
 
 public:
 	TriangleVariable(double dInitValue, double dDeltaValue, double dMinValue, double dMaxValue) :
-	 LimitedVariable(dInitValue, dMinValue, dMaxValue), _dDeltaValue(dDeltaValue){};
+	 LimitedVariable(dInitValue, dMinValue, dMaxValue), _dDeltaValue(dDeltaValue) {};
 
 	virtual void update()
 	{
@@ -207,7 +207,7 @@ public:
 	VariableEffect(const char* pszDesc, Effect* pEffect, const MapVariables& mapVars, const EffectVariablesApplier pfApplyVars) :
 	 _pszDesc(pszDesc), _pEffect(pEffect),
 	 _mapVariables(mapVars), _pfApplyVariables(pfApplyVars), _bActive(false)
-	{}
+	{ }
 
 	~VariableEffect()
 	{
@@ -459,7 +459,7 @@ void forceVariableApplier(MapVariables& mapVars, Effect* pEffect)
 	ConstantEffect* pConstForce		  = dynamic_cast<ConstantEffect*>(pEffect->getForceEffect());
 	pConstForce->level				  = (int)dForce;
 	pConstForce->envelope.attackLevel = (unsigned short)fabs(dForce * dAttackFactor);
-	pConstForce->envelope.fadeLevel   = (unsigned short)fabs(dForce); // Fade never reached, in fact.
+	pConstForce->envelope.fadeLevel	  = (unsigned short)fabs(dForce); // Fade never reached, in fact.
 }
 
 // Variable "Period" on an OIS::PeriodicEffect
@@ -535,17 +535,17 @@ public:
 		//                           Linux2.6.22.9=Not supported
 		pEffect					  = new Effect(Effect::ConstantForce, Effect::Constant);
 		pEffect->direction		  = Effect::North;
-		pEffect->trigger_button   = 0;
+		pEffect->trigger_button	  = 0;
 		pEffect->trigger_interval = 0;
-		pEffect->replay_length	= Effect::OIS_INFINITE; // Linux/Win32: Same behaviour as 0.
-		pEffect->replay_delay	 = 0;
+		pEffect->replay_length	  = Effect::OIS_INFINITE; // Linux/Win32: Same behaviour as 0.
+		pEffect->replay_delay	  = 0;
 		pEffect->setNumAxes(1);
 		pConstForce						   = dynamic_cast<ConstantEffect*>(pEffect->getForceEffect());
 		pConstForce->level				   = 5000; //-10K to +10k
 		pConstForce->envelope.attackLength = 0;
 		pConstForce->envelope.attackLevel  = (unsigned short)pConstForce->level;
 		pConstForce->envelope.fadeLength   = 0;
-		pConstForce->envelope.fadeLevel	= (unsigned short)pConstForce->level;
+		pConstForce->envelope.fadeLevel	   = (unsigned short)pConstForce->level;
 
 		mapVars.clear();
 		mapVars["Force"]		= new TriangleVariable(0.0,								// F0
@@ -568,17 +568,17 @@ public:
 		//                           Linux2.6.22.9=Not supported.
 		pEffect					  = new Effect(Effect::ConstantForce, Effect::Constant);
 		pEffect->direction		  = Effect::North;
-		pEffect->trigger_button   = 0;
+		pEffect->trigger_button	  = 0;
 		pEffect->trigger_interval = 0;
-		pEffect->replay_length	= Effect::OIS_INFINITE; //(unsigned int)(1000000.0/_nUpdateFreq); // Linux: Does not work.
-		pEffect->replay_delay	 = 0;
+		pEffect->replay_length	  = Effect::OIS_INFINITE; //(unsigned int)(1000000.0/_nUpdateFreq); // Linux: Does not work.
+		pEffect->replay_delay	  = 0;
 		pEffect->setNumAxes(1);
 		pConstForce						   = dynamic_cast<ConstantEffect*>(pEffect->getForceEffect());
 		pConstForce->level				   = 5000; //-10K to +10k
 		pConstForce->envelope.attackLength = (unsigned int)(1000000.0 / _nUpdateFreq / 2);
 		pConstForce->envelope.attackLevel  = (unsigned short)(pConstForce->level * 0.1);
 		pConstForce->envelope.fadeLength   = 0;									 // Never reached, actually.
-		pConstForce->envelope.fadeLevel	= (unsigned short)pConstForce->level; // Idem
+		pConstForce->envelope.fadeLevel	   = (unsigned short)pConstForce->level; // Idem
 
 		mapVars.clear();
 		mapVars["Force"]		= new TriangleVariable(0.0,								// F0
@@ -601,10 +601,10 @@ public:
 		//                           Linux2.6.22.9=Failed.
 		pEffect					  = new Effect(Effect::PeriodicForce, Effect::Triangle);
 		pEffect->direction		  = Effect::North;
-		pEffect->trigger_button   = 0;
+		pEffect->trigger_button	  = 0;
 		pEffect->trigger_interval = 0;
-		pEffect->replay_length	= Effect::OIS_INFINITE;
-		pEffect->replay_delay	 = 0;
+		pEffect->replay_length	  = Effect::OIS_INFINITE;
+		pEffect->replay_delay	  = 0;
 		pEffect->setNumAxes(1);
 		pPeriodForce						= dynamic_cast<PeriodicEffect*>(pEffect->getForceEffect());
 		pPeriodForce->magnitude				= 10000; // 0 to +10k
@@ -612,8 +612,8 @@ public:
 		pPeriodForce->phase					= 0;	 // 0 to 35599
 		pPeriodForce->period				= 10000; // Micro-seconds
 		pPeriodForce->envelope.attackLength = 0;
-		pPeriodForce->envelope.attackLevel  = (unsigned short)pPeriodForce->magnitude;
-		pPeriodForce->envelope.fadeLength   = 0;
+		pPeriodForce->envelope.attackLevel	= (unsigned short)pPeriodForce->magnitude;
+		pPeriodForce->envelope.fadeLength	= 0;
 		pPeriodForce->envelope.fadeLevel	= (unsigned short)pPeriodForce->magnitude;
 
 		mapVars.clear();
@@ -657,7 +657,7 @@ public:
 		for(size_t nEffInd = 0; nEffInd < _vecEffects.size(); nEffInd++)
 		{
 			const Effect::EForce eForce = _vecEffects[nEffInd]->getFFEffect()->force;
-			const Effect::EType eType   = _vecEffects[nEffInd]->getFFEffect()->type;
+			const Effect::EType eType	= _vecEffects[nEffInd]->getFFEffect()->type;
 			if(_pJoystickMgr->getCurrentFFDevice()->supportsEffect(eForce, eType))
 			{
 				_vecPlayableEffectInd.push_back(nEffInd);
@@ -683,8 +683,8 @@ public:
 	}
 
 	enum EWhichEffect { ePrevious = -1,
-						eNone	 = 0,
-						eNext	 = +1 };
+						eNone	  = 0,
+						eNext	  = +1 };
 
 	void selectEffect(EWhichEffect eWhich)
 	{
@@ -799,17 +799,17 @@ protected:
 public:
 	Application(int argc, const char* argv[])
 	{
-		_pInputMgr	= nullptr;
-		_pEventHdlr   = nullptr;
-		_pKeyboard	= nullptr;
+		_pInputMgr	  = nullptr;
+		_pEventHdlr	  = nullptr;
+		_pKeyboard	  = nullptr;
 		_pJoystickMgr = nullptr;
-		_pEffectMgr   = nullptr;
+		_pEffectMgr	  = nullptr;
 
 #if defined OIS_WIN32_PLATFORM
 		_hWnd = nullptr;
 #elif defined OIS_LINUX_PLATFORM
 		_pXDisp = 0;
-		_xWin   = 0;
+		_xWin	= 0;
 #endif
 
 		_bMustStop = false;
@@ -1048,12 +1048,12 @@ public:
 
 EventHandler::EventHandler(Application* pApp) :
  _pApplication(pApp)
-{}
+{ }
 
 void EventHandler::initialize(JoystickManager* pJoystickMgr, EffectManager* pEffectMgr)
 {
 	_pJoystickMgr = pJoystickMgr;
-	_pEffectMgr   = pEffectMgr;
+	_pEffectMgr	  = pEffectMgr;
 }
 
 bool EventHandler::keyPressed(const KeyEvent& arg)

@@ -67,14 +67,14 @@ namespace OIS
 		enum EType {
 			//Type ----- Pairs with force:
 			Unknown = 0,  //UnknownForce
-			Constant,	 //ConstantForce
+			Constant,	  //ConstantForce
 			Ramp,		  //RampForce
 			Square,		  //PeriodicForce
-			Triangle,	 //PeriodicForce
+			Triangle,	  //PeriodicForce
 			Sine,		  //PeriodicForce
-			SawToothUp,   //PeriodicForce
+			SawToothUp,	  //PeriodicForce
 			SawToothDown, //PeriodicForce
-			Friction,	 //ConditionalForce
+			Friction,	  //ConditionalForce
 			Damper,		  //ConditionalForce
 			Inertia,	  //ConditionalForce
 			Spring,		  //ConditionalForce
@@ -170,7 +170,7 @@ namespace OIS
 	class _OISExport ForceEffect
 	{
 	public:
-		virtual ~ForceEffect() {}
+		virtual ~ForceEffect() { }
 	};
 
 	//-----------------------------------------------------------------------------//
@@ -183,7 +183,7 @@ namespace OIS
 	{
 	public:
 		Envelope() :
-		 attackLength(0), attackLevel(0), fadeLength(0), fadeLevel(0) {}
+		 attackLength(0), attackLevel(0), fadeLength(0), fadeLevel(0) { }
 #if defined(OIS_MSVC_COMPILER)
 #pragma warning(push)
 #pragma warning(disable : 4800)
@@ -219,9 +219,9 @@ namespace OIS
 	{
 	public:
 		ConstantEffect() :
-		 level(5000) {}
+		 level(5000) { }
 
-		Envelope envelope;  //Optional envolope
+		Envelope envelope;	//Optional envolope
 		signed short level; //-10K to +10k
 	};
 
@@ -233,11 +233,11 @@ namespace OIS
 	{
 	public:
 		RampEffect() :
-		 startLevel(0), endLevel(0) {}
+		 startLevel(0), endLevel(0) { }
 
 		Envelope envelope;		 //Optional envelope
 		signed short startLevel; //-10K to +10k
-		signed short endLevel;   //-10K to +10k
+		signed short endLevel;	 //-10K to +10k
 	};
 
 	//-----------------------------------------------------------------------------//
@@ -248,7 +248,7 @@ namespace OIS
 	{
 	public:
 		PeriodicEffect() :
-		 magnitude(0), offset(0), phase(0), period(0) {}
+		 magnitude(0), offset(0), phase(0), period(0) { }
 
 		Envelope envelope; //Optional Envelope
 
@@ -267,13 +267,13 @@ namespace OIS
 	public:
 		ConditionalEffect() :
 		 rightCoeff(0), leftCoeff(0), rightSaturation(0), leftSaturation(0),
-		 deadband(0), center(0) {}
+		 deadband(0), center(0) { }
 
 		signed short rightCoeff; //-10k to +10k (Positive Coeff)
-		signed short leftCoeff;  //-10k to +10k (Negative Coeff)
+		signed short leftCoeff;	 //-10k to +10k (Negative Coeff)
 
 		unsigned short rightSaturation; //0 to 10k (Pos Saturation)
-		unsigned short leftSaturation;  //0 to 10k (Neg Saturation)
+		unsigned short leftSaturation;	//0 to 10k (Neg Saturation)
 
 		//Region around center in which the condition is not active, in the range
 		//from 0 through 10,000

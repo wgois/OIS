@@ -50,10 +50,10 @@ namespace OIS
 		void remove(const Effect* effect);
 
 		/** @copydoc ForceFeedback::setMasterGain */
-		void setMasterGain(float level) {}
+		void setMasterGain(float level) { }
 
 		/** @copydoc ForceFeedback::setAutoCenterMode */
-		void setAutoCenterMode(bool auto_on) {}
+		void setAutoCenterMode(bool auto_on) { }
 
 		/** @copydoc ForceFeedback::getFFAxesNumber */
 		short getFFAxesNumber() { return 1; }

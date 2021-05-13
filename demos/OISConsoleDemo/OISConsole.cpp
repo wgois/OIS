@@ -75,9 +75,9 @@ bool appRunning = true; //Global Exit Flag
 
 const char* g_DeviceType[6] = { "OISUnknown", "OISKeyboard", "OISMouse", "OISJoyStick", "OISTablet", "OISOther" };
 
-InputManager* g_InputManager = nullptr;			   //Our Input System
-Keyboard* g_kb				 = nullptr;			   //Keyboard Device
-Mouse* g_m					 = nullptr;			   //Mouse Device
+InputManager* g_InputManager = nullptr;								   //Our Input System
+Keyboard* g_kb				 = nullptr;								   //Keyboard Device
+Mouse* g_m					 = nullptr;								   //Mouse Device
 JoyStick* g_joys[4]			 = { nullptr, nullptr, nullptr, nullptr }; //This demo supports up to 4 controllers
 
 //-- OS Specific Globals --//
@@ -85,7 +85,7 @@ JoyStick* g_joys[4]			 = { nullptr, nullptr, nullptr, nullptr }; //This demo sup
 HWND hWnd = nullptr;
 #elif defined OIS_LINUX_PLATFORM
 Display* xDisp = 0;
-Window xWin	= 0;
+Window xWin	   = 0;
 #elif defined OIS_APPLE_PLATFORM
 WindowRef mWin = 0;
 #endif
@@ -94,8 +94,8 @@ WindowRef mWin = 0;
 class EventHandler : public KeyListener, public MouseListener, public JoyStickListener
 {
 public:
-	EventHandler() {}
-	~EventHandler() {}
+	EventHandler() { }
+	~EventHandler() { }
 	bool keyPressed(const KeyEvent& arg)
 	{
 		std::cout << " KeyPressed {" << std::hex << arg.key << std::dec
@@ -163,7 +163,7 @@ public:
 	bool sliderMoved(const JoyStickEvent& arg, int index)
 	{
 		std::cout << std::endl
-				  << arg.device->vendor() << ". Slider # " << index 
+				  << arg.device->vendor() << ". Slider # " << index
 				  << " X Value: " << arg.state.mSliders[index].abX
 				  << " Y Value: " << arg.state.mSliders[index].abY;
 		return true;
@@ -344,7 +344,7 @@ void doStartup()
 	[NSAutoreleasePool new];
 	[NSApplication sharedApplication];
 	[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-	id menubar	 = [[NSMenu new] autorelease];
+	id menubar	   = [[NSMenu new] autorelease];
 	id appMenuItem = [[NSMenuItem new] autorelease];
 	[menubar addItem:appMenuItem];
 	[NSApp setMainMenu:menubar];

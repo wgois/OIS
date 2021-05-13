@@ -40,14 +40,13 @@ LinuxKeyboard::LinuxKeyboard(InputManager* creator, bool buffered, bool grab) :
  Keyboard(creator->inputSystemName(), buffered, 0, creator), xim(0), ximStyle(0), xic(0)
 {
 	display = 0;
-	window  = 0;
+	window	= 0;
 
 	grabKeyboard = grab;
 	keyFocusLost = false;
 
 	static_cast<LinuxInputManager*>(mCreator)->_setKeyboardUsed(true);
 
-	
 	addKeyConversion(XK_Up, KC_UP);
 	addKeyConversion(XK_Down, KC_DOWN);
 	addKeyConversion(XK_Left, KC_LEFT);
@@ -107,7 +106,7 @@ void LinuxKeyboard::_initialize()
 
 	if(display) XCloseDisplay(display);
 	display = 0;
-	window  = static_cast<LinuxInputManager*>(mCreator)->_getWindow();
+	window	= static_cast<LinuxInputManager*>(mCreator)->_getWindow();
 
 	//Create our local X mListener connection
 	if(!(display = XOpenDisplay(0)))
@@ -115,7 +114,7 @@ void LinuxKeyboard::_initialize()
 
 	// Get modifiers masks
 	capsLockMask = XkbKeysymToModifiers(display, XK_Caps_Lock);
-	numLockMask  = XkbKeysymToModifiers(display, XK_Num_Lock);
+	numLockMask	 = XkbKeysymToModifiers(display, XK_Num_Lock);
 
 	//Configure locale modifiers
 	if(XSetLocaleModifiers("@im=none") == NULL)
@@ -310,7 +309,7 @@ void LinuxKeyboard::_handleKeyPress(XEvent& event)
 		Status status;
 		do
 		{
-			bytes	  = Xutf8LookupString(xic, &e, &buf[0], buf.size() - 1, &keySym, &status);
+			bytes	   = Xutf8LookupString(xic, &e, &buf[0], buf.size() - 1, &keySym, &status);
 			buf[bytes] = '\0';
 
 			if(status == XBufferOverflow)
@@ -319,7 +318,7 @@ void LinuxKeyboard::_handleKeyPress(XEvent& event)
 	}
 	else
 	{
-		bytes	  = XLookupString(&e, &buf[0], buf.size() - 1, &keySym, NULL);
+		bytes	   = XLookupString(&e, &buf[0], buf.size() - 1, &keySym, NULL);
 		buf[bytes] = '\0';
 	}
 

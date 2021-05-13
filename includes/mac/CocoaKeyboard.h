@@ -46,7 +46,7 @@ namespace OIS
 
 	public:
 		Cocoa_KeyStackEvent(KeyEvent event, MacEventType type) :
-		 Event(event), Type(type) {}
+		 Event(event), Type(type) { }
 		const MacEventType type() { return Type; }
 		const KeyEvent event() { return Event; }
 

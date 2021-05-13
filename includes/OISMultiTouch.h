@@ -53,7 +53,7 @@ namespace OIS
 	{
 	public:
 		MultiTouchState() :
-		 width(50), height(50), touchType(MT_None){};
+		 width(50), height(50), touchType(MT_None) {};
 
 		/** Represents the height/width of your display area.. used if touch clipping
 		or touch grabbed in case of X11 - defaults to 50.. Make sure to set this
@@ -91,8 +91,8 @@ namespace OIS
 	{
 	public:
 		MultiTouchEvent(Object* obj, const MultiTouchState& ms) :
-		 EventArg(obj), state(ms) {}
-		virtual ~MultiTouchEvent() {}
+		 EventArg(obj), state(ms) { }
+		virtual ~MultiTouchEvent() { }
 
 		//! The state of the touch - including axes
 		const MultiTouchState& state;
@@ -105,10 +105,10 @@ namespace OIS
 	class _OISExport MultiTouchListener
 	{
 	public:
-		virtual ~MultiTouchListener() {}
+		virtual ~MultiTouchListener() { }
 		virtual bool touchMoved(const MultiTouchEvent& arg)		= 0;
-		virtual bool touchPressed(const MultiTouchEvent& arg)   = 0;
-		virtual bool touchReleased(const MultiTouchEvent& arg)  = 0;
+		virtual bool touchPressed(const MultiTouchEvent& arg)	= 0;
+		virtual bool touchReleased(const MultiTouchEvent& arg)	= 0;
 		virtual bool touchCancelled(const MultiTouchEvent& arg) = 0;
 	};
 
@@ -119,7 +119,7 @@ namespace OIS
 	class _OISExport MultiTouch : public Object
 	{
 	public:
-		virtual ~MultiTouch() {}
+		virtual ~MultiTouch() { }
 
 		/**
 		@remarks
@@ -171,7 +171,7 @@ namespace OIS
 
 	protected:
 		MultiTouch(const std::string& vendor, bool buffered, int devID, InputManager* creator) :
-		 Object(vendor, OISMultiTouch, buffered, devID, creator), mListener(0) {}
+		 Object(vendor, OISMultiTouch, buffered, devID, creator), mListener(0) { }
 
 		//! The state of the touch device, implemented in a vector to store the state from each finger touch
 		std::vector<MultiTouchState> mStates;

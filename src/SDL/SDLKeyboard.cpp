@@ -35,7 +35,7 @@ using namespace OIS;
 SDLKeyboard::SDLKeyboard(bool buffered)
 {
 	mBuffered = buffered;
-	mType	 = OISKeyboard;
+	mType	  = OISKeyboard;
 	listener  = 0;
 
 	//Clear our keyboard state buffer
@@ -168,7 +168,7 @@ void SDLKeyboard::capture()
 
 	for(int i = 0; i < count; ++i)
 	{
-		KeyCode kc	= mKeyMap[events[i].key.keysym.sym];
+		KeyCode kc	  = mKeyMap[events[i].key.keysym.sym];
 		KeyBuffer[kc] = events[i].key.state;
 
 		if(mBuffered && listener)

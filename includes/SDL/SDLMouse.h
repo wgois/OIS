@@ -53,7 +53,7 @@ namespace OIS
 		void _setVisible(bool visible);
 
 	protected:
-		SDLMouse() {}
+		SDLMouse() { }
 
 		bool mGrabbed;
 		bool mRegainFocus;

@@ -123,8 +123,8 @@ void LinuxForceFeedback::setAutoCenterMode(bool enabled)
 	struct input_event event;
 
 	memset(&event, 0, sizeof(event));
-	event.type  = EV_FF;
-	event.code  = FF_AUTOCENTER;
+	event.type	= EV_FF;
+	event.code	= FF_AUTOCENTER;
 	event.value = (__s32)(enabled * 0xFFFFFFFFUL);
 
 #if(OIS_LINUX_JOYFF_DEBUG > 0)
@@ -234,8 +234,8 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect* event,
 	{
 		ffenvelope->attack_length = LinuxDuration(envelope->attackLength);
 		ffenvelope->attack_level  = LinuxPositiveLevel(envelope->attackLevel);
-		ffenvelope->fade_length   = LinuxDuration(envelope->fadeLength);
-		ffenvelope->fade_level	= LinuxPositiveLevel(envelope->fadeLevel);
+		ffenvelope->fade_length	  = LinuxDuration(envelope->fadeLength);
+		ffenvelope->fade_level	  = LinuxPositiveLevel(envelope->fadeLevel);
 	}
 
 #if(OIS_LINUX_JOYFF_DEBUG > 1)
@@ -262,7 +262,7 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect* event,
 #endif
 
 	// TODO trigger_button 0 vs. -1
-	event->trigger.button   = effect->trigger_button; // < 0 ? 0 : effect->trigger_button;
+	event->trigger.button	= effect->trigger_button; // < 0 ? 0 : effect->trigger_button;
 	event->trigger.interval = LinuxDuration(effect->trigger_interval);
 
 #if(OIS_LINUX_JOYFF_DEBUG > 1)
@@ -274,7 +274,7 @@ void LinuxForceFeedback::_setCommonProperties(struct ff_effect* event,
 #endif
 
 	event->replay.length = LinuxDuration(effect->replay_length);
-	event->replay.delay  = LinuxDuration(effect->replay_delay);
+	event->replay.delay	 = LinuxDuration(effect->replay_delay);
 
 #if(OIS_LINUX_JOYFF_DEBUG > 1)
 	cout << "  Replay :" << endl
@@ -320,7 +320,7 @@ void LinuxForceFeedback::_updateRampEffect(const Effect* eff)
 	event.id   = -1;
 
 	event.u.ramp.start_level = LinuxSignedLevel(effect->startLevel);
-	event.u.ramp.end_level   = LinuxSignedLevel(effect->endLevel);
+	event.u.ramp.end_level	 = LinuxSignedLevel(effect->endLevel);
 
 #if(OIS_LINUX_JOYFF_DEBUG > 1)
 	cout << "  StartLevel : " << effect->startLevel
@@ -370,13 +370,13 @@ void LinuxForceFeedback::_updatePeriodicEffect(const Effect* eff)
 			break;
 	}
 
-	event.u.periodic.period	= LinuxDuration(effect->period);
+	event.u.periodic.period	   = LinuxDuration(effect->period);
 	event.u.periodic.magnitude = LinuxPositiveLevel(effect->magnitude);
-	event.u.periodic.offset	= LinuxPositiveLevel(effect->offset);
-	event.u.periodic.phase	 = (__u16)(effect->phase * event.u.periodic.period / 36000.0); // ?????
+	event.u.periodic.offset	   = LinuxPositiveLevel(effect->offset);
+	event.u.periodic.phase	   = (__u16)(effect->phase * event.u.periodic.period / 36000.0); // ?????
 
 	// Note: No support for Custom periodic force effect for the moment
-	event.u.periodic.custom_len  = 0;
+	event.u.periodic.custom_len	 = 0;
 	event.u.periodic.custom_data = 0;
 
 #if(OIS_LINUX_JOYFF_DEBUG > 1)
@@ -428,7 +428,7 @@ void LinuxForceFeedback::_updateConditionalEffect(const Effect* eff)
 	event.u.condition[0].right_coeff	  = LinuxSignedLevel(effect->rightCoeff);
 	event.u.condition[0].left_coeff		  = LinuxSignedLevel(effect->leftCoeff);
 	event.u.condition[0].deadband		  = LinuxPositiveLevel(effect->deadband); // Unit ??
-	event.u.condition[0].center			  = LinuxSignedLevel(effect->center);	 // Unit ?? TODO ?
+	event.u.condition[0].center			  = LinuxSignedLevel(effect->center);	  // Unit ?? TODO ?
 
 	// TODO support for second condition
 	event.u.condition[1] = event.u.condition[0];

@@ -60,7 +60,7 @@ LinuxJoyStick::LinuxJoyStick(InputManager* creator, bool buffered, const JoyStic
 
 	mButtonMap = js.button_map;
 	mAxisMap   = js.axis_map;
-	mRanges	= js.axis_range;
+	mRanges	   = js.axis_range;
 
 	ff_effect = 0;
 }
@@ -226,13 +226,13 @@ JoyStickInfo LinuxJoyStick::_getJoyInfo()
 	JoyStickInfo js;
 
 	js.devId	  = mDevID;
-	js.joyFileD   = mJoyStick;
-	js.vendor	 = mVendor;
+	js.joyFileD	  = mJoyStick;
+	js.vendor	  = mVendor;
 	js.axes		  = (int)mState.mAxes.size();
-	js.buttons	= (int)mState.mButtons.size();
+	js.buttons	  = (int)mState.mButtons.size();
 	js.hats		  = mPOVs;
 	js.button_map = mButtonMap;
-	js.axis_map   = mAxisMap;
+	js.axis_map	  = mAxisMap;
 	js.axis_range = mRanges;
 
 	return js;

@@ -60,12 +60,12 @@ namespace OIS
 	public:
 		//! Creates exception object
 		Exception(OIS_ERROR err, const char* str, int line, const char* file) :
-		 eType(err), eLine(line), eFile(file), eText(str) {}
+		 eType(err), eLine(line), eFile(file), eText(str) { }
 
 		Exception(const Exception& other) :
-		 eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) {}
+		 eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) { }
 
-		~Exception() throw() {}
+		~Exception() throw() { }
 
 		virtual const char* what() const throw();
 

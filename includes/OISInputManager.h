@@ -155,8 +155,8 @@ namespace OIS
 
 		//! All generic devices OIS supports internally (if they are compiled in)
 		enum AddOnFactories {
-			AddOn_All	 = 0, //All Devices
-			AddOn_LIRC	= 1, //PC Linux Infrared Remote Control
+			AddOn_All	  = 0, //All Devices
+			AddOn_LIRC	  = 1, //PC Linux Infrared Remote Control
 			AddOn_WiiMote = 2  //PC WiiMote Support
 		};
 

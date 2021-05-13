@@ -40,9 +40,9 @@ LinuxInputManager::LinuxInputManager() :
 	window = 0;
 
 	//Default settings
-	grabMouse	= true;
+	grabMouse	 = true;
 	grabKeyboard = true;
-	hideMouse	= true;
+	hideMouse	 = true;
 	mGrabs		 = true;
 	keyboardUsed = mouseUsed = false;
 
@@ -172,22 +172,19 @@ Object* LinuxInputManager::createObject(InputManager* creator, Type iType, bool 
 
 	switch(iType)
 	{
-		case OISKeyboard:
-		{
+		case OISKeyboard: {
 			if(window && keyboardUsed == false)
 				obj = new LinuxKeyboard(this, bufferMode, grabKeyboard);
 
 			break;
 		}
-		case OISMouse:
-		{
+		case OISMouse: {
 			if(window && mouseUsed == false)
 				obj = new LinuxMouse(this, bufferMode, grabMouse, hideMouse);
 
 			break;
 		}
-		case OISJoyStick:
-		{
+		case OISJoyStick: {
 			for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
 			{
 				if(vendor == "" || i->vendor == vendor)

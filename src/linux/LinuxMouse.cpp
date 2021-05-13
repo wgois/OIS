@@ -35,8 +35,8 @@ LinuxMouse::LinuxMouse(InputManager* creator, bool buffered, bool grab, bool hid
  Mouse(creator->inputSystemName(), buffered, 0, creator)
 {
 	display = 0;
-	window  = 0;
-	cursor  = 0;
+	window	= 0;
+	cursor	= 0;
 
 	grabMouse = grab;
 	hideMouse = hide;
@@ -49,7 +49,7 @@ void LinuxMouse::_initialize()
 {
 	//Clear old state
 	mState.clear();
-	mMoved  = false;
+	mMoved	= false;
 	mWarped = false;
 
 	//6 is just some random value... hardly ever would anyone have a window smaller than 6
@@ -58,7 +58,7 @@ void LinuxMouse::_initialize()
 
 	if(display) XCloseDisplay(display);
 	display = 0;
-	window  = static_cast<LinuxInputManager*>(mCreator)->_getWindow();
+	window	= static_cast<LinuxInputManager*>(mCreator)->_getWindow();
 
 	//Create our local X mListener connection
 	if(!(display = XOpenDisplay(0)))
@@ -205,7 +205,7 @@ void LinuxMouse::_processXEvents()
 					//Keep mouse in window (fudge factor)
 					if(event.xmotion.x < 100 || event.xmotion.x > mState.width - 100 || event.xmotion.y < 100 || event.xmotion.y > mState.height - 100)
 					{
-						oldXMouseX = mState.width >> 1;  //center x
+						oldXMouseX = mState.width >> 1;	 //center x
 						oldXMouseY = mState.height >> 1; //center y
 						XWarpPointer(display, None, window, 0, 0, 0, 0, oldXMouseX, oldXMouseY);
 						mWarped = true;

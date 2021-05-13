@@ -48,9 +48,9 @@ namespace OIS
 	class Range
 	{
 	public:
-		Range(){};
+		Range() {};
 		Range(int _min, int _max) :
-		 min(_min), max(_max){};
+		 min(_min), max(_max) {};
 		int min, max;
 	};
 
@@ -58,7 +58,7 @@ namespace OIS
 	{
 	public:
 		JoyStickInfo() :
-		 devId(-1), joyFileD(-1), version(0), axes(0), buttons(0), hats(0) {}
+		 devId(-1), joyFileD(-1), version(0), axes(0), buttons(0), hats(0) { }
 		//! Device number (/dev/input/j#) or /dev/input/event#
 		int devId;
 		//! File descriptor
