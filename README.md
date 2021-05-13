@@ -62,7 +62,7 @@ On a 64bit mac, code will use Cocoa to interact with the input system.
 ```
 The zlib/libpng License
 
-Copyright (c) 2018 Arthur Brainville
+Copyright (c) 2018-2021 Arthur Brainville, and GitHub contributors
 Copyright (c) 2015 Andrew Fenn
 Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
 
