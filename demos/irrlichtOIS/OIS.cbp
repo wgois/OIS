@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Irrlicht Pong" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="./Pong" prefix_auto="0" extension_auto="0" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="1" />
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-fpermissive" />
+			<Add directory="/home/netpipe/gamedev/LunaLibs/irrlicht-1.8.4/include" />
+			<Add directory="../../../LunaLibs/OIS/includes" />
+			<Add directory="/usr/include/OISD" />
+			<Add directory="/home/netpipe/Desktop/OIS/includes" />
+		</Compiler>
+		<Linker>
+			<Add library="Irrlicht" />
+			<Add library="GL" />
+			<Add library="Xxf86vm" />
+			<Add library="X11" />
+			<Add library="OIS" />
+			<Add directory="/home/netpipe/gamedev/LunaLibs/irrlicht-1.8.4/lib/Linux" />
+			<Add directory="../../../LunaLibs/OIS/src/.libs" />
+			<Add directory="/usr/lib/OISS" />
+			<Add directory="/home/netpipe/Desktop/OIS" />
+		</Linker>
+		<Unit filename="COIS.cpp" />
+		<Unit filename="COIS.h" />
+		<Unit filename="main.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

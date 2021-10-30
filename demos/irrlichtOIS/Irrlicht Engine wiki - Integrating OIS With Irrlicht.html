@@ -1,0 +1,538 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- monobook/monobook.tmpl
+See PHP for credits and license
+-->
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app103.us.archive.org';v.server_ms=668;archive_analytics.send_pageview({});});</script><script type="text/javascript" src="/_static/js/ait-client-rewrite.js" charset="utf-8"></script>
+<script type="text/javascript">
+WB_wombat_Init("https://web.archive.org/web/", "20140811145332", "www.irrlicht3d.org");
+</script>
+<script type="text/javascript" src="/_static/js/wbhack.js" charset="utf-8"></script>
+<script type="text/javascript">
+__wbhack.init('https://web.archive.org/web');
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css" />
+<!-- End Wayback Rewrite JS Include -->
+
+  <title>Irrlicht Engine wiki - Integrating OIS With Irrlicht</title>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <!--HTMLHeader--><style type="text/css"><!--
+  ul, ol, pre, dl, p { margin-top:0px; margin-bottom:0px; }
+  code.escaped { white-space: nowrap; }
+  .vspace { margin-top:1.33em; }
+  .indent { margin-left:40px; }
+  .outdent { margin-left:40px; text-indent:-40px; }
+  a.createlinktext { text-decoration:none; border-bottom:1px dotted gray; }
+  a.createlink { text-decoration:none; position:relative; top:-0.5em;
+    font-weight:bold; font-size:smaller; border-bottom:none; }
+  img { border:0px; }
+  .editconflict { color:green; 
+  font-style:italic; margin-top:1.33em; margin-bottom:1.33em; }
+
+  table.markup { border:2px dotted #ccf; width:90%; }
+  td.markup1, td.markup2 { padding-left:10px; padding-right:10px; }
+  table.vert td.markup1 { border-bottom:1px solid #ccf; }
+  table.horiz td.markup1 { width:23em; border-right:1px solid #ccf; }
+  table.markup caption { text-align:left; }
+  div.faq p, div.faq pre { margin-left:2em; }
+  div.faq p.question { margin:1em 0 0.75em 0; font-weight:bold; }
+   
+    .frame 
+      { border:1px solid #cccccc; padding:4px; background-color:#f9f9f9; }
+    .lfloat { float:left; margin-right:0.5em; }
+    .rfloat { float:right; margin-left:0.5em; }
+a.varlink { text-decoration:none; }
+
+--></style>  <meta name="robots" content="index,follow"/>
+<link rel="stylesheet" type="text/css" href="https://web.archive.org/web/20140811145332cs_/http://www.irrlicht3d.org/wiki/pub/skins/monobook/monobook.css"/>
+
+  <!-- <link rel='stylesheet' href='http://www.irrlicht3d.org/wiki/pub/skins/monobook/monobook.css' type='text/css'/> -->
+
+<style type="text/css">#header { border-bottom: none; }</style>
+</head>
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<script type="text/javascript" src="/_static/js/timestamp.js" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/graph-calc.js" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/auto-complete.js" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/toolbar.js" charset="utf-8"></script>
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+.wb-autocomplete-suggestions {
+    text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+    position: absolute; display: none; z-index: 2147483647; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+}
+.wb-autocomplete-suggestion { position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333; }
+.wb-autocomplete-suggestion b { font-weight: bold; }
+.wb-autocomplete-suggestion.selected { background: #f0f0f0; }
+</style>
+<div id="wm-ipp-base" lang="en" style="display:none;direction:ltr;">
+<div id="wm-ipp" style="position:fixed;left:0;top:0;right:0;">
+<div id="wm-ipp-inside">
+  <div style="position:relative;">
+    <div id="wm-logo" style="float:left;width:130px;padding-top:10px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/_static/images/toolbar/wayback-toolbar-logo.png" alt="Wayback Machine" width="110" height="39" border="0" /></a>
+    </div>
+    <div class="r" style="float:right;">
+      <div id="wm-btns" style="text-align:right;height:25px;">
+                  <div id="wm-save-snapshot-success">success</div>
+          <div id="wm-save-snapshot-fail">fail</div>
+          <a href="#"
+             onclick="__wm.saveSnapshot('http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht', '20140811145332')"
+             title="Share via My Web Archive"
+             id="wm-save-snapshot-open"
+          >
+            <span class="iconochive-web"></span>
+          </a>
+          <a href="https://archive.org/account/login.php"
+             title="Sign In"
+             id="wm-sign-in"
+          >
+            <span class="iconochive-person"></span>
+          </a>
+          <span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+        	<a href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" onclick="__wm.h(event);return false;" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share">
+          <a href="/web/20140811145332/http://web.archive.org/screenshot/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht"
+             id="wm-screenshot"
+             title="screenshot">
+              <span class="wm-icon-screen-shot"></span>
+          </a>
+	<a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht', '', 'height=400,width=600'); return false;" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a href="#" onclick="window.open('https://twitter.com/intent/tweet?text=https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht&amp;via=internetarchive', '', 'height=400,width=600'); return false;" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+    </div>
+    <table class="c" style="">
+      <tbody>
+	<tr>
+	  <td class="u" colspan="2">
+	    <form target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht" onfocus="this.focus();this.select();" /><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20140811145332" /><input type="submit" value="Go" /></form>
+	  </td>
+	  <td class="n" rowspan="2" style="width:110px;">
+	    <table>
+	      <tbody>
+		<!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+		<tr class="m">
+		  <td class="b" nowrap="nowrap">Jul</td>
+		  <td class="c" id="displayMonthEl" title="You are here: 14:53:32 Aug 11, 2014">AUG</td>
+		  <td class="f" nowrap="nowrap">Sep</td>
+		</tr>
+		<!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+		<tr class="d">
+		  <td class="b" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_prv_off.png" alt="Previous capture" width="14" height="16" border="0" /></td>
+		  <td class="c" id="displayDayEl" style="width:34px;font-size:24px;white-space:nowrap;" title="You are here: 14:53:32 Aug 11, 2014">11</td>
+		  <td class="f" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_nxt_off.png" alt="Next capture" width="14" height="16" border="0" /></td>
+		</tr>
+		<!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+		<tr class="y">
+		  <td class="b" nowrap="nowrap">2013</td>
+		  <td class="c" id="displayYearEl" title="You are here: 14:53:32 Aug 11, 2014">2014</td>
+		  <td class="f" nowrap="nowrap">2015</td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="s">
+	    	    <div id="wm-nav-captures">
+	      	      <a class="t" href="/web/20140811145332*/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht" title="See a list of every capture for this URL">1 capture</a>
+	      <div class="r" title="Timespan for captures of this URL">11 Aug 2014</div>
+	      </div>
+	  </td>
+	  <td class="k">
+	    <a href="" id="wm-graph-anchor">
+	      <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+		<canvas id="wm-sparkline-canvas" width="625" height="27" border="0"></canvas>
+	      </div>
+	    </a>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+    <div style="position:absolute;bottom:0;right:2px;text-align:right;">
+      <a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;"><span id="wm-expand-icon" class="iconochive-down-solid"></span> <span style="font-size:80%">About this capture</span></a>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+            <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">COLLECTED BY</div>
+    <div style="padding:3px;position:relative" id="wm-collected-by-content">
+            <div style="display:inline-block;vertical-align:top;width:50%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/webwidecrawl);"></span>
+		Organization: <a style="color:#33f;" href="https://archive.org/details/webwidecrawl" target="_new"><span class="wm-title">Internet Archive</span></a>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  The Internet Archive discovers and captures web pages through many different web crawls.
+
+At any given time several distinct crawls are running, some for months, and some every day or longer.
+
+View the web archive through the <a href="http://archive.org/web/web.php">Wayback Machine</a>.
+	</div>
+	      </div>
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/wide00011)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/wide00011" target="_new"><span class="wm-title">Wide Crawl started June 2014</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Web wide crawl with initial seedlist and crawler configuration from June 2014.
+	</div>
+	      </div>
+    </div>
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+    <div>
+      <div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+      <div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none"><img src="/_static/images/loading.gif" alt="loading" /></div>
+    </div>
+  </div></div></div></div><div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="https://archive.org/includes/donate.php?as_page=1&transpiled=0&referer=https%3A//web.archive.org/web/20140811145332/http%3A//www.irrlicht3d.org/wiki/index.php%3Fn%3DMain.IntegratingOISWithIrrlicht"
+	    scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><script type="text/javascript">
+__wm.bt(625,27,25,2,"web","http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht","2014-08-11",1996,"/_static/",['css/banner-styles.css','css/iconochive.css']);
+__wm.checkScreenShot("http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht", '20140811145332');
+</script>
+<!-- END WAYBACK TOOLBAR INSERT --><a name="monobook_topofpage"></a>
+  <div id="globalwrapper">
+    <!--PageLeftFmt--><div id="pageleft">
+      <div id="pageleftcontent">
+        <div class="pageleftbody" id="sidebar">
+          <p class="sidehead"> <a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IrrlichtEngineWiki">Irrlicht Engine Wiki</a>
+</p><ul><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IrrlichtManual">Irrlicht Manual</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.Tutorials">Tutorials</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.FAQ">FAQ</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.CodeSnippets">Code Snippets</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.TheIRRextProject">The IRRext Project</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.SceneNodes">SceneNodes</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.OtherAdd-ons">OtherAdd-ons</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.RecentChanges">RecentChanges</a>
+</li></ul><p><br/>
+ <a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Dev.Development">Development</a>
+</p><ul><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Dev.TODOList">TODO List</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Dev.Developers">Developers</a>
+</li><li><a class="createlinktext" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Dev.Design?action=edit">Design</a>
+</li></ul><p><br/>
+ <a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.Wiki">Wiki</a>
+</p><ul><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.Impressum">Impressum</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.Help">Help</a>
+</li><li><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.WikiSandbox">WikiSandbox</a>
+</li></ul><p><br clear="all"/>
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://irrlicht.sourceforge.net/" rel="nofollow">Irrlicht Home Page</a><br clear="all"/>
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://irrlicht.sourceforge.net/phpBB2/" rel="nofollow">Irrlicht Forums</a>
+</p>
+<p class="vspace" style="text-align: right;"> <span style="font-size:83%"><a class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Site.SideBar?action=edit">edit SideBar</a></span>
+</p>
+
+        </div><!-- id='sidebar' -->
+        <div class="pageleftbody" id="sidesearch">
+          <form name="searchform" action="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Site.Search">
+            <input type="hidden" name="pagename" value="Site/Search"/>
+            <a href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Site.Search">Search</a>:<br/>
+            <input class="searchbox" type="text" name="q" value=""/>
+            <input class="searchbutton" type="submit" value="Go"/>
+          </form>
+        </div><!-- id='sidesearch' -->
+		<div class="pageleftad">
+        </div><!-- pageleftad -->
+        
+      </div><!-- id='pageleft_content' -->
+      <div id="pagelogo">
+        <a style="background-image: url(https://web.archive.org/web/20140811145332im_/http://www.irrlicht3d.org/wiki/pub/irrlicht.png);" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php" title="Irrlicht Engine wiki - Integrating OIS With Irrlicht"></a>
+      </div><!-- id='pagelogo' -->
+    </div><!--/PageLeftFmt-->
+    <a name="topcontent"></a>
+    <div id="adcontainer">
+	</div>
+    <div id="content">
+      <!--PageHeaderFmt--><div id="header"></div><!--/PageHeaderFmt-->
+      <!--PageTabsFmt--><div id="tabs">
+      <ul><li class="browse"><p id="active">View</p>
+</li><li class="edit"><a accesskey="e" rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht?action=edit">Edit</a>
+</li><li class="diff"><a accesskey="h" rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht?action=diff">History</a>
+</li><li class="print"><a accesskey="" rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht?action=print">Print</a>
+</li></ul>
+      </div><!--/PageTabsFmt-->
+      <div id="tabpage">
+        <div id="contentbody">
+          <!--PageTitleFmt--><h1 class="titlepage">Integrating OIS With Irrlicht
+</h1><!--/PageTitleFmt-->
+          <div id="rightbody">
+            <!--PageRightFmt--><!--/PageRightFmt-->
+          </div><!-- id='rightbody' -->
+            <!--PageText-->
+<div id="wikitext">
+<p><a class="urllink" href="https://web.archive.org/web/20140811145332/http://www.wreckedgames.com/" rel="nofollow">OIS</a> is a free object oriented input library that is licensed under the zlib/libpng license.  
+</p>
+<p class="vspace">Why would you use OIS in place of Irrlicht's already platform independent input processing? In addition to handling multiple keyboards and mice, OIS also supports <a class="urllink" href="https://web.archive.org/web/20140811145332/http://en.wikipedia.org/wiki/Joystick" rel="nofollow">joysticks</a>, <a class="urllink" href="https://web.archive.org/web/20140811145332/http://en.wikipedia.org/wiki/Game_controller" rel="nofollow">game controllers</a>, and feedback devices (e.g. forcefeedback).
+</p>
+<div class="vspace"></div><h4><ins>Getting OIS</ins></h4>
+<p>OIS is hosted on sourceforge so you may either download the current source code release at:
+</p><div class="indent"><a class="urllink" href="https://web.archive.org/web/20140811145332/http://sourceforge.net/project/showfiles.php?group_id=149835&amp;abmode=1" rel="nofollow">Source Code Release</a>
+</div><p class="vspace">or checkout the source code via CVS:
+</p><div class="indent"><a class="urllink" href="https://web.archive.org/web/20140811145332/http://sourceforge.net/cvs/?group_id=149835" rel="nofollow">CVS Checkout Instructions</a>
+</div><div class="vspace"></div><h4><ins>Building OIS on Windows</ins></h4>
+<p>OIS provides both a Visual Studio solution file and a <span class="wikiword">CodeBlocks</span> (mingw) project for building static libraries on Windows. To build using Visual Studio, open the solution file located in the directory "Win32" off of the OIS installation directory {OIS Install}.
+</p>
+<p class="vspace">The solution file contains both "debug" and "release" build configurations.  Choose the configuration appropriate to your needs.  If you build both configurations, the following static libraries will be generated:
+</p>
+<div class="vspace"></div><ul><li>OIS_static.lib - Release Version
+</li><li>OIS_static_d.lib - Debug Version
+</li></ul><p class="vspace">Both of these libraries will be located in: "{OIS Install}/lib"
+</p>
+<div class="vspace"></div><h4><ins>Building OIS on Linux</ins></h4>
+<p>You should be able to find a package in your distro's package manager. If you can't find it, go and complain. You can also install OIS manually using the well-known procedure:
+</p>
+<div class="vspace"></div><ul><li>./bootstrap
+</li><li>./configure
+</li><li>make &amp;&amp; make install
+</li></ul><p class="vspace">As you may have guessed, this will install libOIS.a and libOIS.so in /usr/local/lib. If you want them in /usr/lib, use --prefix=/usr for ./configure.
+</p>
+<div class="vspace"></div><h4><ins>Application Integration</ins></h4>
+<p>Provided in the links at the bottom of this page is a convenience/reference class (COIS) which wraps OIS initialization, processing, and input event handling.  If you choose to use COIS, integration is simply a matter of creating/using a class which inherits from COIS and overrides the default event handlers:
+</p>
+<div class="vspace"></div><pre class="escaped">
+class MyOIS: public COIS
+{
+public:
+    MyOIS(IrrlichtDevice* idevice, bool showCursor=true,
+        bool enableDebug=true) : COIS(idevice, showCursor, enableDebug) {};
+
+    // override default COIS input event handlers
+    bool keyPressed( const OIS::KeyEvent&amp; arg );
+    bool keyReleased( const OIS::KeyEvent&amp; arg );
+    bool mouseMoved( const OIS::MouseEvent &amp;arg ); 
+    bool mousePressed( const OIS::MouseEvent &amp;arg, OIS::MouseButtonID id );
+    bool mouseReleased( const OIS::MouseEvent &amp;arg, OIS::MouseButtonID id );
+    bool buttonPressed( const OIS::JoyStickEvent &amp;arg, int button );
+    bool buttonReleased( const OIS::JoyStickEvent &amp;arg, int button );
+    bool axisMoved( const OIS::JoyStickEvent &amp;arg, int axis );
+    bool povMoved( const OIS::JoyStickEvent &amp;arg, int pov );
+
+};
+
+MyOIS* mois;
+bool running=true;
+int capNumber=1;
+
+bool MyOIS::keyPressed(const OIS::KeyEvent&amp; arg )
+{
+    //
+    // for default Irrlicht gui event processing
+    //
+    if(COIS::keyPressed(arg))
+        return true;
+
+    switch(arg.key)
+    {
+    case OIS::KC_ESCAPE:
+        running = false;
+        return true;
+
+    case OIS::KC_SYSRQ: /* print screen */
+
+        IImage* image = videoDriver-&gt;createScreenShot();
+        char buf[32];
+
+        sprintf(buf,"cap%.2d.png",capNumber++);
+
+        videoDriver-&gt;writeImageToFile(image,buf);
+
+        image-&gt;drop();
+        break;
+    }
+    return false;
+}
+
+bool MyOIS::keyReleased( const OIS::KeyEvent&amp; arg )...
+bool MyOIS::mouseMoved( const OIS::MouseEvent &amp;arg )...
+bool MyOIS::mousePressed( const OIS::MouseEvent &amp;arg, OIS::MouseButtonID id )...
+bool MyOIS::mouseReleased( const OIS::MouseEvent &amp;arg, OIS::MouseButtonID id )...
+bool MyOIS::buttonPressed( const OIS::JoyStickEvent &amp;arg, int button )...
+bool MyOIS::buttonReleased( const OIS::JoyStickEvent &amp;arg, int button )...
+bool MyOIS::axisMoved( const OIS::JoyStickEvent &amp;arg, int axis )...
+bool MyOIS::povMoved( const OIS::JoyStickEvent &amp;arg, int pov )...
+</pre>
+<p class="vspace">In your initialization code (after Irrlicht's "device" has been created), you'll need to create an instance of your COIS derived class:
+</p>
+<div class="vspace"></div><pre class="escaped">
+
+//
+// in your initialization code
+//
+mois = new MyOIS(device);
+if(mois-&gt;initialize())
+    printf("OIS Initialization Error\n");
+</pre>
+<p class="vspace">And finally, you'll need to include OIS input processing/capturing in your main loop:
+</p>
+<div class="vspace"></div><pre class="escaped">
+
+//
+// include OIS processing in your main loop
+//
+
+while(device-&gt;run() &amp;&amp; running)
+{
+    // capture OIS input
+    mois-&gt;capture();
+
+    videoDriver-&gt;beginScene(true, true, SColor(255,100,101,140));
+
+    sceneManager-&gt;drawAll();
+    gui-&gt;drawAll();
+
+    videoDriver-&gt;endScene();
+ }
+
+</pre>
+<div class="vspace"></div><h4><ins>Integration Notes</ins></h4>
+<p><strong>Irrlicht GUI Event Processing</strong>.  OIS keyboard and mouse events do <strong>NOT</strong> directly translate to Irrlicht keyboard and mouse events.  In other words, an Irrlicht irr:EKEY_CODE::KEY_RIGHT is not the same as OIS::<span class="wikiword">KeyCode</span>::KC_RIGHT. If you directly feed an OIS::<span class="wikiword">KeyCode</span> into Irrlicht's GUI environment, you'll likely receive unexpected results.
+</p>
+<p class="vspace">Fortunately COIS contains code that automatically converts OIS Key/Mouse events to the appropriate Irrlicht event and then optionally injects the converted event into Irrlicht's GUI environment.  In order for this processing to take place, your code must enable GUI processing and then invoke the default COIS event Handler:
+</p>
+<div class="vspace"></div><pre class="escaped">
+// By default GUI event injection is disabled, so enable it somewhere in your code.
+mois-&gt;setGUIEnabled(true);
+
+// In your overridden handler, invoke the default COIS handler.  If it returns
+// "true", Irrlicht's GUI Environment handled the event.
+bool MyOIS::keyPressed(const OIS::KeyEvent&amp; arg )
+{
+    //
+    // for default gui handling
+    //
+    if(COIS::keyPressed(arg))
+        return true;
+
+    // ...
+
+}
+</pre>
+<p><strong>Mouse Events</strong>.  OIS fires pressed/released events for <strong>ALL</strong> mouse buttons.  Currently Irrlicht only contains definitions for LEFT, RIGHT, and MIDDLE mouse buttons.  By default, COIS converts non LEFT, RIGHT, and MIDDLE button events to LEFT button events before injecting the mouse event into the GUI environment.
+</p>
+<p class="vspace"><strong>Buffered Input</strong>.  By default COIS instructs OIS to use buffered input.  This behaviour may be modified by setting the "buffered" parameter to "false" in the COIS constructor.
+</p>
+<p class="vspace"><strong>Linux</strong>.  In order for OIS/COIS to work properly on Linux, The Irrlicht device creation parameter "<strong><span class="wikiword">IgnoreInput</span></strong>" must be set to true.
+</p><pre class="escaped">
+    static IrrlichtDevice* _createDevice()
+    {
+        SIrrlichtCreationParameters cp;
+        cp.DriverType = m_driverType;
+        cp.WindowSize = dimension2d&lt;s32&gt;(WINDOW_SIZE_X,WINDOW_SIZE_Y);
+        cp.Bits = DEVICE_BPP;
+        cp.Fullscreen = false;
+        cp.Vsync = false;
+        cp.Stencilbuffer = false;
+        cp.AntiAlias = false;
+        cp.EventReceiver = 0;
+        cp.WindowId = 0;
+
+    #if defined(_IRR_LINUX_PLATFORM_) &amp;&amp; defined(_IRR_USE_LINUX_DEVICE_)
+        cp.IgnoreInput = true;
+    #endif
+
+        return createDeviceEx(cp);
+    }
+</pre>
+<div class="vspace"></div><h4><ins>Force Feedback</ins></h4>
+<p class="vspace">If you're not familiar with Force Feedback and Effects, MSDN has a little overview on the <a class="urllink" href="https://web.archive.org/web/20140811145332/http://msdn.microsoft.com/en-us/library/bb172346%28VS.85%29.aspx" rel="nofollow">Basic Concepts of Force Feedback</a>.
+</p>
+<p class="vspace">OIS provides an interface (<span class="wikiword">ForceFeedback</span>) for managing force feedback <strong>effects</strong> within your application. The management functions include:
+</p><ul><li>Creating different types of effects.
+</li><li>Playing effects on a selected device.
+</li><li>Stopping effects on a selected device.
+</li></ul><p class="vspace"><strong>Effects.</strong> Effects contain parameters which describe the type of force to be played back on a device.  These parameters include duration, magnitude, direction, period, and envelope.  In OIS, Effects are created and modified via the "Effect" class.  OIS also provides additional convenience classes (<span class="wikiword">ConstantEffect</span>, <span class="wikiword">PeriodicEffect</span>, <span class="wikiword">RampEffect</span>, and <span class="wikiword">ConditionalEffect</span>) for manipulating the appropriate parameters of a particular effect.
+</p>
+<div class="vspace"></div><strong>Sample Code:</strong><pre class="escaped">
+OIS::ForceFeedback* m_ff;  // detected and assigned in your OIS initialization code
+
+//
+// create the effect and set its parameters
+//
+OIS::Effect* m_effect = new OIS::Effect(OIS::Effect::ConstantForce, OIS::Effect::Constant);
+m_effect-&gt;replay_length = 1500 * 1000; // 1.5 seconds - all effects have a duration
+
+OIS::ConstantEffect* ce = (OIS::ConstantEffect*)m_effect-&gt;getForceEffect();
+ce-&gt;level = 5000;  // set the magnitude (-10k -&gt; 10k)
+
+//
+// ...somewhere else in your code... in response to an event (collision, firing, etc.)
+// you may play the previously created effect:
+//
+m_ff-&gt;upload(m_effect);
+
+//
+// if you need to "stop" the effect before the duration expires:
+//
+m_ff-&gt;remove(m_effect);
+</pre>
+<p class="vspace">The sample OIS application (linked below) contains code that creates and plays a "Constant" effect when either the "F" key is pressed or the Joystick/Gamepad button number 7 is pressed.
+</p>
+<div class="vspace"></div><h4><ins>COIS Source Code Links</ins></h4>
+<p>In order to compile COIS.cpp, you will need to use <strong>Irrlicht 1.5</strong> or newer.
+</p>
+<p class="vspace"><strong>COIS.h</strong> 
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://code.google.com/p/tubras/source/browse/trunk/tools/iois/COIS.h" rel="nofollow">View</a> | 
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://tubras.googlecode.com/svn/trunk/tools/iois/COIS.h" rel="nofollow">Download</a>
+</p>
+<p class="vspace"><strong>COIS.cpp</strong> 
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://code.google.com/p/tubras/source/browse/trunk/tools/iois/COIS.cpp" rel="nofollow">View</a> | 
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://tubras.googlecode.com/svn/trunk/tools/iois/COIS.cpp" rel="nofollow">Download</a>
+</p>
+<div class="vspace"></div><h4><ins>Sample Application Source Code Links</ins></h4>
+<p class="vspace"><strong>main.cpp</strong> 
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://code.google.com/p/tubras/source/browse/trunk/tools/iois/main.cpp" rel="nofollow">View</a> | 
+<a class="urllink" href="https://web.archive.org/web/20140811145332/http://tubras.googlecode.com/svn/trunk/tools/iois/main.cpp" rel="nofollow">Download</a>
+</p>
+<p class="vspace" style="text-align: center;"> OIS Example Application Screenshot:
+</p><div style="text-align: center;"> <img src="https://web.archive.org/web/20140811145332im_/http://tubras.googlecode.com/svn/wiki/images/irrlicht/ois1.png" alt="" title=""/></div>
+</div>
+
+            <span style="clear:both;"></span>
+        </div><!-- id='contentbody' -->
+      </div><!-- id='tabpage' -->
+      <!--PageFooterFmt--><div id="footer">
+          <p><span class="lastmod">Page last modified on December 18, 2008, at 03:39 PM</span>
+</p><ul><li> <span class="navbox"> <a rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.IntegratingOISWithIrrlicht#monobook_topofpage">&#9650; Top &#9650;</a></span>
+</li><li> <a rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Site.Search">Search</a>
+</li><li> <a rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Main.RecentChanges">Recent Changes</a>
+</li><li> <a rel="nofollow" class="wikilink" href="https://web.archive.org/web/20140811145332/http://www.irrlicht3d.org/wiki/index.php?n=Site.AllRecentChanges">All Recent Changes</a>
+</li></ul>
+
+      </div><!--/PageFooterFmt-->
+    </div><!-- id='content' -->
+  </div><!-- id='globalwrapper' -->
+  <div id="stopwatch"></div>
+  <!--HTMLFooter-->
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 14:53:32 Aug 11, 2014 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 00:41:36 Jan 25, 2020.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  esindex: 0.012
+  RedisCDXSource: 271.062
+  LoadShardBlock: 205.102 (3)
+  captures_list: 491.808
+  exclusion.robots: 0.156
+  exclusion.robots.policy: 0.145
+  load_resource: 156.687
+  PetaboxLoader3.resolve: 102.717
+  PetaboxLoader3.datanode: 187.862 (4)
+  CDXLines.iter: 12.521 (3)
+-->
