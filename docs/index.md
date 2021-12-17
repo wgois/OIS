@@ -7,9 +7,9 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
-compatiable with many systems and operating systems.
+compatible with many systems and operating systems.
 
- - [Doxygen doumentation](doxygen/html/)
+ - [Doxygen documentation](doxygen/html/)
  - [News](./news)
 
 ### Linux
