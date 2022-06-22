@@ -148,10 +148,13 @@ void Win32JoyStick::_enumerate()
 
 		mState.mButtons.resize(XINPUT_TRANSLATED_BUTTON_COUNT);
 		mState.mAxes.resize(XINPUT_TRANSLATED_AXIS_COUNT);
+
+		//Make dummy force feedback device
+		this->mFfDevice = new Win32ForceFeedback(mJoyInfo.xInputDev);
 	}
 	else
 	{
-		// Get joystick capabilities.
+		//Get joystick capabilities
 		mDIJoyCaps.dwSize = sizeof(DIDEVCAPS);
 		if(FAILED(mJoyStick->GetCapabilities(&mDIJoyCaps)))
 			OIS_EXCEPT(E_General, "Win32JoyStick::_enumerate >> Failed to get capabilities");
