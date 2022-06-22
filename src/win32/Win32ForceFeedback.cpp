@@ -62,6 +62,7 @@ Win32ForceFeedback::Win32ForceFeedback(IDirectInputDevice8* pDIJoy, const DIDEVC
 Win32ForceFeedback::Win32ForceFeedback(unsigned int xInputIndex)
 {
 	mXInputIndex = xInputIndex;
+	mJoyStick	 = nullptr;
 
 	//XInput device contains basically a single axis
 	_addFFAxis();
