@@ -86,7 +86,7 @@ namespace OIS
 
 		//XInput-specific methods
 		bool _isXInput();
-		void _setXInputVibration(unsigned short power);
+		void _setXInputVibration(unsigned short leftPower, unsigned short rightPower);
 		void _updateXInputConstantEffect(const Effect* effect);
 
 		//Sets the common properties to all effects

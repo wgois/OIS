@@ -77,7 +77,7 @@ Win32ForceFeedback::~Win32ForceFeedback()
 	//Just stop the vibration, if device is XInput
 	if(_isXInput())
 	{
-		_setXInputVibration(0);
+		_setXInputVibration(0, 0);
 		return;
 	}
 
@@ -163,7 +163,7 @@ void Win32ForceFeedback::remove(const Effect* eff)
 	//results in stopping vibration right away.
 	if(_isXInput())
 	{
-		_setXInputVibration(0);
+		_setXInputVibration(0, 0);
 		return;
 	}
 
@@ -491,7 +491,7 @@ bool Win32ForceFeedback::_isXInput()
 }
 
 //--------------------------------------------------------------//
-void Win32ForceFeedback::_setXInputVibration(unsigned short power)
+void Win32ForceFeedback::_setXInputVibration(unsigned short leftPower, unsigned short rightPower)
 {
 	XINPUT_STATE state;
 	if(XInputGetState(mXInputIndex, &state) == ERROR_DEVICE_NOT_CONNECTED)
@@ -500,8 +500,8 @@ void Win32ForceFeedback::_setXInputVibration(unsigned short power)
 	XINPUT_VIBRATION vibration;
 	ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
 
-	vibration.wLeftMotorSpeed  = power;
-	vibration.wRightMotorSpeed = power;
+	vibration.wLeftMotorSpeed  = leftPower;
+	vibration.wRightMotorSpeed = rightPower;
 
 	XInputSetState((DWORD)mXInputIndex, &vibration);
 }
@@ -511,8 +511,44 @@ void Win32ForceFeedback::_updateXInputConstantEffect(const Effect* effect)
 {
 	ConstantEffect* eff = static_cast<ConstantEffect*>(effect->getForceEffect());
 
+	// Determine left/right axis power ratio by using effect direction.
+
+	float rightMult = 0.0f;
+	float leftMult	= 0.0f;
+
+	switch (effect->direction)
+	{
+		case Effect::EDirection::North:
+		case Effect::EDirection::South:
+			rightMult = leftMult = 1.0f;
+			break;
+
+		case Effect::EDirection::East:
+			rightMult = 1.0f;
+			break;
+
+		case Effect::EDirection::West:
+			leftMult = 1.0f;
+			break;
+
+		case Effect::EDirection::NorthEast:
+		case Effect::EDirection::SouthEast:
+			leftMult = 0.5f;
+			rightMult = 1.0f;
+			break;
+
+		case Effect::EDirection::NorthWest:
+		case Effect::EDirection::SouthWest:
+			leftMult  = 1.0f;
+			rightMult = 0.5f;
+			break;
+	}
+
 	// Get OIS level range (-10k - 10k) into XInput level range (0 - 65536)
-	_setXInputVibration((unsigned short)abs(eff->level * 6.5536f));
+	auto leftLevel	= (unsigned short)abs(eff->level * 6.5536f * leftMult);
+	auto rightLevel = (unsigned short)abs(eff->level * 6.5536f * rightMult);
+
+	_setXInputVibration(leftLevel, rightLevel);
 }
 
 //--------------------------------------------------------------//
