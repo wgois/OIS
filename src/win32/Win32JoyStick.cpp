@@ -75,6 +75,7 @@ Win32JoyStick::Win32JoyStick(InputManager* creator, IDirectInput8* pDI, bool buf
  mFfDevice(nullptr),
  _AxisNumber(0)
 {
+	memset(&mDIJoyCaps, 0, sizeof(DIDEVCAPS));
 }
 
 //--------------------------------------------------------------------------------------------------//

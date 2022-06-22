@@ -187,7 +187,7 @@ Object* LinuxInputManager::createObject(InputManager* creator, Type iType, bool 
 		case OISJoyStick: {
 			for(JoyStickInfoList::iterator i = unusedJoyStickList.begin(); i != unusedJoyStickList.end(); ++i)
 			{
-				if(vendor == "" || i->vendor == vendor)
+				if(!vendor.length() || i->vendor == vendor)
 				{
 					obj = new LinuxJoyStick(this, bufferMode, *i);
 					unusedJoyStickList.erase(i);
