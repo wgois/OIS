@@ -74,12 +74,14 @@ Win32ForceFeedback::Win32ForceFeedback(unsigned int xInputIndex)
 //--------------------------------------------------------------//
 Win32ForceFeedback::~Win32ForceFeedback()
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	//Just stop the vibration, if device is XInput
 	if(_isXInput())
 	{
 		_setXInputVibration(0, 0);
 		return;
 	}
+#endif
 
 	//Get the effect - if it exists
 	for(EffectList::iterator i = mEffectList.begin(); i != mEffectList.end(); ++i)
@@ -104,9 +106,11 @@ short Win32ForceFeedback::getFFAxesNumber()
 //--------------------------------------------------------------//
 unsigned short Win32ForceFeedback::getFFMemoryLoad()
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	//XInput - unsupported
 	if(_isXInput())
 		return 0;
+#endif
 
 	DIPROPDWORD dipdw; // DIPROPDWORD contains a DIPROPHEADER structure.
 	dipdw.diph.dwSize		= sizeof(DIPROPDWORD);
@@ -130,13 +134,15 @@ unsigned short Win32ForceFeedback::getFFMemoryLoad()
 //--------------------------------------------------------------//
 void Win32ForceFeedback::upload(const Effect* effect)
 {
-	if (_isXInput())
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	if(_isXInput())
 	{
 		//Only constant effect is supported by XInput devices
 		if(effect->force == OIS::Effect::ConstantForce)
 			_updateXInputConstantEffect(effect);
 		return;
 	}
+#endif
 
 	switch(effect->force)
 	{
@@ -159,6 +165,7 @@ void Win32ForceFeedback::modify(const Effect* eff)
 //--------------------------------------------------------------//
 void Win32ForceFeedback::remove(const Effect* eff)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	//Since XInput supports only one effect type, removing any effect
 	//results in stopping vibration right away.
 	if(_isXInput())
@@ -166,6 +173,7 @@ void Win32ForceFeedback::remove(const Effect* eff)
 		_setXInputVibration(0, 0);
 		return;
 	}
+#endif
 
 	//Get the effect - if it exists
 	EffectList::iterator i = mEffectList.find(eff->_handle);
@@ -191,9 +199,11 @@ void Win32ForceFeedback::remove(const Effect* eff)
 //--------------------------------------------------------------//
 void Win32ForceFeedback::setMasterGain(float level)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	//XInput - unsupported
 	if(_isXInput())
 		return;
+#endif
 
 	//Between 0 - 10,000
 	int gain_level = (int)(10000.0f * level);
@@ -226,9 +236,11 @@ void Win32ForceFeedback::setMasterGain(float level)
 //--------------------------------------------------------------//
 void Win32ForceFeedback::setAutoCenterMode(bool auto_on)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	//XInput - unsupported
 	if(_isXInput())
 		return;
+#endif
 
 	DIPROPDWORD DIPropAutoCenter;
 	DIPropAutoCenter.diph.dwSize	   = sizeof(DIPropAutoCenter);
@@ -511,7 +523,7 @@ void Win32ForceFeedback::_updateXInputConstantEffect(const Effect* effect)
 {
 	ConstantEffect* eff = static_cast<ConstantEffect*>(effect->getForceEffect());
 
-	// Determine left/right axis power ratio by using effect direction.
+	// Determine left/right motor power ratio by using effect direction.
 
 	float rightMult = 0.0f;
 	float leftMult	= 0.0f;
