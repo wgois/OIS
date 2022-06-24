@@ -69,6 +69,9 @@ Win32ForceFeedback::Win32ForceFeedback(unsigned int xInputIndex)
 
 	//XInput device supports just a simple vibration with variable power
 	_addEffectTypes(Effect::EForce::ConstantForce, Effect::Constant);
+
+	// Set default master gain
+	setMasterGain(1.0f);
 }
 
 //--------------------------------------------------------------//
@@ -200,9 +203,11 @@ void Win32ForceFeedback::remove(const Effect* eff)
 void Win32ForceFeedback::setMasterGain(float level)
 {
 #ifdef OIS_WIN32_XINPUT_SUPPORT
-	//XInput - unsupported
 	if(_isXInput())
+	{
+		mXInputMasterGain = max(min(level, 1.0f), 0.0f);
 		return;
+	}
 #endif
 
 	//Between 0 - 10,000
@@ -557,8 +562,8 @@ void Win32ForceFeedback::_updateXInputConstantEffect(const Effect* effect)
 	}
 
 	// Get OIS level range (-10k - 10k) into XInput level range (0 - 65536)
-	auto leftLevel	= (unsigned short)abs(eff->level * 6.5536f * leftMult);
-	auto rightLevel = (unsigned short)abs(eff->level * 6.5536f * rightMult);
+	auto leftLevel	= (unsigned short)abs((float)eff->level * leftMult  * mXInputMasterGain * 6.5536f);
+	auto rightLevel = (unsigned short)abs((float)eff->level * rightMult * mXInputMasterGain * 6.5536f);
 
 	_setXInputVibration(leftLevel, rightLevel);
 }
