@@ -520,7 +520,8 @@ void Win32ForceFeedback::_setXInputVibration(unsigned short leftPower, unsigned 
 	vibration.wLeftMotorSpeed  = leftPower;
 	vibration.wRightMotorSpeed = rightPower;
 
-	XInputSetState((DWORD)mXInputIndex, &vibration);
+	if(XInputSetState((DWORD)mXInputIndex, &vibration) != ERROR_SUCCESS)
+		OIS_EXCEPT(E_General, "Error updating XInput device vibration!");
 }
 
 //--------------------------------------------------------------//
