@@ -335,7 +335,7 @@ Object* LIRCFactoryCreator::createObject(InputManager* creator, Type iType, bool
 	if(mUnusedRemotes.size() > 0)
 	{
 		std::vector<std::string>::iterator remote = mUnusedRemotes.end();
-		if(vendor == "")
+		if(!vendor.length())
 			remote = mUnusedRemotes.begin();
 		else
 			remote = std::find(mUnusedRemotes.begin(), mUnusedRemotes.end(), vendor);

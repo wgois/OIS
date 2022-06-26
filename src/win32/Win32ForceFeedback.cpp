@@ -53,11 +53,39 @@ Win32ForceFeedback::Win32ForceFeedback(IDirectInputDevice8* pDIJoy, const DIDEVC
 		 << "FFMinTimeResolution : " << mpDIJoyCaps->dwFFMinTimeResolution << " mu-s,"
 		 << "" << endl;
 #endif
+
+	//Device is DInput device, unassign XInput index
+	mXInputIndex = -1;
+}
+
+//--------------------------------------------------------------//
+Win32ForceFeedback::Win32ForceFeedback(unsigned int xInputIndex)
+{
+	mXInputIndex = xInputIndex;
+	mJoyStick	 = nullptr;
+
+	//XInput device contains basically a single axis
+	_addFFAxis();
+
+	//XInput device supports just a simple vibration with variable power
+	_addEffectTypes(Effect::EForce::ConstantForce, Effect::Constant);
+
+	// Set default master gain
+	setMasterGain(1.0f);
 }
 
 //--------------------------------------------------------------//
 Win32ForceFeedback::~Win32ForceFeedback()
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	//Just stop the vibration, if device is XInput
+	if(_isXInput())
+	{
+		_setXInputVibration(0, 0);
+		return;
+	}
+#endif
+
 	//Get the effect - if it exists
 	for(EffectList::iterator i = mEffectList.begin(); i != mEffectList.end(); ++i)
 	{
@@ -81,6 +109,12 @@ short Win32ForceFeedback::getFFAxesNumber()
 //--------------------------------------------------------------//
 unsigned short Win32ForceFeedback::getFFMemoryLoad()
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	//XInput - unsupported
+	if(_isXInput())
+		return 0;
+#endif
+
 	DIPROPDWORD dipdw; // DIPROPDWORD contains a DIPROPHEADER structure.
 	dipdw.diph.dwSize		= sizeof(DIPROPDWORD);
 	dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
@@ -103,14 +137,22 @@ unsigned short Win32ForceFeedback::getFFMemoryLoad()
 //--------------------------------------------------------------//
 void Win32ForceFeedback::upload(const Effect* effect)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	if(_isXInput())
+	{
+		//Only constant effect is supported by XInput devices
+		if(effect->force == OIS::Effect::ConstantForce)
+			_updateXInputConstantEffect(effect);
+		return;
+	}
+#endif
+
 	switch(effect->force)
 	{
 		case OIS::Effect::ConstantForce: _updateConstantEffect(effect); break;
 		case OIS::Effect::RampForce: _updateRampEffect(effect); break;
 		case OIS::Effect::PeriodicForce: _updatePeriodicEffect(effect); break;
-		case OIS::Effect::ConditionalForce:
-			_updateConditionalEffect(effect);
-			break;
+		case OIS::Effect::ConditionalForce: _updateConditionalEffect(effect); break;
 		//case OIS::Effect::CustomForce: _updateCustomEffect(effect); break;
 		default: OIS_EXCEPT(E_NotImplemented, "Requested Force not Implemented yet, sorry!");
 	}
@@ -126,6 +168,16 @@ void Win32ForceFeedback::modify(const Effect* eff)
 //--------------------------------------------------------------//
 void Win32ForceFeedback::remove(const Effect* eff)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	//Since XInput supports only one effect type, removing any effect
+	//results in stopping vibration right away.
+	if(_isXInput())
+	{
+		_setXInputVibration(0, 0);
+		return;
+	}
+#endif
+
 	//Get the effect - if it exists
 	EffectList::iterator i = mEffectList.find(eff->_handle);
 	if(i != mEffectList.end())
@@ -150,6 +202,14 @@ void Win32ForceFeedback::remove(const Effect* eff)
 //--------------------------------------------------------------//
 void Win32ForceFeedback::setMasterGain(float level)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	if(_isXInput())
+	{
+		mXInputMasterGain = max(min(level, 1.0f), 0.0f);
+		return;
+	}
+#endif
+
 	//Between 0 - 10,000
 	int gain_level = (int)(10000.0f * level);
 
@@ -181,6 +241,12 @@ void Win32ForceFeedback::setMasterGain(float level)
 //--------------------------------------------------------------//
 void Win32ForceFeedback::setAutoCenterMode(bool auto_on)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
+	//XInput - unsupported
+	if(_isXInput())
+		return;
+#endif
+
 	DIPROPDWORD DIPropAutoCenter;
 	DIPropAutoCenter.diph.dwSize	   = sizeof(DIPropAutoCenter);
 	DIPropAutoCenter.diph.dwHeaderSize = sizeof(DIPROPHEADER);
@@ -433,6 +499,74 @@ void Win32ForceFeedback::_upload(GUID guid, DIEFFECT* diEffect, const Effect* ef
 
 		if(FAILED(hr)) OIS_EXCEPT(E_InvalidParam, "Error updating device!");
 	}
+}
+
+//--------------------------------------------------------------//
+bool Win32ForceFeedback::_isXInput()
+{
+	return (!mJoyStick && mXInputIndex >= 0);
+}
+
+//--------------------------------------------------------------//
+void Win32ForceFeedback::_setXInputVibration(unsigned short leftPower, unsigned short rightPower)
+{
+	XINPUT_STATE state;
+	if(XInputGetState(mXInputIndex, &state) == ERROR_DEVICE_NOT_CONNECTED)
+		return;
+
+	XINPUT_VIBRATION vibration;
+	ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+
+	vibration.wLeftMotorSpeed  = leftPower;
+	vibration.wRightMotorSpeed = rightPower;
+
+	if(XInputSetState((DWORD)mXInputIndex, &vibration) != ERROR_SUCCESS)
+		OIS_EXCEPT(E_General, "Error updating XInput device vibration!");
+}
+
+//--------------------------------------------------------------//
+void Win32ForceFeedback::_updateXInputConstantEffect(const Effect* effect)
+{
+	ConstantEffect* eff = static_cast<ConstantEffect*>(effect->getForceEffect());
+
+	// Determine left/right motor power ratio by using effect direction.
+
+	float rightMult = 0.0f;
+	float leftMult	= 0.0f;
+
+	switch (effect->direction)
+	{
+		case Effect::EDirection::North:
+		case Effect::EDirection::South:
+			rightMult = leftMult = 1.0f;
+			break;
+
+		case Effect::EDirection::East:
+			rightMult = 1.0f;
+			break;
+
+		case Effect::EDirection::West:
+			leftMult = 1.0f;
+			break;
+
+		case Effect::EDirection::NorthEast:
+		case Effect::EDirection::SouthEast:
+			leftMult = 0.5f;
+			rightMult = 1.0f;
+			break;
+
+		case Effect::EDirection::NorthWest:
+		case Effect::EDirection::SouthWest:
+			leftMult  = 1.0f;
+			rightMult = 0.5f;
+			break;
+	}
+
+	// Get OIS level range (-10k - 10k) into XInput level range (0 - 65536)
+	auto leftLevel	= (unsigned short)abs((float)eff->level * leftMult  * mXInputMasterGain * 6.5536f);
+	auto rightLevel = (unsigned short)abs((float)eff->level * rightMult * mXInputMasterGain * 6.5536f);
+
+	_setXInputVibration(leftLevel, rightLevel);
 }
 
 //--------------------------------------------------------------//
