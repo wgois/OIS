@@ -510,6 +510,7 @@ bool Win32ForceFeedback::_isXInput()
 //--------------------------------------------------------------//
 void Win32ForceFeedback::_setXInputVibration(unsigned short leftPower, unsigned short rightPower)
 {
+#ifdef OIS_WIN32_XINPUT_SUPPORT
 	XINPUT_STATE state;
 	if(XInputGetState(mXInputIndex, &state) == ERROR_DEVICE_NOT_CONNECTED)
 		return;
@@ -522,6 +523,7 @@ void Win32ForceFeedback::_setXInputVibration(unsigned short leftPower, unsigned 
 
 	if(XInputSetState((DWORD)mXInputIndex, &vibration) != ERROR_SUCCESS)
 		OIS_EXCEPT(E_General, "Error updating XInput device vibration!");
+#endif
 }
 
 //--------------------------------------------------------------//
