@@ -34,6 +34,7 @@ following restrictions:
 #include "OISException.h"
 
 #include <fcntl.h> //Needed to Open a file descriptor
+#include <dirent.h>
 #include <cassert>
 #include <linux/input.h>
 
@@ -245,42 +246,53 @@ JoyStickInfoList LinuxJoyStick::_scanJoys()
 
 	//Search through all of the event devices.. and identify which ones are joysticks
 	//xxx move this to InputManager, as it can also scan all other events
-	for(int i = 0; i < 64; ++i)
+	DIR* dir;
+	struct dirent* ent;
+	const std::string PATH("/dev/input/");
+	const std::string EVENT_FILE_NAME("event");
+
+	if((dir = opendir(PATH.c_str())) != NULL)
 	{
-		stringstream s;
-		s << "/dev/input/event" << i;
-		int fd = open(s.str().c_str(), O_RDWR | O_NONBLOCK);
-		if(fd == -1)
-			continue;
+		while((ent = readdir(dir)) != NULL)
+		{
+			std::string entry(ent->d_name);
+			if(entry.rfind(EVENT_FILE_NAME, 0) == 0)
+			{
+				int fd = open((PATH + entry).c_str(), O_RDWR | O_NONBLOCK);
+				if(fd == -1)
+					continue;
 
 #ifdef OIS_LINUX_JOY_DEBUG
-		cout << "Opening " << s.str() << "..." << endl;
+				cout << "Opening " << path + entry << "..." << endl;
 #endif
-		try
-		{
-			JoyStickInfo js;
-			if(EventUtils::isJoyStick(fd, js))
-			{
-				joys.push_back(js);
+				try
+				{
+					JoyStickInfo js;
+					if(EventUtils::isJoyStick(fd, js))
+					{
+						joys.push_back(js);
 #ifdef OIS_LINUX_JOY_DEBUG
-				cout << "=> Joystick added to list." << endl;
+						cout << "=> Joystick added to list." << endl;
 #endif
-			}
-			else
-			{
+					}
+					else
+					{
 #ifdef OIS_LINUX_JOY_DEBUG
-				cout << "=> Not a joystick." << endl;
+						cout << "=> Not a joystick." << endl;
 #endif
-				close(fd);
+						close(fd);
+					}
+				}
+				catch(...)
+				{
+#ifdef OIS_LINUX_JOY_DEBUG
+					cout << "Exception caught!!" << endl;
+#endif
+					close(fd);
+				}
 			}
 		}
-		catch(...)
-		{
-#ifdef OIS_LINUX_JOY_DEBUG
-			cout << "Exception caught!!" << endl;
-#endif
-			close(fd);
-		}
+		closedir(dir);
 	}
 
 	return joys;
