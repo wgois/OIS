@@ -151,7 +151,16 @@ BOOL CALLBACK Win32InputManager::_DIEnumDevCallback(LPCDIDEVICEINSTANCE lpddi, L
 		jsInfo.isXInput	   = false;
 		jsInfo.productGuid = lpddi->guidProduct;
 		jsInfo.deviceID	   = lpddi->guidInstance;
+#ifdef UNICODE
+		int length = WideCharToMultiByte(CP_ACP, 0, lpddi->tszInstanceName, -1, nullptr, 0, nullptr, nullptr) - 1;
+		if (length > 0)
+		{
+			jsInfo.vendor.resize(length);
+			WideCharToMultiByte(CP_ACP, 0, lpddi->tszInstanceName, -1, &(*jsInfo.vendor.begin()), length + 1, nullptr, nullptr);
+		}
+#else
 		jsInfo.vendor	   = lpddi->tszInstanceName;
+#endif
 		jsInfo.devId	   = _this_->joySticks;
 
 		_this_->joySticks++;
