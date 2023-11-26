@@ -9,7 +9,7 @@
 [![latest packaged version(s)](https://repology.org/badge/latest-versions/ois.svg)](https://repology.org/metapackage/ois)
 
 Cross Platform Object Oriented Input Lib System. Meant to be very robust and
-compatiable with many systems and operating systems.
+compatible with many systems and operating systems.
 
 ### Linux
 
