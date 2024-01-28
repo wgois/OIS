@@ -182,10 +182,19 @@ void LinuxMouse::_processXEvents()
 			oldXMouseX = event.xmotion.x;
 			oldXMouseY = event.xmotion.y;
 
-			mState.X.abs += dx;
-			mState.Y.abs += dy;
-			mState.X.rel += dx;
-			mState.Y.rel += dy;
+			//Move the mouse
+			if(grabMouse && mouseFocusLost == false)
+			{
+				mState.X.abs += dx;
+				mState.Y.abs += dy;
+				mState.X.rel += dx;
+				mState.Y.rel += dy;
+			}
+			else
+			{
+				mState.X.abs = event.xmotion.x;
+				mState.Y.abs = event.xmotion.y;
+			}
 
 			//Check to see if we are grabbing the mouse to the window (requires clipping and warping)
 			if(grabMouse)
