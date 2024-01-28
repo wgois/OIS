@@ -90,6 +90,7 @@ namespace OIS
 		// settings
 		bool mHideMouse;
 		bool mUseRepeat;
+                bool mNonExclusiveMouse;
 
 		//! Used to know if we used up keyboard
 		bool keyboardUsed;

@@ -356,6 +356,14 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1D, KC_0));
 
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x33, KC_BACK)); // might be wrong
+    
+        //Missing ModKeys
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x39, KC_LSHIFT));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3C, KC_RSHIFT));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3B, KC_LCONTROL));
+        //keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2B, KC_RCONTROL));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3A, KC_LMENU));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3D, KC_RMENU));
 
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1B, KC_MINUS));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x18, KC_EQUALS));

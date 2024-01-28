@@ -32,7 +32,7 @@ following restrictions:
 using namespace OIS;
 
 //-------------------------------------------------------------------//
-CocoaMouse::CocoaMouse(InputManager* creator, bool buffered) :
+CocoaMouse::CocoaMouse(InputManager* creator, bool buffered, bool hiddenMouse, float hiDPI_Scale) :
  Mouse(creator->inputSystemName(), buffered, 0, creator)
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -44,8 +44,13 @@ CocoaMouse::CocoaMouse(InputManager* creator, bool buffered) :
 
 	[[man->_getWindow() contentView] addSubview:mResponder];
 	[mResponder setOISMouseObj:this];
-
+        [mResponder setHiddenMouse:hiddenMouse];
+        [mResponder setMonitorScaling:hiDPI_Scale];
+    
 	static_cast<CocoaInputManager*>(mCreator)->_setMouseUsed(true);
+    
+        if(!hiddenMouse)
+            CGDisplayShowCursor(kCGDirectMainDisplay);
 
 	[pool drain];
 }
@@ -92,7 +97,8 @@ void CocoaMouse::capture()
 		mNeedsToRegainFocus = false;
 
 		// Hide OS Mouse
-		CGDisplayHideCursor(kCGDirectMainDisplay);
+		if(!hiddenMouse)
+			CGDisplayHideCursor(kCGDirectMainDisplay);
 
 		NSRect clipRect = NSMakeRect(0.0f, 0.0f, 0.0f, 0.0f);
 		clipRect		= [[[self window] contentView] frame];
@@ -128,6 +134,28 @@ void CocoaMouse::capture()
 - (void)setOISMouseObj:(CocoaMouse*)obj
 {
 	oisMouseObj = obj;
+}
+
+- (void)setHiddenMouse:(bool)hiddenMouse
+{
+    mMouseIsHidden = hiddenMouse;
+    
+    // Hide OS Mouse
+    if(mMouseIsHidden)
+    {
+        CGDisplayHideCursor(kCGDirectMainDisplay);
+    }
+    else
+    {
+        CGDisplayShowCursor(kCGDirectMainDisplay);
+    }
+    
+    
+}
+
+- (void)setMonitorScaling:(float)hiDPI_Scale
+{
+    mMonitorScaling = hiDPI_Scale;
 }
 
 - (void)capture
@@ -233,6 +261,15 @@ void CocoaMouse::capture()
 		mTempState.X.rel += delta.x;
 		mTempState.Y.rel += delta.y;
 	}
+    
+        NSRect frame = [[[self window] contentView] frame];
+        //NSPoint offset = [[NSCursor arrowCursor] hotSpot];
+    
+        NSPoint pos = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint backPoint = [self convertPointToBacking:pos];
+       mTempState.X.abs = backPoint.x;
+       mTempState.Y.abs = (frame.size.height * mMonitorScaling) - backPoint.y;
+    
 
 	mMouseWarped = false;
 }
@@ -283,6 +320,15 @@ void CocoaMouse::capture()
 		mTempState.X.rel += delta.x;
 		mTempState.Y.rel += delta.y;
 	}
+    
+        NSRect frame = [[[self window] contentView] frame];
+        NSPoint offset = [[NSCursor arrowCursor] hotSpot];
+    
+        NSPoint pos = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint backPoint = [self convertPointToBacking:pos];
+        mTempState.X.abs = backPoint.x;
+        (frame.size.height * mMonitorScaling) - backPoint.y;
+    
 
 	mMouseWarped = false;
 }
@@ -333,6 +379,15 @@ void CocoaMouse::capture()
 		mTempState.X.rel += delta.x;
 		mTempState.Y.rel += delta.y;
 	}
+    
+        NSRect frame = [[[self window] contentView] frame];
+        NSPoint offset = [[NSCursor arrowCursor] hotSpot];
+    
+        NSPoint pos = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint backPoint = [self convertPointToBacking:pos];
+        mTempState.X.abs = backPoint.x;
+        mTempState.Y.abs = (frame.size.height * mMonitorScaling) - backPoint.y;
+    
 
 	mMouseWarped = false;
 }
@@ -355,27 +410,55 @@ void CocoaMouse::capture()
 		mTempState.X.rel += delta.x;
 		mTempState.Y.rel += delta.y;
 	}
-
+    
+        NSRect frame = [[[self window] contentView] frame];
+        NSPoint offset = [[NSCursor arrowCursor] hotSpot];
+    
+        NSPoint pos = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint backPoint = [self convertPointToBacking:pos];
+        //NSPoint unMacPoint = NSMakePoint(backPoint.x, -backPoint.y)
+        mTempState.X.abs = backPoint.x;
+        mTempState.Y.abs = (frame.size.height * mMonitorScaling) - backPoint.y;
+   
+    
+   
 	mMouseWarped = false;
 }
 
 - (void)mouseEntered:(NSEvent*)theEvent
 {
-	CGDisplayHideCursor(kCGDirectMainDisplay);
-	CGAssociateMouseAndMouseCursorPosition(false);
-	if(!mMouseWarped)
-	{
-		NSPoint pos  = [[self window] mouseLocationOutsideOfEventStream];
-		NSRect frame = [[[self window] contentView] frame];
+    if(mMouseIsHidden)
+    {
+        CGDisplayHideCursor(kCGDirectMainDisplay);
+        CGAssociateMouseAndMouseCursorPosition(true);
+        if(!mMouseWarped)
+        {
+            NSPoint pos  = [[self window] mouseLocationOutsideOfEventStream];
+            NSRect frame = [[[self window] contentView] frame];
+            NSPoint backPoint = [self convertPointToBacking:pos];
 
-		// Clear the previous mouse state
-		MouseState* state = oisMouseObj->getMouseStatePtr();
-		state->clear();
+            // Clear the previous mouse state
+            MouseState* state = oisMouseObj->getMouseStatePtr();
+            state->clear();
 
-		// Cocoa's coordinate system has the origin in the bottom left so we need to transform the height
-		mTempState.X.rel = pos.x;
-		mTempState.Y.rel = frame.size.height - pos.y;
-	}
+            // Cocoa's coordinate system has the origin in the bottom left so we need to transform the height
+            mTempState.X.rel = backPoint.x;
+            mTempState.Y.abs = (frame.size.height * mMonitorScaling) - backPoint.y;
+        }
+    }
+    else
+    {
+        CGDisplayShowCursor(kCGDirectMainDisplay);
+        CGAssociateMouseAndMouseCursorPosition(true);
+        NSRect frame = [[[self window] contentView] frame];
+        
+        NSPoint pos  = [[self window] mouseLocationOutsideOfEventStream];
+        NSPoint backPoint = [self convertPointToBacking:pos];
+
+        
+        mTempState.X.rel = backPoint.x;
+        mTempState.Y.rel = (frame.size.height * mMonitorScaling) - backPoint.y;
+    }
 }
 
 - (void)mouseExited:(NSEvent*)theEvent

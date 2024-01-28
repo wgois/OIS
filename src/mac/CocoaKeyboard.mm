@@ -201,6 +201,13 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1D, KC_0));
 
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x33, KC_BACK)); // might be wrong
+    
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x39, KC_LSHIFT));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3C, KC_RSHIFT));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3B, KC_LCONTROL));
+        //keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2B, KC_RCONTROL));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3A, KC_LMENU));
+        keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x3D, KC_RMENU));
 
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1B, KC_MINUS));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x18, KC_EQUALS));
@@ -440,6 +447,52 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 	if([theEvent keyCode] == NSClearLineFunctionKey) // numlock
 		[self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
 
+
+    if([theEvent keyCode] == 59) // Ctrl
+    {
+        if(KeyBuffer[59])
+        {
+            [self injectEvent:KC_LCONTROL eventTime:time eventType:MAC_KEYUP eventText:59];
+            KeyBuffer[59] = 0;
+        }
+        else
+        {
+            [self injectEvent:KC_LCONTROL eventTime:time eventType:MAC_KEYDOWN eventText:59];
+            KeyBuffer[59] = 1;
+        }
+    }
+    
+    if([theEvent keyCode] == 58) // Alt
+    {
+        if(KeyBuffer[58])
+        {
+            [self injectEvent:KC_LMENU eventTime:time eventType:MAC_KEYUP eventText:58];
+            KeyBuffer[58] = 0;
+        }
+        else
+        {
+            [self injectEvent:KC_LMENU eventTime:time eventType:MAC_KEYDOWN eventText:58];
+            KeyBuffer[58] = 1;
+        }
+        
+      
+    }
+
+    if([theEvent keyCode] == 57) // Shift
+    {
+        if(KeyBuffer[57])
+        {
+            [self injectEvent:KC_LSHIFT eventTime:time eventType:MAC_KEYUP eventText:57];
+            KeyBuffer[57] = 0;
+        }
+        else
+        {
+            [self injectEvent:KC_LSHIFT eventTime:time eventType:MAC_KEYDOWN eventText:57];
+            KeyBuffer[57] = 1;
+        }
+    }
+
+    
 	prevModMask = mods;
 }
 

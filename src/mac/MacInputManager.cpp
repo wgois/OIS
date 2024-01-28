@@ -45,6 +45,7 @@ MacInputManager::MacInputManager() :
 {
 	mHideMouse		= true;
 	mUseRepeat		= false;
+        mNonExclusiveMouse = false;
 	mEventTargetRef = NULL;
 	mWindow			= NULL;
 
@@ -121,6 +122,14 @@ void MacInputManager::_parseConfigSettings(ParamList& paramList)
 			mUseRepeat = true;
 		}
 	}
+    
+    if(paramList.find("MacNonExclusiveMouse") != paramList.end())
+    {
+        if(paramList.find("MacNonExclusiveMouse")->second == "true")
+        {
+            mNonExclusiveMouse = true;
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------//
@@ -187,7 +196,7 @@ Object* MacInputManager::createObject(InputManager* creator, Type iType, bool bu
 		}
 		case OISMouse: {
 			if(mouseUsed == false)
-				obj = new MacMouse(this, bufferMode);
+				obj = new MacMouse(this, bufferMode, mNonExclusiveMouse);
 			break;
 		}
 		default: {

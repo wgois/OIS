@@ -40,6 +40,7 @@ CocoaInputManager::CocoaInputManager() :
 	mHideMouse = true;
 	mUseRepeat = false;
 	mWindow	= nil;
+        mMonitorScale = 1;
 
 	keyboardUsed = mouseUsed = false;
 
@@ -99,6 +100,22 @@ void CocoaInputManager::_parseConfigSettings(ParamList& paramList)
 			mUseRepeat = true;
 		}
 	}
+    
+        if(paramList.find("MacNonexclusiveMouse") != paramList.end())
+        {
+            if(paramList.find("MacNonexclusiveMouse")->second == "true")
+            {
+                mHideMouse = false;
+            }
+        }
+    
+    if(paramList.find("HiDPIMonitorScaling") != paramList.end())
+    {
+        mMonitorScale = std::stof(paramList.find("HiDPIMonitorScaling")->second);
+    }
+    
+    
+    
 }
 
 //--------------------------------------------------------------------------------//
@@ -167,7 +184,7 @@ Object* CocoaInputManager::createObject(InputManager* creator, Type iType, bool 
 		case OISMouse:
 		{
 			if(mouseUsed == false)
-				obj = new CocoaMouse(this, bufferMode);
+				obj = new CocoaMouse(this, bufferMode, mHideMouse, mMonitorScale );
 			break;
 		}
 		default:

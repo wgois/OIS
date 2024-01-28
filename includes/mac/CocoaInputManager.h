@@ -86,6 +86,7 @@ namespace OIS
 
 		// settings
 		bool mHideMouse;
+                float mMonitorScale;
 		bool mUseRepeat;
 
 		//! Used to know if we used up keyboard

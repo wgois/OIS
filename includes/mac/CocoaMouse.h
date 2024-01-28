@@ -40,7 +40,7 @@ namespace OIS
 	class CocoaMouse : public Mouse
 	{
 	public:
-		CocoaMouse(InputManager* creator, bool buffered);
+		CocoaMouse(InputManager* creator, bool buffered, bool hiddenMouse, float hiDPI_Scale);
 		virtual ~CocoaMouse();
 
 		/** @copydoc Object::setBuffered */
@@ -67,9 +67,13 @@ namespace OIS
 	MouseState mTempState;
 	bool mNeedsToRegainFocus;
 	bool mMouseWarped;
+        bool mMouseIsHidden;
+        float mMonitorScaling;
 }
 
 - (void)setOISMouseObj:(CocoaMouse*)obj;
+- (void)setHiddenMouse:(bool)hiddenMouse;
+- (void)setMonitorScaling:(float)hiDPI_Scale;
 - (void)capture;
 
 @end
