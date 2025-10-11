@@ -218,7 +218,6 @@ endif()
 if(UNIX)
 
     if (NOT APPLE)
-        add_dependencies(OIS X11)
         target_link_libraries(OIS X11)
     endif()
 
