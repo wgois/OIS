@@ -102,7 +102,7 @@ void CocoaJoyStick::capture()
 						mListener->buttonPressed(JoyStickEvent(this, mState), button);
 					else if(event.value == 1)
 						mListener->buttonReleased(JoyStickEvent(this, mState), button);
-				}
+				}	
 				break;
 			}
 			case kIOHIDElementTypeInput_Misc:
