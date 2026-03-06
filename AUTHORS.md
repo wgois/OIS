@@ -18,7 +18,9 @@ In alphabetical order, here's the list of contributors from the Git and GitHub h
 - Arthur Brainville (Ybalrid)
 - Ben Hymers (Hymerman)
 - David Rogers (davidjrodgers)
+- Eric.B (VENTDEV)
 - Joey Ferwerda (TheOnlyJoey)
+- John Alden (zawata)
 - Kyle Rassweiler (rassweiler)
 - Michaël (Mikarnage)
 - nolan778
@@ -27,4 +29,3 @@ In alphabetical order, here's the list of contributors from the Git and GitHub h
 - Pavlos Touboulidis (pavlos256)
 - Phillip Castaneda (pjcast)
 - Robert (rpaciorek)
-- John Alden (zawata)
