@@ -98,4 +98,4 @@ namespace OIS
 		MacHIDManager* mHIDManager;
 	};
 }
-#endif
+#endif // !OIS_CocoaInputManager_H

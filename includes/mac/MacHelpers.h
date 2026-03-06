@@ -74,4 +74,4 @@ namespace OIS
 	} MacKeyStackEvent;
 }
 
-#endif
+#endif // !OIS_MacHelpers_H

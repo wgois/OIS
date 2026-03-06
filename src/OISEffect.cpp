@@ -28,10 +28,6 @@ following restrictions:
 
 using namespace OIS;
 
-//VC7.1 had a problem with these not getting included..
-//Perhaps a case of a crazy extreme optimizer :/ (moved to header)
-//const unsigned int Effect::OIS_INFINITE = 0xFFFFFFFF;
-
 //------------------------------------------------------------------------------//
 static const char* pszEForceString[] = { "UnknownForce",
 										 "ConstantForce",

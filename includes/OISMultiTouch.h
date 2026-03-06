@@ -180,4 +180,4 @@ namespace OIS
 		MultiTouchListener* mListener;
 	};
 }
-#endif
+#endif // !OIS_MultiTouch_H

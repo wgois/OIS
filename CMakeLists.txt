@@ -51,6 +51,24 @@ set(ois_source
     "${CMAKE_CURRENT_SOURCE_DIR}/src/OISException.cpp"
 )
 
+set(ois_headers
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OIS.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISConfig.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISEffect.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISEvents.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISException.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISFactoryCreator.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISForceFeedback.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISInputManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISInterface.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISJoyStick.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISKeyboard.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISMouse.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISMultiTouch.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISObject.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/OISPrereqs.h"
+)
+
 set(BUILD_SHARED_LIBS ${OIS_BUILD_SHARED_LIBS})
 
 if (UNIX AND NOT APPLE)
@@ -172,11 +190,28 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaKeyboard.mm"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/mac/CocoaMouse.mm"
     )
+
+    set(ois_headers
+        ${ois_headers}
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaHelpers.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaInputManager.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaJoyStick.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaKeyboard.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaMouse.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacHIDManager.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacHelpers.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacInputManager.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacJoyStick.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacKeyboard.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacMouse.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacPrereqs.h"
+    )
 endif()
 
 source_group("OIS" FILES ${ois_source})
+source_group("OIS Headers" FILES ${ois_headers})
 
-add_library(OIS ${ois_source})
+add_library(OIS ${ois_source} ${ois_headers})
 
 # This is neccessary to get the dll import/export to work without modifying the
 # source to use cmake's method of setting the dll import/export definitions

@@ -102,4 +102,4 @@ namespace OIS
 		bool useRepeat;
 	};
 }
-#endif
+#endif // !OIS_MacKeyboard_H

@@ -340,4 +340,4 @@ namespace OIS
 		TextTranslationMode mTextMode;
 	};
 }
-#endif
+#endif // !OIS_Keyboard_H

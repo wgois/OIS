@@ -75,4 +75,4 @@ following restrictions:
 */
 //#define OIS_WIN32_XINPUT_SUPPORT
 
-#endif
+#endif // !OIS_CONFIG_HEADER

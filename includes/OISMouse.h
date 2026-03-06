@@ -150,4 +150,4 @@ namespace OIS
 		MouseListener* mListener;
 	};
 }
-#endif
+#endif // !OIS_Mouse_H

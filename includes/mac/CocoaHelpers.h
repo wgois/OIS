@@ -46,4 +46,4 @@ namespace OIS
 	typedef enum Mac_EventType MacEventType;
 }
 
-#endif
+#endif // !OIS_CocoaHelpers_H

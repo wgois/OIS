@@ -210,4 +210,4 @@ namespace OIS
 		InputManager& operator=(const InputManager&);
 	};
 }
-#endif
+#endif // !OIS_InputManager_H

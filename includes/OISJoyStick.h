@@ -251,4 +251,4 @@ namespace OIS
 		float mVector3Sensitivity;
 	};
 }
-#endif
+#endif // !OIS_Joystick_H

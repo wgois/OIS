@@ -104,4 +104,4 @@ namespace OIS
 		HidInfoList mDeviceList;
 	};
 }
-#endif
+#endif // !OIS_MacHIDManager_Header

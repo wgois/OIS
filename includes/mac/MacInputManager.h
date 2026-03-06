@@ -101,4 +101,4 @@ namespace OIS
 		MacHIDManager* mHIDManager;
 	};
 }
-#endif
+#endif // !OIS_MacInputManager_H

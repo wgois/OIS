@@ -77,4 +77,4 @@ namespace OIS
 		IOHIDQueueInterface** mQueue;
 	};
 }
-#endif
+#endif // !Cocoa_Joystick_H

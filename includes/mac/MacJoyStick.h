@@ -77,4 +77,4 @@ namespace OIS
 		IOHIDQueueInterface** mQueue;
 	};
 }
-#endif
+#endif // !MAC_Joystick_H

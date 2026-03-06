@@ -210,7 +210,7 @@ void CocoaJoyStick::_enumerateCookies()
 				continue;
 			if(!CFNumberGetValue((CFNumberRef)object, kCFNumberIntType, &number))
 				continue;
-			min = number;
+			min = (int)number;
 
 			//Get max
 			object = CFDictionaryGetValue(element,
@@ -219,7 +219,7 @@ void CocoaJoyStick::_enumerateCookies()
 				continue;
 			if(!CFNumberGetValue((CFNumberRef)object, kCFNumberIntType, &number))
 				continue;
-			max = number;
+			max = (int)number;
 
 			//Get usage page
 			object = CFDictionaryGetValue(element,
@@ -261,8 +261,8 @@ void CocoaJoyStick::_enumerateCookies()
 			}
 		}
 
-		mInfo->numButtons = mCookies.buttonCookies.size();
-		mInfo->numAxes	= mCookies.axisCookies.size();
+		mInfo->numButtons = (int)mCookies.buttonCookies.size();
+		mInfo->numAxes	= (int)mCookies.axisCookies.size();
 	}
 	else
 	{

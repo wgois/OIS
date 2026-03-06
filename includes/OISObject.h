@@ -94,4 +94,4 @@ namespace OIS
 		InputManager* mCreator;
 	};
 }
-#endif
+#endif // !OIS_Object_H

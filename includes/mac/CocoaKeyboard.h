@@ -124,4 +124,4 @@ typedef std::list<OIS::CocoaKeyStackEvent> eventStack;
 
 @end
 
-#endif
+#endif // !OIS_CocoaKeyboard_H

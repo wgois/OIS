@@ -289,7 +289,7 @@ void InputManager::enableAddOnFactory(AddOnFactories factory)
 			addFactoryCreator(m_lircSupport);
 		}
 	}
-#endif
+#endif // defined OIS_LIRC_SUPPORT
 
 #if defined OIS_WIN32_WIIMOTE_SUPPORT
 	if(factory == AddOn_WiiMote || factory == AddOn_All)
@@ -300,5 +300,5 @@ void InputManager::enableAddOnFactory(AddOnFactories factory)
 			addFactoryCreator(m_wiiMoteSupport);
 		}
 	}
-#endif
+#endif // defined OIS_WIN32_WIIMOTE_SUPPORT
 }

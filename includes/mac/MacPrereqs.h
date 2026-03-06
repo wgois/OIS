@@ -57,4 +57,4 @@ namespace OIS
 		CFStringRef m_StringRef;
 	};
 }
-#endif
+#endif // !OIS_MacPrereqs_H
