@@ -108,19 +108,24 @@ void CocoaJoyStick::capture()
 			case kIOHIDElementTypeInput_Misc:
 				//TODO: It's an axis! - kind of - for gamepads - or should this be a pov?
 			case kIOHIDElementTypeInput_Axis:
-				std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(
-					mCookies.axisCookies.begin(),
-					mCookies.axisCookies.end(),
-					[event](const std::pair<IOHIDElementCookie, AxisInfo>& pair) { return pair.first == event.elementCookie; });
-				int axis												= (int)std::distance(mCookies.axisCookies.begin(), axisIt);
-
-				//Copied from LinuxJoyStickEvents.cpp, line 149
-				const AxisInfo& axisInfo = axisIt->second;
-				float proportion		 = (float)(event.value - axisInfo.max) / (float)(axisInfo.min - axisInfo.max);
-				mState.mAxes[axis].abs   = -JoyStick::MIN_AXIS - (JoyStick::MAX_AXIS * 2 * proportion);
-
-				if(mBuffered && mListener) mListener->axisMoved(JoyStickEvent(this, mState), axis);
+            {
+                std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(
+                                                                                       mCookies.axisCookies.begin(),
+                                                                                       mCookies.axisCookies.end(),
+                                                                                       [event](const std::pair<IOHIDElementCookie, AxisInfo>& pair) { return pair.first == event.elementCookie; });
+                int axis												= (int)std::distance(mCookies.axisCookies.begin(), axisIt);
+                
+                //Copied from LinuxJoyStickEvents.cpp, line 149
+                const AxisInfo& axisInfo = axisIt->second;
+                float proportion		 = (float)(event.value - axisInfo.max) / (float)(axisInfo.min - axisInfo.max);
+                mState.mAxes[axis].abs   = -JoyStick::MIN_AXIS - (JoyStick::MAX_AXIS * 2 * proportion);
+                
+                if(mBuffered && mListener) mListener->axisMoved(JoyStickEvent(this, mState), axis);
+            }
 				break;
+                
+            default:
+                break;
 		}
 
 		result = (*mQueue)->getNextEvent(mQueue, &event, zeroTime, 0);
