@@ -162,7 +162,7 @@ io_iterator_t MacHIDManager::lookUpDevices(int usage, int page)
 
 	//IOServiceGetMatchingServices consumes the map so we do not have to release it ourself
 	io_iterator_t iterator = 0;
-	IOReturn result		   = IOServiceGetMatchingServices(kIOMasterPortDefault, deviceLookupMap, &iterator);
+    IOReturn result		   = IOServiceGetMatchingServices(kIOMainPortDefault, deviceLookupMap, &iterator);
 
 	CFRelease(usageRef);
 	CFRelease(pageRef);
