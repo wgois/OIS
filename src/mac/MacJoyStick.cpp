@@ -77,20 +77,6 @@ void MacJoyStick::_initialize()
 	mQueue = _createQueue();
 }
 
-class FindAxisCookie : public std::unary_function<std::pair<IOHIDElementCookie, AxisInfo>&, bool>
-{
-public:
-	FindAxisCookie(IOHIDElementCookie cookie) :
-	 m_Cookie(cookie) { }
-	bool operator()(const std::pair<IOHIDElementCookie, AxisInfo>& pair) const
-	{
-		return pair.first == m_Cookie;
-	}
-
-private:
-	IOHIDElementCookie m_Cookie;
-};
-
 //--------------------------------------------------------------------------------------------------//
 void MacJoyStick::capture()
 {
@@ -121,7 +107,10 @@ void MacJoyStick::capture()
 			case kIOHIDElementTypeInput_Misc:
 				//TODO: It's an axis! - kind of - for gamepads - or should this be a pov?
 			case kIOHIDElementTypeInput_Axis:
-				std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(mCookies.axisCookies.begin(), mCookies.axisCookies.end(), FindAxisCookie(event.elementCookie));
+				std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(
+					mCookies.axisCookies.begin(),
+					mCookies.axisCookies.end(),
+					[event](const std::pair<IOHIDElementCookie, AxisInfo>& pair) { return pair.first == event.elementCookie; });
 				int axis												= (int)std::distance(mCookies.axisCookies.begin(), axisIt);
 
 				//Copied from LinuxJoyStickEvents.cpp, line 149
