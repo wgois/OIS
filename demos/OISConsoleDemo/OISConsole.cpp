@@ -503,7 +503,7 @@ void checkMacEvents()
 	//TODO - Check for window resize events, and then adjust the members of mousestate
 	NSEvent *event;
 
-	while(event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES])
+    while((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES]))
 	{
 		[NSApp sendEvent:event];
 	}

@@ -107,7 +107,7 @@ void CocoaJoyStick::capture()
 			case kIOHIDElementTypeInput_Button:
 			{
 				std::vector<IOHIDElementCookie>::iterator buttonIt = std::find(mCookies.buttonCookies.begin(), mCookies.buttonCookies.end(), event.elementCookie);
-				int button										   = std::distance(mCookies.buttonCookies.begin(), buttonIt);
+				int button										   = (int)std::distance(mCookies.buttonCookies.begin(), buttonIt);
 				mState.mButtons[button]							   = (event.value == 1);
 
 				if(mBuffered && mListener)
@@ -123,7 +123,7 @@ void CocoaJoyStick::capture()
 				//TODO: It's an axis! - kind of - for gamepads - or should this be a pov?
 			case kIOHIDElementTypeInput_Axis:
 				std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(mCookies.axisCookies.begin(), mCookies.axisCookies.end(), FindAxisCookie(event.elementCookie));
-				int axis												= std::distance(mCookies.axisCookies.begin(), axisIt);
+				int axis												= (int)std::distance(mCookies.axisCookies.begin(), axisIt);
 
 				//Copied from LinuxJoyStickEvents.cpp, line 149
 				const AxisInfo& axisInfo = axisIt->second;
