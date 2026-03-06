@@ -27,3 +27,4 @@ In alphabetical order, here's the list of contributors from the Git and GitHub h
 - Pavlos Touboulidis (pavlos256)
 - Phillip Castaneda (pjcast)
 - Robert (rpaciorek)
+- John Alden (zawata)
