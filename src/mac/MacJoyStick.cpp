@@ -31,6 +31,7 @@ following restrictions:
 #include "OISException.h"
 
 #include <cassert>
+#include <string>
 
 using namespace OIS;
 
@@ -265,7 +266,7 @@ void MacJoyStick::_enumerateCookies()
 	}
 	else
 	{
-		OIS_EXCEPT(E_General, "JoyStick elements could not be copied: copyMatchingElements failed with error: " + success);
+		OIS_EXCEPT(E_General, std::string("JoyStick elements could not be copied: copyMatchingElements failed with error: ") + std::to_string(success));
 	}
 }
 

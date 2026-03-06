@@ -30,5 +30,5 @@ using namespace OIS;
 //----------------------------------------------------------------------------//
 const char* Exception::what() const throw()
 {
-	return eText;
+	return eText.c_str();
 }

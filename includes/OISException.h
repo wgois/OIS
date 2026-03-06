@@ -27,6 +27,7 @@ following restrictions:
 #define _OIS_EXCEPTION_HEADER_
 #include "OISPrereqs.h"
 #include <exception>
+#include <string>
 
 #ifdef OIS_WIN32_PLATFORM
 #pragma warning(push)
@@ -62,6 +63,9 @@ namespace OIS
 		Exception(OIS_ERROR err, const char* str, int line, const char* file) :
 		 eType(err), eLine(line), eFile(file), eText(str) { }
 
+		Exception(OIS_ERROR err, const std::string& str, int line, const char* file) :
+		 eType(err), eLine(line), eFile(file), eText(str) { }
+
 		Exception(const Exception& other) :
 		 eType(other.eType), eLine(other.eLine), eFile(other.eFile), eText(other.eText) { }
 
@@ -74,9 +78,9 @@ namespace OIS
 		//! The line number it occurred on
 		const int eLine;
 		//! The source file
-		const char* eFile;
+		const std::string eFile;
 		//! A message passed along when the exception was raised
-		const char* eText;
+		const std::string eText;
 
 	private:
 		// Unimplemented and unaccessible due to const members.
