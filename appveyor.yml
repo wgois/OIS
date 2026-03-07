@@ -1,5 +1,6 @@
-version: 1.5.1.{build}
+version: 1.6.0.{build}
 image:
+- Visual Studio 2022
 - Visual Studio 2019
 - Visual Studio 2017
 - Visual Studio 2015
