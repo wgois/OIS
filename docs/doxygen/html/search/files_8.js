@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['readme_2emd',['README.md',['../_r_e_a_d_m_e_8md.html',1,'']]]
+  ['pull_5frequest_5ftemplate_2emd_0',['PULL_REQUEST_TEMPLATE.md',['../_p_u_l_l___r_e_q_u_e_s_t___t_e_m_p_l_a_t_e_8md.html',1,'']]]
 ];

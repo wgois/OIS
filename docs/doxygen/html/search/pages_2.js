@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['license',['LICENSE',['../md__c_1__users__ybalrid_git__o_i_s__l_i_c_e_n_s_e.html',1,'']]]
+  ['input_20system_0',['Input System',['../index.html',1,'Object-oriented Input System'],['../md__2_users_2ybalrid_2_programming_2_o_i_s_2docs_2index.html',1,'OIS: Object oriented Input System']]]
 ];
