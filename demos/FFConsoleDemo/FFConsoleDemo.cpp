@@ -962,7 +962,7 @@ public:
 		catch(const Exception& ex)
 		{
 #if defined OIS_WIN32_PLATFORM
-			MessageBox(nullptr, ex.eText, "Exception Raised!", MB_OK);
+			MessageBox(nullptr, ex.eText.c_str(), "Exception Raised!", MB_OK);
 #else
 			cout << endl
 				 << "OIS Exception Caught!" << endl

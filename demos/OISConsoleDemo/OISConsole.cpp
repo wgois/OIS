@@ -260,7 +260,7 @@ int main()
 	catch(const Exception& ex)
 	{
 #if defined OIS_WIN32_PLATFORM
-		MessageBox(nullptr, ex.eText, "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+		MessageBox(nullptr, ex.eText.c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
 		std::cout << "\nOIS Exception Caught!\n"
 				  << "\t" << ex.eText << "[Line "
