@@ -68,6 +68,8 @@ namespace OIS
 @interface CocoaMouseView : NSView {
 	CocoaMouse* oisMouseObj;
 	MouseState mTempState;
+	double mDeltaX;
+	double mDeltaY;
 	bool mNeedsToRegainFocus;
 	bool mMouseWarped;
 	NSWindow* observedWindow;

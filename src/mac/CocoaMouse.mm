@@ -92,6 +92,7 @@ void CocoaMouse::capture()
 	self = [super initWithFrame:frame];
 	if(self) {
 		mTempState.clear();
+		mDeltaX = mDeltaY = 0.0;
 		mMouseWarped		= false;
 		mNeedsToRegainFocus = false;
 
@@ -168,6 +169,7 @@ void CocoaMouse::capture()
 	pendingButtons.clear();
 	deferButtons = true;
 	mTempState.clear();
+	mDeltaX = mDeltaY = 0.0;
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 	state->buttons = 0;
 	state->X.rel = state->Y.rel = state->Z.rel = 0;
@@ -257,6 +259,14 @@ void CocoaMouse::capture()
 		return;
 	}
 	deferButtons = !pendingButtons.empty();
+	// Publish whole counts once per capture, retaining signed fractional motion.
+	const int deltaX = static_cast<int>(mDeltaX);
+	const int deltaY = static_cast<int>(mDeltaY);
+	mTempState.X.rel += deltaX;
+	mTempState.Y.rel += deltaY;
+	mDeltaX -= deltaX;
+	mDeltaY -= deltaY;
+
 	const MouseState captured = mTempState;
 	mTempState.clear();
 	MouseState* state = oisMouseObj->getMouseStatePtr();
@@ -364,8 +374,8 @@ void CocoaMouse::capture()
 	// Relative positioning
 	if(!mMouseWarped)
 	{
-		mTempState.X.rel += delta.x;
-		mTempState.Y.rel += delta.y;
+		mDeltaX += delta.x;
+		mDeltaY += delta.y;
 	}
 
 	mMouseWarped = false;
@@ -420,8 +430,8 @@ void CocoaMouse::capture()
 	// Relative positioning
 	if(!mMouseWarped)
 	{
-		mTempState.X.rel += delta.x;
-		mTempState.Y.rel += delta.y;
+		mDeltaX += delta.x;
+		mDeltaY += delta.y;
 	}
 
 	mMouseWarped = false;
@@ -476,8 +486,8 @@ void CocoaMouse::capture()
 	// Relative positioning
 	if(!mMouseWarped)
 	{
-		mTempState.X.rel += delta.x;
-		mTempState.Y.rel += delta.y;
+		mDeltaX += delta.x;
+		mDeltaY += delta.y;
 	}
 
 	mMouseWarped = false;
@@ -502,8 +512,8 @@ void CocoaMouse::capture()
 	// Relative positioning
 	if(!mMouseWarped)
 	{
-		mTempState.X.rel += delta.x;
-		mTempState.Y.rel += delta.y;
+		mDeltaX += delta.x;
+		mDeltaY += delta.y;
 	}
 
 	mMouseWarped = false;
@@ -527,6 +537,8 @@ void CocoaMouse::capture()
 		// Cocoa's coordinate system has the origin in the bottom left so we need to transform the height
 		mTempState.X.rel = pos.x;
 		mTempState.Y.rel = frame.size.height - pos.y;
+		// The position seed replaces pending motion, including its fractions.
+		mDeltaX = mDeltaY = 0.0;
 	}
 }
 
