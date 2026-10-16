@@ -26,9 +26,10 @@ following restrictions:
 #ifndef OIS_CocoaMouse_H
 #define OIS_CocoaMouse_H
 
-// Altered source: reset Cocoa input state on focus loss.
+// Altered source: focus resets, fractional motion and application canvas coordinates.
 #include "OISMouse.h"
 #include "mac/CocoaHelpers.h"
+#include "mac/CocoaMouseCoordinates.h"
 
 #include <Cocoa/Cocoa.h>
 #include <list>
@@ -71,7 +72,9 @@ namespace OIS
 	double mDeltaX;
 	double mDeltaY;
 	bool mNeedsToRegainFocus;
-	bool mMouseWarped;
+	CocoaPrivate::MouseCoordinates coordinates;
+	bool positionChanged;
+	bool ownsDisassociation;
 	NSWindow* observedWindow;
 	int deliveredButtons;
 	int releaseButtons;
@@ -89,6 +92,11 @@ namespace OIS
 - (void)focusLost:(NSNotification*)notification;
 - (void)deliverButton:(MouseButtonID)button pressed:(bool)pressed;
 - (void)capture;
+- (void)refreshCoordinates;
+- (void)seedCoordinates:(NSPoint)point;
+- (void)beginCapture;
+- (void)restoreAssociation;
+- (void)updateMotion:(NSEvent*)theEvent;
 
 @end
 

@@ -1,170 +1,112 @@
-# Cocoa focus reset regression
+# Cocoa headless regressions
 
-`run-cocoa-focus.py` builds a headless Objective-C++ regression against the OIS
-library. Configure/build OIS first, then run from the source directory:
+These changes depend on the reviewed focus-reset (#103), fractional-motion
+(#102), and modifier (#101) proposals. They do not imply those proposals have
+merged into upstream master.
+
+Configure/build OIS, then run the combined regression and modifier regression on
+macOS with Python 3, CMake, and the Command Line Tools:
 
 ```sh
 cmake -S . -B build -DOIS_BUILD_DEMOS=OFF -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel 1
 python3 tests/mac/run-cocoa-focus.py --build-dir build
+clang++ -std=c++11 -I includes tests/mac/CocoaKeyboardModifiers.mm \
+  -L build -lOIS -framework Cocoa -Wl,-rpath,@loader_path \
+  -o build/cocoa-keyboard-modifiers
+build/cocoa-keyboard-modifiers
 ```
 
-The runner accepts `CXX` and `CXXFLAGS` for local SDK/toolchain configuration.
-It uses C++11, Cocoa, and the built OIS library; it creates no application,
-window, view, event loop, or input device. No game or cursor API is called.
+`CXX` and `CXXFLAGS` configure the Python runner's compiler. If the local compiler
+cannot find the C++ standard library headers, set CMake's `CMAKE_CXX_FLAGS` and the
+fixture's `CXXFLAGS` to `-isystem <SDK>/usr/include/c++/v1` using the actual SDK path.
+The combined runner writes its exact compiler arguments to `fixture-command.json`.
+
+For the mouse/coordinate checks alone, no OIS library build is needed after CMake
+has generated `includes/OISPrereqs.h`:
+
+```sh
+python3 tests/mac/run-cocoa-focus.py --build-dir build --mouse-only
+# The previous motion entry point runs the same shared mouse fixture:
+python3 tests/mac/run-cocoa-motion.py
+```
+
+The mouse-only runner reports 196 checks. The combined runner adds the original
+20 keyboard focus checks (216 total). `CocoaKeyboardModifiers.mm` reports 65
+checks. The old separate motion fixture is replaced by the shared fixture:
+compatible fractional-motion cases run alongside the focus and coordinate cases,
+with current expectations for event-time absolute positions and position-only
+movement callbacks. No claim is made that the unchanged old 110-case fixture runs.
+
+## What actually runs
 
 The keyboard uses the real CocoaInputManager constructor (not `_initialize`),
-a real CocoaKeyboard with the manager's nil window, and its production responder,
+a real CocoaKeyboard with a nil manager window, and its production responder,
 injection, modifier callback, notifications, polling, capture, and teardown.
 The HID manager constructor/destructor are empty; HID initialization is not used.
 
 The mouse fixture extracts the production responder ivars and complete
 `observeWindow:`, `detach`, `dealloc`, `setOISMouseObj:`, `focusLost:`,
-`deliverButton:pressed:`, `capture`, six button handlers, `mouseMoved:`, and
+`deliverButton:pressed:`, `capture`, six button handlers, all four movement/drag
+handlers, `updateMotion:`, `refreshCoordinates`, `seedCoordinates:`, and
 `scrollWheel:` bodies unchanged. They run on an NSObject with real OIS mouse
-state/events/listeners, a uniquely named minimal C++ Mouse subclass, and small
-Foundation event-value objects. Its CocoaMouse name is a local type alias,
-not the production C++ class. The NSView initializer/destructor and live cursor
-paths are never invoked. This checks production state/callback logic; native
-NSView construction and the actual CocoaMouse translation unit require separate
-compilation/link validation.
+state/events/listeners and a minimal C++ Mouse subclass. Small Foundation objects
+supply event values; the NSObject supplies a raw bounds rectangle and flipped flag.
+Native point conversion is declared but never invoked. Captured event values return a constant absolute position and count reads; the
+checks assert it is never read, independently of window style. The production coordinate helper is also tested directly.
 
-Checks include queued key/repeat text discard; held keys/modifiers; immediate
-polling reset; repeated loss; releases before fresh input; late physical ups;
-null/unbuffered/replaced listeners; bounded mouse queue/overflow; preserved mouse
-absolute position/dimensions; clearing motion/scroll; notification registration
-and destruction; reentrant reset/capture; and detachment during release.
-Window observer filtering and native responder/view attachment lifetime are
-inspected in source, not exercised with a window.
+No NSView, NSWindow, NSApplication, event loop, input manager initialization,
+input device, GPU, or live cursor API is used by the mouse fixture. Its
+`restoreAssociation` is a local teardown stub; the actual association request,
+seeding through `convertPoint:fromView:nil`, tracking area/autoresizing, native
+view attachment, and teardown require real translation-unit compilation and source
+review, with live behavior still unverified. The fixture does not emulate AppKit.
 
-## Focus and callback contract
+## Coordinate and callback contract
 
-- Observe application resign-active and only the manager's exact window
-  resign-key notification. A nil window is not a wildcard window subscription.
-  Both devices remove observers and detach their owner before responder release;
-  the mouse also removes its view from the window. A retained observed window
-  remains valid through explicit device teardown. Detach is idempotent.
-- Notifications clear polling keys/modifiers or mouse buttons/relative axes and
-  temporary motion immediately. Mouse absolute axes and dimensions survive.
-  Pending keyboard presses/repeats and deferred mouse button snapshots are
-  discarded. Repeated losses do not duplicate listener releases.
-- Only held controls actually delivered to the current listener are balanced.
-  Releases run once at the next capture, in ascending key/button order, before
-  post-loss events. Keyboard releases carry zero text. Mouse release snapshots
-  contain no held buttons or relative motion. Polling reports the latest physical
-  input, so a newly pressed control may already poll down during an older
-  synthetic release callback; the event describes its position in callback order.
-- Ordinary mouse buttons keep their existing native callback timing. Between a
-  loss and capture they use at most 32 copied state snapshots so old releases
-  precede new presses. Overflow discards undelivered snapshots and resets polling
-  buttons/motion again, retaining releases owed for delivered buttons. Fresh input
-  can then queue normally; the next capture drains it. At most the queue length
-  present when draining starts is delivered in one capture, so callbacks cannot
-  refill it forever. Keyboard also drains a finite snapshot of its queue length.
-- A replacement/null listener or unbuffered mode discards callback bookkeeping;
-  releases are never sent to a different listener. Normal OIS listener ownership
-  rules still apply: callers must remove a listener before destroying it.
-- Capture retains the responder, removes each event/release before calling the
-  listener, and stops its current drain if reset/detachment/listener replacement
-  occurs. Nested capture returns immediately. New events added by callbacks can
-  be delivered on the next capture.
-- Native event dispatch and capture are assumed to use the same thread, as the
-  existing backend does. Cocoa controls native routing after loss/reacquisition;
-  this patch does not force focus or infer currently held hardware state.
-  Physical focus restoration and live native delivery need a separate GUI test.
+The private Cocoa helper retains a floating top-origin virtual cursor in logical
+view units. Application canvas width/height divided by actual input-view bounds
+size determine independent axis ratios; screen backing scale is not used.
+The deliberate captured policy is one native delta unit per logical cursor unit.
+Relative camera X/Y counts remain unscaled and retain signed fractional carry
+across captures. This is a policy, not a physical-speed measurement.
 
-An application may clear its own effective/UI state on focus loss. It should
-not add another synthetic OIS release source. The backend release policy works
-without an application-specific reset, and this regression does not validate
-any application's UI integration.
+A valid associated window position is converted into the input view before
+backend disassociation. Bounds origin and flippedness normalize that point.
+When a usable seed/geometry is unavailable, the first valid geometry supplies a
+center fallback. Initialization and re-entry clear pending relative movement,
+without injecting seed coordinates as relative camera motion. There is no cursor
+warp. Only successful backend disassociation is tracked; exit/destruction attempt
+to restore it. Failure to restore retains ownership so teardown can retry. This
+assumes other hosts do not independently change global CoreGraphics association.
 
-# Cocoa fractional motion regression
+Move/drag events integrate absolute position immediately. Button events copy the
+current absolute position with zero X/Y/Z relative fields, preserving normal native
+callback timing and preventing capture motion or wheel replay. Capture publishes
+relative/wheel values once and reports changed integer absolute positions even
+when relative counts are zero. Canvas-only changes republish absolute coordinates
+without camera motion. A view resize clamps the logical cursor once. Invalid
+zero/nonfinite geometry suppresses conversion until valid, preserving the previous
+published absolute position. The inclusive OIS width/height clamp is retained.
 
-Configure OIS first to generate `includes/OISPrereqs.h`, then run on macOS with
-Python 3 and the native C++ compiler:
+Focus loss clears buttons, pending relative motion/carry, movement notification,
+and deferred snapshots immediately, retaining the virtual cursor and geometry.
+Only controls actually delivered to the current listener receive balancing releases
+at the next capture, before fresh deferred input. Mouse post-reset snapshots are
+bounded to 32. Repeated loss, overflow, listener replacement/null listeners,
+unbuffered mode, nested capture, reentrant reset, and detachment retain the focus
+proposal's guards. Native dispatch and capture are assumed to share one thread.
 
-```sh
-cmake -S . -B build -DOIS_BUILD_DEMOS=OFF
-python3 tests/mac/run-cocoa-motion.py
-```
+Tests cover 1, 2, and 1.5 canvas ratios, independent axes, nonzero origin/flipped
+seeds, invalid geometry, all captured movement/drag paths, signed fractional carry,
+reversal, focus gating/reset, density and bounds changes, move-button-release
+before capture, capture then button, wheel consumption, deferred snapshots, and
+existing focus/listener/reentrancy cases. The tests and compile checks cannot prove
+physical input speed, real focus/re-entry, pointer association success, external
+transformed host geometry, monitor transitions, or application UI behavior.
 
-`CXX` and `CXXFLAGS` can supply a compiler, target architecture, or SDK include
-settings. `--output-dir PATH` retains the generated source and executable;
-otherwise they are removed after the run. `--source-root PATH` tests a separate
-configured OIS checkout, for example the parent revision. A compile error or
-failed expectation returns a nonzero exit status. No OIS library build or install
-is required for this fixture.
-
-The script extracts the production responder instance variables and the complete
-`capture`, four movement/drag, `scrollWheel`, and `mouseEntered` method bodies
-from `CocoaMouse.h` and `CocoaMouse.mm`. Unexpected method signatures or a missing
-responder declaration stop extraction. The bodies are compiled unchanged into a
-synthetic Foundation `NSObject` responder using the real OIS `MouseState` type.
-Event values, window geometry, and mouse callback plumbing are small test doubles.
-Cursor calls in `mouseEntered` are replaced with local no-op macros. The real
-`NSView` initializer is not extracted or called. The fixture creates no AppKit
-window or view, instantiates no OIS input manager, and never calls a live cursor
-or input API.
-
-The expectations cover all four handlers, positive and negative subunit motion,
-mixed axes and handlers, signed reversal within and across captures, fractional
-carry through empty captures, integer motion and absolute clamps, callback gates,
-unchanged buttons and scroll/Z values, rejected warp/focus events, and explicit
-position reset. They fail against the original per-event integer accumulation.
-
-The implementation accumulates accepted X/Y deltas in private doubles. On each
-capture it emits the integer part by truncating toward zero and subtracts exactly
-those emitted counts, keeping the signed remainder for later captures. Opposing
-events cancel before conversion. No rounding occurs per event. A normal entry
-position seed discards pending whole and fractional motion, matching its existing
-replacement of the temporary X/Y values; a rejected warp or focus event adds
-nothing and leaves previously accepted motion intact. The original integer entry
-position conversion, absolute integration/clamps, and scroll behavior are retained.
-
-This is a bounded production-fragment regression. It proves the numeric and branch
-behavior of those fragments under deterministic inputs. It does not exercise the
-actual Cocoa responder, native event delivery, real windows, focus transitions,
-cursor association/warping, display coordinate conversion, or game camera behavior.
-
-# Cocoa keyboard modifier regression
-
-`CocoaKeyboardModifiers.mm` sends synthetic `NSEvent` flags directly to the
-production `CocoaKeyboardView::flagsChanged:` implementation. It checks modifier
-masks, polled keys, copied key states, and buffered listener callbacks. No
-application, window, event loop, or HID device enumeration is needed. The test
-constructs the Cocoa input manager without calling its `_initialize()` method.
-
-Run on macOS from the repository root with the Command Line Tools and CMake:
-
-```sh
-build_dir="../ois-build-release"
-sdk_path="$(xcrun --sdk macosx --show-sdk-path)"
-cmake -S . -B "$build_dir" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_OSX_ARCHITECTURES=arm64 \
-  -DCMAKE_OSX_SYSROOT="$sdk_path" \
-  -DOIS_BUILD_DEMOS=OFF
-cmake --build "$build_dir" --parallel 4
-xcrun clang++ -std=c++11 -arch arm64 -isysroot "$sdk_path" \
-  -I includes tests/mac/CocoaKeyboardModifiers.mm \
-  -L "$build_dir" -lOIS -framework Cocoa \
-  -Wl,-rpath,@loader_path -o "$build_dir/cocoa-keyboard-modifiers"
-"$build_dir/cocoa-keyboard-modifiers"
-```
-
-If the local toolchain cannot find standard C++ headers, add
-`-DCMAKE_CXX_FLAGS="-isystem $sdk_path/usr/include/c++/v1"` to the CMake command
-and `-isystem "$sdk_path/usr/include/c++/v1"` to the compiler command. This is a
-local toolchain workaround, not required OIS configuration.
-
-The fixture covers presses from zero, releases preserving other held modifiers,
-device-dependent native bits, simultaneous and mixed portable transitions,
-repeated Caps Lock/NumericPad flag cycles, Command/Function delivery, and
-unbuffered state updates. A successful run prints `65 checks, 0 failures`.
-
-The backend continues reporting aggregate Shift/Option/Control/Command flags
-using left key codes; the fixture does not establish independent left/right
-tracking. NumericPad retains the existing `KC_NUMLOCK`/`NumLock` alias, with its
-state following the native flag. This does not imply a physical Num Lock key or
-validate actual hardware event delivery. Native application focus and real
-keyboard integration require separate testing.
+The modifier fixture uses synthetic NSEvent values with production callbacks. It
+covers all portable modifier transitions, preserving other held flags, native bits,
+CapsLock/NumericPad flag cycles, Command/Function, and polling/unbuffered paths.
+Aggregate Shift/Option/Control/Command still use left key codes; independent
+left/right hardware behavior and actual keyboard delivery remain unverified.

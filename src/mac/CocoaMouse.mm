@@ -23,7 +23,7 @@ following restrictions:
 
     3. This notice may not be removed or altered from any source distribution. 
  */
-// Altered source: reset Cocoa input state on focus loss.
+// Altered source: focus resets, fractional motion and application canvas coordinates.
 #include "mac/CocoaMouse.h"
 #include "mac/CocoaInputManager.h"
 #include "mac/CocoaHelpers.h"
@@ -39,11 +39,13 @@ CocoaMouse::CocoaMouse(InputManager* creator, bool buffered) :
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
 	CocoaInputManager* man = static_cast<CocoaInputManager*>(mCreator);
-	mResponder			   = [[CocoaMouseView alloc] initWithFrame:[[man->_getWindow() contentView] frame]];
+	mResponder			   = [[CocoaMouseView alloc] initWithFrame:[[man->_getWindow() contentView] bounds]];
 	if(!mResponder)
 		OIS_EXCEPT(E_General, "CocoaMouseView::CocoaMouseView >> Error creating event responder");
 
+	[mResponder setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
 	[[man->_getWindow() contentView] addSubview:mResponder];
+	[man->_getWindow() setAcceptsMouseMovedEvents:YES];
 	[mResponder setOISMouseObj:this];
 	[mResponder observeWindow:man->_getWindow()];
 
@@ -54,8 +56,8 @@ CocoaMouse::CocoaMouse(InputManager* creator, bool buffered) :
 
 CocoaMouse::~CocoaMouse()
 {
-	// Restore Mouse
-	// CGAssociateMouseAndMouseCursorPosition(true);
+	// Restore only a disassociation successfully requested by this responder.
+	[mResponder restoreAssociation];
 	CGDisplayShowCursor(kCGDirectMainDisplay);
 
 	if(mResponder)
@@ -72,7 +74,7 @@ CocoaMouse::~CocoaMouse()
 void CocoaMouse::_initialize()
 {
 	mState.clear();
-	CGAssociateMouseAndMouseCursorPosition(false);
+	[mResponder beginCapture];
 }
 
 void CocoaMouse::setBuffered(bool buffered)
@@ -93,33 +95,21 @@ void CocoaMouse::capture()
 	if(self) {
 		mTempState.clear();
 		mDeltaX = mDeltaY = 0.0;
-		mMouseWarped		= false;
 		mNeedsToRegainFocus = false;
 
-		// Hide OS Mouse
 		CGDisplayHideCursor(kCGDirectMainDisplay);
 
-		NSRect clipRect = NSMakeRect(0.0f, 0.0f, 0.0f, 0.0f);
-		clipRect		= [[[self window] contentView] frame];
-
-		CGPoint warpPoint;
-		warpPoint.x = (((frame.origin.x + frame.size.width) - frame.origin.x) / 2) + frame.origin.x;
-		warpPoint.y = (((frame.origin.y + frame.size.height) - frame.origin.y) / 2) - frame.origin.y;
-		//        warpPoint = CGPointMake(clipRect.size.height, clipRect.size.width);
-		CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint);
-
 		// Use NSTrackingArea to track mouse move events
-		NSTrackingAreaOptions trackingOptions = NSTrackingMouseMoved | NSTrackingEnabledDuringMouseDrag | NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp;
+		NSTrackingAreaOptions trackingOptions = NSTrackingMouseMoved | NSTrackingEnabledDuringMouseDrag | NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect;
 
 		NSDictionary* trackerData	= [NSDictionary dictionaryWithObjectsAndKeys:
 														 [NSNumber numberWithInt:0], @"OISMouseTrackingKey", nil];
 		NSTrackingArea* trackingArea = [[NSTrackingArea alloc]
-			initWithRect:[self frame] // in our case track the entire view
+			initWithRect:NSZeroRect // NSTrackingInVisibleRect follows bounds and resizing
 				 options:trackingOptions
 				   owner:self
 				userInfo:trackerData];
 		[self addTrackingArea:trackingArea];
-		[[self window] setAcceptsMouseMovedEvents:YES];
 		[trackingArea release];
 	}
 	return self;
@@ -146,6 +136,7 @@ void CocoaMouse::capture()
 
 - (void)detach
 {
+	[self restoreAssociation];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	oisMouseObj = 0;
 	pendingButtons.clear();
@@ -170,6 +161,7 @@ void CocoaMouse::capture()
 	deferButtons = true;
 	mTempState.clear();
 	mDeltaX = mDeltaY = 0.0;
+	positionChanged = false;
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 	state->buttons = 0;
 	state->X.rel = state->Y.rel = state->Z.rel = 0;
@@ -178,6 +170,9 @@ void CocoaMouse::capture()
 
 - (void)deliverButton:(MouseButtonID)button pressed:(bool)pressed
 {
+	[self refreshCoordinates];
+	MouseState snapshot = *oisMouseObj->getMouseStatePtr();
+	snapshot.X.rel = snapshot.Y.rel = snapshot.Z.rel = 0;
 	MouseListener* listener = oisMouseObj->getEventCallback();
 	if(focusListener != listener || !oisMouseObj->buffered() || !listener)
 	{
@@ -193,7 +188,7 @@ void CocoaMouse::capture()
 		if(pendingButtons.size() == 32)
 			[self focusLost:nil];
 		else
-			pendingButtons.push_back(std::make_pair(button, *oisMouseObj->getMouseStatePtr()));
+			pendingButtons.push_back(std::make_pair(button, snapshot));
 		return;
 	}
 	const int bit = 1 << button;
@@ -202,9 +197,9 @@ void CocoaMouse::capture()
 	else
 		deliveredButtons &= ~bit;
 	if(pressed)
-		listener->mousePressed(MouseEvent(oisMouseObj, *oisMouseObj->getMouseStatePtr()), button);
+		listener->mousePressed(MouseEvent(oisMouseObj, snapshot), button);
 	else
-		listener->mouseReleased(MouseEvent(oisMouseObj, *oisMouseObj->getMouseStatePtr()), button);
+		listener->mouseReleased(MouseEvent(oisMouseObj, snapshot), button);
 }
 
 - (void)capture
@@ -213,6 +208,7 @@ void CocoaMouse::capture()
 		return;
 	[self retain];
 	capturing = true;
+	[self refreshCoordinates];
 	MouseListener* listener = oisMouseObj->getEventCallback();
 	if(focusListener != listener || !oisMouseObj->buffered() || !listener)
 	{
@@ -259,6 +255,9 @@ void CocoaMouse::capture()
 		return;
 	}
 	deferButtons = !pendingButtons.empty();
+	[self refreshCoordinates];
+	const bool moved = positionChanged;
+	positionChanged = false;
 	// Publish whole counts once per capture, retaining signed fractional motion.
 	const int deltaX = static_cast<int>(mDeltaX);
 	const int deltaY = static_cast<int>(mDeltaY);
@@ -274,7 +273,7 @@ void CocoaMouse::capture()
 	state->Y.rel	  = 0;
 	state->Z.rel	  = 0;
 
-	if(captured.X.rel || captured.Y.rel || captured.Z.rel)
+	if(moved || captured.X.rel || captured.Y.rel || captured.Z.rel)
 	{
 		//     NSLog(@"%i %i %i", captured.X.rel, captured.Y.rel, captured.Z.rel);
 
@@ -282,20 +281,6 @@ void CocoaMouse::capture()
 		state->X.rel = captured.X.rel;
 		state->Y.rel = captured.Y.rel;
 		state->Z.rel = captured.Z.rel;
-
-		// Update absolute position
-		state->X.abs += captured.X.rel;
-		state->Y.abs += captured.Y.rel;
-
-		if(state->X.abs > state->width)
-			state->X.abs = state->width;
-		else if(state->X.abs < 0)
-			state->X.abs = 0;
-
-		if(state->Y.abs > state->height)
-			state->Y.abs = state->height;
-		else if(state->Y.abs < 0)
-			state->Y.abs = 0;
 
 		state->Z.abs += captured.Z.rel;
 
@@ -365,20 +350,7 @@ void CocoaMouse::capture()
 
 - (void)mouseDragged:(NSEvent*)theEvent
 {
-	if(!oisMouseObj)
-		return;
-	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
-	if(mNeedsToRegainFocus)
-		return;
-
-	// Relative positioning
-	if(!mMouseWarped)
-	{
-		mDeltaX += delta.x;
-		mDeltaY += delta.y;
-	}
-
-	mMouseWarped = false;
+	[self updateMotion:theEvent];
 }
 
 #pragma mark Right Mouse Event overrides
@@ -421,20 +393,7 @@ void CocoaMouse::capture()
 
 - (void)rightMouseDragged:(NSEvent*)theEvent
 {
-	if(!oisMouseObj)
-		return;
-	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
-	if(mNeedsToRegainFocus)
-		return;
-
-	// Relative positioning
-	if(!mMouseWarped)
-	{
-		mDeltaX += delta.x;
-		mDeltaY += delta.y;
-	}
-
-	mMouseWarped = false;
+	[self updateMotion:theEvent];
 }
 
 #pragma mark Other Mouse Event overrides
@@ -477,46 +436,21 @@ void CocoaMouse::capture()
 
 - (void)otherMouseDragged:(NSEvent*)theEvent
 {
-	if(!oisMouseObj)
-		return;
-	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
-	if(mNeedsToRegainFocus)
-		return;
-
-	// Relative positioning
-	if(!mMouseWarped)
-	{
-		mDeltaX += delta.x;
-		mDeltaY += delta.y;
-	}
-
-	mMouseWarped = false;
+	[self updateMotion:theEvent];
 }
 
 - (void)scrollWheel:(NSEvent*)theEvent
 {
 	if(!oisMouseObj)
 		return;
+	[self refreshCoordinates];
 	if([theEvent deltaY] != 0.0)
 		mTempState.Z.rel += ([theEvent deltaY] * 60);
 }
 
 - (void)mouseMoved:(NSEvent*)theEvent
 {
-	if(!oisMouseObj)
-		return;
-	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
-	if(mNeedsToRegainFocus)
-		return;
-
-	// Relative positioning
-	if(!mMouseWarped)
-	{
-		mDeltaX += delta.x;
-		mDeltaY += delta.y;
-	}
-
-	mMouseWarped = false;
+	[self updateMotion:theEvent];
 }
 
 - (void)mouseEntered:(NSEvent*)theEvent
@@ -524,22 +458,7 @@ void CocoaMouse::capture()
 	if(!oisMouseObj)
 		return;
 	CGDisplayHideCursor(kCGDirectMainDisplay);
-	CGAssociateMouseAndMouseCursorPosition(false);
-	if(!mMouseWarped)
-	{
-		NSPoint pos  = [[self window] mouseLocationOutsideOfEventStream];
-		NSRect frame = [[[self window] contentView] frame];
-
-		// Clear the previous mouse state
-		MouseState* state = oisMouseObj->getMouseStatePtr();
-		state->clear();
-
-		// Cocoa's coordinate system has the origin in the bottom left so we need to transform the height
-		mTempState.X.rel = pos.x;
-		mTempState.Y.rel = frame.size.height - pos.y;
-		// The position seed replaces pending motion, including its fractions.
-		mDeltaX = mDeltaY = 0.0;
-	}
+	[self beginCapture];
 }
 
 - (void)mouseExited:(NSEvent*)theEvent
@@ -547,7 +466,70 @@ void CocoaMouse::capture()
 	if(!oisMouseObj)
 		return;
 	CGDisplayShowCursor(kCGDirectMainDisplay);
-	CGAssociateMouseAndMouseCursorPosition(true);
+	[self restoreAssociation];
+}
+
+- (void)refreshCoordinates
+{
+	if(!oisMouseObj)
+		return;
+	MouseState* state = oisMouseObj->getMouseStatePtr();
+	NSRect bounds = [self bounds];
+	coordinates.geometry(bounds.size.width, bounds.size.height, state->width, state->height);
+	positionChanged |= coordinates.publish(state->X.abs, state->Y.abs);
+}
+
+- (void)seedCoordinates:(NSPoint)point
+{
+	[self refreshCoordinates];
+	NSRect bounds = [self bounds];
+	coordinates.seed(point.x, point.y, bounds.origin.x, bounds.origin.y, [self isFlipped]);
+	MouseState* state = oisMouseObj->getMouseStatePtr();
+	positionChanged |= coordinates.publish(state->X.abs, state->Y.abs);
+}
+
+- (void)beginCapture
+{
+	if(!oisMouseObj || ownsDisassociation)
+		return;
+	[self refreshCoordinates];
+	// Only associated positions can seed a captured cursor. Convert window space
+	// through the actual input view, including its bounds origin and flippedness.
+	if([self window])
+		[self seedCoordinates:[self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil]];
+	// Without a valid associated point the helper retains its defined center.
+	mTempState.clear();
+	mDeltaX = mDeltaY = 0.0;
+	MouseState* state = oisMouseObj->getMouseStatePtr();
+	state->X.rel = state->Y.rel = state->Z.rel = 0;
+	ownsDisassociation = CGAssociateMouseAndMouseCursorPosition(false) == kCGErrorSuccess;
+}
+
+- (void)restoreAssociation
+{
+	if(ownsDisassociation && CGAssociateMouseAndMouseCursorPosition(true) == kCGErrorSuccess)
+		ownsDisassociation = false;
+}
+
+- (void)updateMotion:(NSEvent*)theEvent
+{
+	if(!oisMouseObj || mNeedsToRegainFocus)
+		return;
+	const double dx = [theEvent deltaX], dy = [theEvent deltaY];
+	if(!std::isfinite(dx) || !std::isfinite(dy))
+		return;
+	[self refreshCoordinates];
+	if(ownsDisassociation)
+	{
+		// Disassociated NSEvent absolute locations stay constant (CGRemoteOperation.h).
+		coordinates.move(dx, dy);
+		MouseState* state = oisMouseObj->getMouseStatePtr();
+		positionChanged |= coordinates.publish(state->X.abs, state->Y.abs);
+	}
+	else
+		[self seedCoordinates:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+	mDeltaX += dx;
+	mDeltaY += dy;
 }
 
 @end

@@ -198,6 +198,7 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaJoyStick.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaKeyboard.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaMouse.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaMouseCoordinates.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacHIDManager.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacHelpers.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacInputManager.h"
