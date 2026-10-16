@@ -391,6 +391,61 @@ int main()
             check(f.listener.states[2].X.abs==27 && f.listener.states[3].Y.abs==26 && f.listener.states[2].X.rel==0, "deferred button snapshots keep event-time coordinates");
             check(s->X.rel==2 && s->Y.rel==1, "deferred buttons do not consume capture counts");
         }
+        for(int transition=0;transition!=2;++transition)
+        {
+            MouseFixture f; auto* s=f.mouse.getMouseStatePtr(); f.seed(20,15);
+            f.button(true); [f.view focusLost:nil]; f.button(true,1); f.button(false,1);
+            f.move(0,8,8); // A queued event must not be replaced by the newer cursor.
+            if(transition==0) { s->width=100; s->height=150; }
+            else f.view->testBounds=NSMakeRect(0,0,100,100);
+            [f.view capture];
+            check(f.listener.events==std::vector<int>({1,-1,2,-2,100}), "geometry change preserves deferred button and focus-release order");
+            for(int i : {2,3})
+            {
+                const auto& event=f.listener.states[i];
+                check(event.X.abs==(transition==0 ? 40 : 10) && event.Y.abs==(transition==0 ? 45 : 7), "queued historical logical point reprojects after density or bounds change");
+                check(event.width==s->width && event.height==s->height, "queued snapshot carries current canonical canvas dimensions");
+                check(event.X.rel==0 && event.Y.rel==0 && event.Z.rel==0, "reprojected button has zero relative fields");
+            }
+            check(f.listener.states[2].buttonDown(MB_Right) && !f.listener.states[3].buttonDown(MB_Right), "reprojection preserves saved button transitions");
+        }
+        {
+            MouseFixture f; auto* s=f.mouse.getMouseStatePtr(); f.seed(20,15);
+            [f.view focusLost:nil]; f.button(true,1); f.button(false,1);
+            f.listener.action=[&] { s->width=100; s->height=150; };
+            [f.view capture];
+            check(f.listener.events==std::vector<int>({2,-2,100}), "callback geometry change preserves deferred order");
+            check(f.listener.states[0].X.abs==20 && f.listener.states[0].Y.abs==15 && f.listener.states[0].width==50, "first queued callback uses its current canvas");
+            check(f.listener.states[1].X.abs==40 && f.listener.states[1].Y.abs==45 && f.listener.states[1].width==100 && f.listener.states[1].height==150, "next queued callback refreshes geometry changed by prior callback");
+        }
+        {
+            MouseFixture f; auto* s=f.mouse.getMouseStatePtr(); f.seed(20,15);
+            f.button(true); [f.view focusLost:nil]; f.button(true,1); f.button(false,1);
+            f.view->testBounds=NSZeroRect;
+            [f.view capture]; [f.view capture];
+            check(f.listener.events==std::vector<int>({1}) && f.view->releaseButtons==1, "invalid geometry defers balancing releases without duplicates");
+            check(f.view->pendingButtons.size()==2 && f.view->deferButtons, "invalid geometry retains bounded pending FIFO and returns");
+            f.button(true,2); f.button(false,2);
+            check(f.listener.events.size()==1 && f.view->pendingButtons.size()==4, "new invalid-geometry transitions stay behind deferred releases");
+            f.view->testBounds=NSMakeRect(0,0,50,50); s->width=100; s->height=150;
+            [f.view capture];
+            check(f.listener.events==std::vector<int>({1,-1,2,-2,3,-3,100}), "valid geometry recovery delivers all retained transitions once in order");
+            check(f.view->pendingButtons.empty() && f.view->releaseButtons==0 && !f.view->deferButtons, "geometry recovery drains deferred bookkeeping");
+            check(f.listener.states[2].X.abs==40 && f.listener.states[5].Y.abs==45, "recovered queued points reproject into current canvas");
+            const auto count=f.listener.events.size(); [f.view capture];
+            check(f.listener.events.size()==count, "geometry recovery does not replay button transitions");
+        }
+        {
+            MouseFixture f; auto* s=f.mouse.getMouseStatePtr(); f.seed(20,15);
+            [f.view focusLost:nil]; f.button(true,1); f.button(false,1);
+            f.listener.action=[&] { f.view->testBounds=NSZeroRect; };
+            [f.view capture];
+            check(f.listener.events==std::vector<int>({2}) && f.view->pendingButtons.size()==1, "callback invalidation retains the following transition");
+            [f.view capture]; check(f.listener.events==std::vector<int>({2}), "invalid following capture returns without redelivery");
+            f.view->testBounds=NSMakeRect(0,0,50,50); s->width=100; s->height=150;
+            [f.view capture];
+            check(f.listener.events==std::vector<int>({2,-2,100}) && f.listener.states[1].X.abs==40 && f.listener.states[1].Y.abs==45, "callback-invalidated transition recovers in current geometry");
+        }
         for(int mode=0;mode!=2;++mode)
         {
             MouseFixture f; auto* s=f.mouse.getMouseStatePtr(); f.seed(25,25);

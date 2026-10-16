@@ -182,13 +182,14 @@ void CocoaMouse::capture()
 	}
 	if(!oisMouseObj->buffered() || !listener)
 		return;
-	if(deferButtons)
+	if(deferButtons || !coordinates.hasGeometry())
 	{
+		deferButtons = true;
 		// Overflow discards undelivered input and resets polling state again.
 		if(pendingButtons.size() == 32)
 			[self focusLost:nil];
 		else
-			pendingButtons.push_back(std::make_pair(button, snapshot));
+			pendingButtons.push_back(CocoaPrivate::ButtonSnapshot(button, snapshot, coordinates.position()));
 		return;
 	}
 	const int bit = 1 << button;
@@ -221,6 +222,9 @@ void CocoaMouse::capture()
 	{
 		if(releaseButtons & (1 << button))
 		{
+			[self refreshCoordinates];
+			if(!coordinates.hasGeometry())
+				break; // Retain balancing releases until a valid callback coordinate space.
 			releaseButtons &= ~(1 << button);
 			MouseState released = *oisMouseObj->getMouseStatePtr();
 			released.buttons = 0;
@@ -234,18 +238,27 @@ void CocoaMouse::capture()
 	while(remaining-- && oisMouseObj && focusGeneration == generation && oisMouseObj->buffered() &&
 		oisMouseObj->getEventCallback() == listener && !pendingButtons.empty())
 	{
-		const std::pair<MouseButtonID, MouseState> event = pendingButtons.front();
+		[self refreshCoordinates]; // An earlier callback can change P or C.
+		if(releaseButtons)
+			break; // Invalid geometry must not let fresh events overtake older releases.
+		CocoaPrivate::ButtonSnapshot event = pendingButtons.front();
+		if(!coordinates.project(event.position, event.state.X.abs, event.state.Y.abs))
+			break; // Leave the bounded queue intact and retry on a later capture.
+		const MouseState* current = oisMouseObj->getMouseStatePtr();
+		event.state.width = current->width;
+		event.state.height = current->height;
+		event.state.X.rel = event.state.Y.rel = event.state.Z.rel = 0;
 		pendingButtons.pop_front();
-		const int bit = 1 << event.first;
-		if(event.second.buttonDown(event.first))
+		const int bit = 1 << event.button;
+		if(event.state.buttonDown(event.button))
 		{
 			deliveredButtons |= bit;
-			listener->mousePressed(MouseEvent(oisMouseObj, event.second), event.first);
+			listener->mousePressed(MouseEvent(oisMouseObj, event.state), event.button);
 		}
 		else
 		{
 			deliveredButtons &= ~bit;
-			listener->mouseReleased(MouseEvent(oisMouseObj, event.second), event.first);
+			listener->mouseReleased(MouseEvent(oisMouseObj, event.state), event.button);
 		}
 	}
 	if(!oisMouseObj || focusGeneration != generation || oisMouseObj->getEventCallback() != listener)
@@ -254,7 +267,7 @@ void CocoaMouse::capture()
 		[self release];
 		return;
 	}
-	deferButtons = !pendingButtons.empty();
+	deferButtons = releaseButtons || !pendingButtons.empty();
 	[self refreshCoordinates];
 	const bool moved = positionChanged;
 	positionChanged = false;

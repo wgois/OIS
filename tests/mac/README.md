@@ -31,8 +31,8 @@ python3 tests/mac/run-cocoa-focus.py --build-dir build --mouse-only
 python3 tests/mac/run-cocoa-motion.py
 ```
 
-The mouse-only runner reports 196 checks. The combined runner adds the original
-20 keyboard focus checks (216 total). `CocoaKeyboardModifiers.mm` reports 65
+The mouse-only runner reports 225 checks. The combined runner adds the original
+20 keyboard focus checks (245 total). `CocoaKeyboardModifiers.mm` reports 65
 checks. The old separate motion fixture is replaced by the shared fixture:
 compatible fractional-motion cases run alongside the focus and coordinate cases,
 with current expectations for event-time absolute positions and position-only
@@ -82,7 +82,12 @@ assumes other hosts do not independently change global CoreGraphics association.
 
 Move/drag events integrate absolute position immediately. Button events copy the
 current absolute position with zero X/Y/Z relative fields, preserving normal native
-callback timing and preventing capture motion or wheel replay. Capture publishes
+callback timing and preventing capture motion or wheel replay. Deferred button
+snapshots additionally retain a private floating event-time logical point. Before
+each callback, including after an earlier callback changed geometry, that point is
+projected into the current valid canvas with current dimensions and zero REL.
+Historical points can lie outside bounds after a shrink; the live cursor clamps,
+while queued positions retain history (integer overflow alone saturates). Capture publishes
 relative/wheel values once and reports changed integer absolute positions even
 when relative counts are zero. Canvas-only changes republish absolute coordinates
 without camera motion. A view resize clamps the logical cursor once. Invalid
@@ -92,16 +97,22 @@ published absolute position. The inclusive OIS width/height clamp is retained.
 Focus loss clears buttons, pending relative motion/carry, movement notification,
 and deferred snapshots immediately, retaining the virtual cursor and geometry.
 Only controls actually delivered to the current listener receive balancing releases
-at the next capture, before fresh deferred input. Mouse post-reset snapshots are
-bounded to 32. Repeated loss, overflow, listener replacement/null listeners,
+at the next capture, before fresh deferred input. Invalid geometry defers balancing
+releases and queued transitions without popping them, and capture returns after
+one bounded attempt. New buttons wait in the same FIFO; its existing 32-event
+overflow/reset, listener replacement and focus-reset rules still apply. A queued
+event arriving while geometry is invalid retains the last known logical cursor
+(initially zero until a valid seed). Recovery delivers in order against each
+callback's current geometry. Repeated loss, overflow, listener replacement/null listeners,
 unbuffered mode, nested capture, reentrant reset, and detachment retain the focus
 proposal's guards. Native dispatch and capture are assumed to share one thread.
 
 Tests cover 1, 2, and 1.5 canvas ratios, independent axes, nonzero origin/flipped
 seeds, invalid geometry, all captured movement/drag paths, signed fractional carry,
 reversal, focus gating/reset, density and bounds changes, move-button-release
-before capture, capture then button, wheel consumption, deferred snapshots, and
-existing focus/listener/reentrancy cases. The tests and compile checks cannot prove
+before capture, capture then button, wheel consumption, deferred snapshots spanning
+density/view changes, callback-induced geometry changes, invalid geometry
+retention/recovery, and existing focus/listener/reentrancy cases. The tests and compile checks cannot prove
 physical input speed, real focus/re-entry, pointer association success, external
 transformed host geometry, monitor transitions, or application UI behavior.
 

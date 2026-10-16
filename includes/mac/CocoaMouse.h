@@ -82,8 +82,8 @@ namespace OIS
 	unsigned int focusGeneration;
 	bool capturing;
 	bool deferButtons;
-	// Bounded queue used only between focus loss and the next capture.
-	std::list<std::pair<MouseButtonID, MouseState> > pendingButtons;
+	// Bounded queue after focus loss or while callback geometry is invalid.
+	std::list<CocoaPrivate::ButtonSnapshot> pendingButtons;
 }
 
 - (void)setOISMouseObj:(CocoaMouse*)obj;

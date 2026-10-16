@@ -29,11 +29,27 @@ following restrictions:
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
+#include "OISMouse.h"
 
 namespace OIS
 {
 namespace CocoaPrivate
 {
+struct MousePosition
+{
+    double x, y;
+};
+
+struct ButtonSnapshot
+{
+    MouseButtonID button;
+    MouseState state;
+    MousePosition position;
+    ButtonSnapshot(MouseButtonID b, const MouseState& s, MousePosition p) :
+        button(b), state(s), position(p) {}
+};
+
 // A captured native delta is one logical view unit. Canvas units are application
 // supplied; neither they nor native deltas imply a physical display backing scale.
 class MouseCoordinates
@@ -77,13 +93,27 @@ public:
         clamp();
     }
 
-    bool publish(int& absX, int& absY) const
+    bool hasGeometry() const { return valid; }
+    MousePosition position() const { return MousePosition{x, y}; }
+
+    bool project(MousePosition point, int& absX, int& absY) const
     {
         if(!valid)
             return false;
-        // Divide first to avoid overflowing even with finite large view bounds.
-        const int nextX = static_cast<int>((x / width) * canvasWidth);
-        const int nextY = static_cast<int>((y / height) * canvasHeight);
+        // Historical queued points can lie outside resized bounds. Preserve their
+        // logical position rather than clamping to the current virtual cursor.
+        // Saturate only at the integer ABI limit if the projection is unrepresentable.
+        const double limit = std::numeric_limits<int>::max();
+        absX = static_cast<int>(std::min(limit, (point.x / width) * canvasWidth));
+        absY = static_cast<int>(std::min(limit, (point.y / height) * canvasHeight));
+        return true;
+    }
+
+    bool publish(int& absX, int& absY) const
+    {
+        int nextX = absX, nextY = absY;
+        if(!project(position(), nextX, nextY))
+            return false;
         const bool changed = absX != nextX || absY != nextY;
         absX = nextX; absY = nextY;
         return changed;
