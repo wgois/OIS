@@ -23,6 +23,7 @@ following restrictions:
 
     3. This notice may not be removed or altered from any source distribution. 
  */
+// Altered source: reset Cocoa input state on focus loss.
 #include "mac/CocoaMouse.h"
 #include "mac/CocoaInputManager.h"
 #include "mac/CocoaHelpers.h"
@@ -44,6 +45,7 @@ CocoaMouse::CocoaMouse(InputManager* creator, bool buffered) :
 
 	[[man->_getWindow() contentView] addSubview:mResponder];
 	[mResponder setOISMouseObj:this];
+	[mResponder observeWindow:man->_getWindow()];
 
 	static_cast<CocoaInputManager*>(mCreator)->_setMouseUsed(true);
 
@@ -58,6 +60,8 @@ CocoaMouse::~CocoaMouse()
 
 	if(mResponder)
 	{
+		[mResponder detach];
+		[mResponder removeFromSuperview];
 		[mResponder release];
 		mResponder = nil;
 	}
@@ -130,25 +134,148 @@ void CocoaMouse::capture()
 	oisMouseObj = obj;
 }
 
+- (void)observeWindow:(NSWindow*)window
+{
+	observedWindow = [window retain];
+	NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+	[center addObserver:self selector:@selector(focusLost:) name:NSApplicationDidResignActiveNotification object:nil];
+	if(window)
+		[center addObserver:self selector:@selector(focusLost:) name:NSWindowDidResignKeyNotification object:window];
+}
+
+- (void)detach
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	oisMouseObj = 0;
+	pendingButtons.clear();
+	[observedWindow release];
+	observedWindow = nil;
+}
+
+- (void)dealloc
+{
+	[self detach];
+	[super dealloc];
+}
+
+- (void)focusLost:(NSNotification*)notification
+{
+	if(!oisMouseObj)
+		return;
+	if(focusListener == oisMouseObj->getEventCallback())
+		releaseButtons |= deliveredButtons;
+	deliveredButtons = 0;
+	pendingButtons.clear();
+	deferButtons = true;
+	mTempState.clear();
+	MouseState* state = oisMouseObj->getMouseStatePtr();
+	state->buttons = 0;
+	state->X.rel = state->Y.rel = state->Z.rel = 0;
+	++focusGeneration;
+}
+
+- (void)deliverButton:(MouseButtonID)button pressed:(bool)pressed
+{
+	MouseListener* listener = oisMouseObj->getEventCallback();
+	if(focusListener != listener || !oisMouseObj->buffered() || !listener)
+	{
+		deliveredButtons = releaseButtons = 0;
+		pendingButtons.clear();
+		focusListener = listener;
+	}
+	if(!oisMouseObj->buffered() || !listener)
+		return;
+	if(deferButtons)
+	{
+		// Overflow discards undelivered input and resets polling state again.
+		if(pendingButtons.size() == 32)
+			[self focusLost:nil];
+		else
+			pendingButtons.push_back(std::make_pair(button, *oisMouseObj->getMouseStatePtr()));
+		return;
+	}
+	const int bit = 1 << button;
+	if(pressed)
+		deliveredButtons |= bit;
+	else
+		deliveredButtons &= ~bit;
+	if(pressed)
+		listener->mousePressed(MouseEvent(oisMouseObj, *oisMouseObj->getMouseStatePtr()), button);
+	else
+		listener->mouseReleased(MouseEvent(oisMouseObj, *oisMouseObj->getMouseStatePtr()), button);
+}
+
 - (void)capture
 {
+	if(!oisMouseObj || capturing)
+		return;
+	[self retain];
+	capturing = true;
+	MouseListener* listener = oisMouseObj->getEventCallback();
+	if(focusListener != listener || !oisMouseObj->buffered() || !listener)
+	{
+		deliveredButtons = releaseButtons = 0;
+		pendingButtons.clear();
+		focusListener = listener;
+	}
+	const unsigned int generation = focusGeneration;
+	for(unsigned int button = 0; listener && button != 8; ++button)
+	{
+		if(releaseButtons & (1 << button))
+		{
+			releaseButtons &= ~(1 << button);
+			MouseState released = *oisMouseObj->getMouseStatePtr();
+			released.buttons = 0;
+			released.X.rel = released.Y.rel = released.Z.rel = 0;
+			listener->mouseReleased(MouseEvent(oisMouseObj, released), (MouseButtonID)button);
+			if(!oisMouseObj || focusGeneration != generation || !oisMouseObj->buffered() || oisMouseObj->getEventCallback() != listener)
+				break;
+		}
+	}
+	size_t remaining = pendingButtons.size();
+	while(remaining-- && oisMouseObj && focusGeneration == generation && oisMouseObj->buffered() &&
+		oisMouseObj->getEventCallback() == listener && !pendingButtons.empty())
+	{
+		const std::pair<MouseButtonID, MouseState> event = pendingButtons.front();
+		pendingButtons.pop_front();
+		const int bit = 1 << event.first;
+		if(event.second.buttonDown(event.first))
+		{
+			deliveredButtons |= bit;
+			listener->mousePressed(MouseEvent(oisMouseObj, event.second), event.first);
+		}
+		else
+		{
+			deliveredButtons &= ~bit;
+			listener->mouseReleased(MouseEvent(oisMouseObj, event.second), event.first);
+		}
+	}
+	if(!oisMouseObj || focusGeneration != generation || oisMouseObj->getEventCallback() != listener)
+	{
+		capturing = false;
+		[self release];
+		return;
+	}
+	deferButtons = !pendingButtons.empty();
+	const MouseState captured = mTempState;
+	mTempState.clear();
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 	state->X.rel	  = 0;
 	state->Y.rel	  = 0;
 	state->Z.rel	  = 0;
 
-	if(mTempState.X.rel || mTempState.Y.rel || mTempState.Z.rel)
+	if(captured.X.rel || captured.Y.rel || captured.Z.rel)
 	{
-		//     NSLog(@"%i %i %i", mTempState.X.rel, mTempState.Y.rel, mTempState.Z.rel);
+		//     NSLog(@"%i %i %i", captured.X.rel, captured.Y.rel, captured.Z.rel);
 
 		// Set new relative motion values
-		state->X.rel = mTempState.X.rel;
-		state->Y.rel = mTempState.Y.rel;
-		state->Z.rel = mTempState.Z.rel;
+		state->X.rel = captured.X.rel;
+		state->Y.rel = captured.Y.rel;
+		state->Z.rel = captured.Z.rel;
 
 		// Update absolute position
-		state->X.abs += mTempState.X.rel;
-		state->Y.abs += mTempState.Y.rel;
+		state->X.abs += captured.X.rel;
+		state->Y.abs += captured.Y.rel;
 
 		if(state->X.abs > state->width)
 			state->X.abs = state->width;
@@ -160,19 +287,22 @@ void CocoaMouse::capture()
 		else if(state->Y.abs < 0)
 			state->Y.abs = 0;
 
-		state->Z.abs += mTempState.Z.rel;
+		state->Z.abs += captured.Z.rel;
 
 		//Fire off event
 		if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
 			oisMouseObj->getEventCallback()->mouseMoved(MouseEvent(oisMouseObj, *state));
 	}
 
-	mTempState.clear();
+	capturing = false;
+	[self release];
 }
 
 #pragma mark Left Mouse Event overrides
 - (void)mouseDown:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	int mouseButton   = MB_Left;
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
@@ -193,12 +323,13 @@ void CocoaMouse::capture()
 		mouseButton = MB_Left;
 	}
 	state->buttons |= 1 << mouseButton;
-	if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
-		oisMouseObj->getEventCallback()->mousePressed(MouseEvent(oisMouseObj, *state), (MouseButtonID)mouseButton);
+	[self deliverButton:(MouseButtonID)mouseButton pressed:true];
 }
 
 - (void)mouseUp:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	int mouseButton   = MB_Left;
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
@@ -215,14 +346,17 @@ void CocoaMouse::capture()
 	{
 		mouseButton = MB_Left;
 	}
+	if(!state->buttonDown((MouseButtonID)mouseButton))
+		return;
 	state->buttons &= ~(1 << mouseButton);
 
-	if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
-		oisMouseObj->getEventCallback()->mouseReleased(MouseEvent(oisMouseObj, *state), (MouseButtonID)mouseButton);
+	[self deliverButton:(MouseButtonID)mouseButton pressed:false];
 }
 
 - (void)mouseDragged:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
 	if(mNeedsToRegainFocus)
 		return;
@@ -240,6 +374,8 @@ void CocoaMouse::capture()
 #pragma mark Right Mouse Event overrides
 - (void)rightMouseDown:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	int mouseButton   = MB_Right;
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
@@ -252,27 +388,31 @@ void CocoaMouse::capture()
 		state->buttons |= 1 << mouseButton;
 	}
 
-	if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
-		oisMouseObj->getEventCallback()->mousePressed(MouseEvent(oisMouseObj, *state), (MouseButtonID)mouseButton);
+	[self deliverButton:(MouseButtonID)mouseButton pressed:true];
 }
 
 - (void)rightMouseUp:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	int mouseButton   = MB_Right;
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 
     if(type == NSEventTypeRightMouseUp)
 	{
+		if(!state->buttonDown((MouseButtonID)mouseButton))
+			return;
 		state->buttons &= ~(1 << mouseButton);
 	}
 
-	if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
-		oisMouseObj->getEventCallback()->mouseReleased(MouseEvent(oisMouseObj, *state), (MouseButtonID)mouseButton);
+	[self deliverButton:(MouseButtonID)mouseButton pressed:false];
 }
 
 - (void)rightMouseDragged:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
 	if(mNeedsToRegainFocus)
 		return;
@@ -290,6 +430,8 @@ void CocoaMouse::capture()
 #pragma mark Other Mouse Event overrides
 - (void)otherMouseDown:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	int mouseButton   = MB_Middle;
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
@@ -302,27 +444,31 @@ void CocoaMouse::capture()
 		state->buttons |= 1 << mouseButton;
 	}
 
-	if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
-		oisMouseObj->getEventCallback()->mousePressed(MouseEvent(oisMouseObj, *state), (MouseButtonID)mouseButton);
+	[self deliverButton:(MouseButtonID)mouseButton pressed:true];
 }
 
 - (void)otherMouseUp:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	int mouseButton   = MB_Middle;
 	NSEventType type  = [theEvent type];
 	MouseState* state = oisMouseObj->getMouseStatePtr();
 
     if(type == NSEventTypeOtherMouseUp)
 	{
+		if(!state->buttonDown((MouseButtonID)mouseButton))
+			return;
 		state->buttons &= ~(1 << mouseButton);
 	}
 
-	if(oisMouseObj->buffered() && oisMouseObj->getEventCallback())
-		oisMouseObj->getEventCallback()->mouseReleased(MouseEvent(oisMouseObj, *state), (MouseButtonID)mouseButton);
+	[self deliverButton:(MouseButtonID)mouseButton pressed:false];
 }
 
 - (void)otherMouseDragged:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
 	if(mNeedsToRegainFocus)
 		return;
@@ -339,12 +485,16 @@ void CocoaMouse::capture()
 
 - (void)scrollWheel:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	if([theEvent deltaY] != 0.0)
 		mTempState.Z.rel += ([theEvent deltaY] * 60);
 }
 
 - (void)mouseMoved:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
 	if(mNeedsToRegainFocus)
 		return;
@@ -361,6 +511,8 @@ void CocoaMouse::capture()
 
 - (void)mouseEntered:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	CGDisplayHideCursor(kCGDirectMainDisplay);
 	CGAssociateMouseAndMouseCursorPosition(false);
 	if(!mMouseWarped)
@@ -380,6 +532,8 @@ void CocoaMouse::capture()
 
 - (void)mouseExited:(NSEvent*)theEvent
 {
+	if(!oisMouseObj)
+		return;
 	CGDisplayShowCursor(kCGDirectMainDisplay);
 	CGAssociateMouseAndMouseCursorPosition(true);
 }

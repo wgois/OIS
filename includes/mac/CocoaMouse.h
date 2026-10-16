@@ -26,10 +26,13 @@ following restrictions:
 #ifndef OIS_CocoaMouse_H
 #define OIS_CocoaMouse_H
 
+// Altered source: reset Cocoa input state on focus loss.
 #include "OISMouse.h"
 #include "mac/CocoaHelpers.h"
 
 #include <Cocoa/Cocoa.h>
+#include <list>
+#include <utility>
 
 @class CocoaMouseView;
 
@@ -67,9 +70,22 @@ namespace OIS
 	MouseState mTempState;
 	bool mNeedsToRegainFocus;
 	bool mMouseWarped;
+	NSWindow* observedWindow;
+	int deliveredButtons;
+	int releaseButtons;
+	MouseListener* focusListener;
+	unsigned int focusGeneration;
+	bool capturing;
+	bool deferButtons;
+	// Bounded queue used only between focus loss and the next capture.
+	std::list<std::pair<MouseButtonID, MouseState> > pendingButtons;
 }
 
 - (void)setOISMouseObj:(CocoaMouse*)obj;
+- (void)observeWindow:(NSWindow*)window;
+- (void)detach;
+- (void)focusLost:(NSNotification*)notification;
+- (void)deliverButton:(MouseButtonID)button pressed:(bool)pressed;
 - (void)capture;
 
 @end
