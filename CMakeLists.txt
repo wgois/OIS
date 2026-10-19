@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
+
 project(OIS)
+
+include(CTest)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CmakeModules)
 
@@ -198,6 +201,7 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaJoyStick.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaKeyboard.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaMouse.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/CocoaMouseCoordinates.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacHIDManager.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacHelpers.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/includes/mac/MacInputManager.h"
@@ -322,4 +326,7 @@ endif(MSVC AND BUILD_SHARED_LIBS)
 if(UNIX)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OIS.pc.in ${CMAKE_BINARY_DIR}/OIS.pc @ONLY)
     install(FILES ${CMAKE_BINARY_DIR}/OIS.pc DESTINATION ${OIS_LIB_DIRECTORY}/pkgconfig)
+endif()
+if(BUILD_TESTING)
+    add_subdirectory(tests)
 endif()

@@ -28,8 +28,11 @@ following restrictions:
 
 #include "OISMouse.h"
 #include "mac/CocoaHelpers.h"
+#include "mac/CocoaMouseCoordinates.h"
 
 #include <Cocoa/Cocoa.h>
+#include <list>
+#include <utility>
 
 @class CocoaMouseView;
 
@@ -65,12 +68,34 @@ namespace OIS
 @interface CocoaMouseView : NSView {
 	CocoaMouse* oisMouseObj;
 	MouseState mTempState;
+	double mDeltaX;
+	double mDeltaY;
 	bool mNeedsToRegainFocus;
-	bool mMouseWarped;
+	CocoaPrivate::MouseCoordinates coordinates;
+	bool positionChanged;
+	bool ownsDisassociation;
+	NSWindow* observedWindow;
+	int deliveredButtons;
+	int releaseButtons;
+	MouseListener* focusListener;
+	unsigned int focusGeneration;
+	bool capturing;
+	bool deferButtons;
+	// Bounded queue after focus loss or while callback geometry is invalid.
+	std::list<CocoaPrivate::ButtonSnapshot> pendingButtons;
 }
 
 - (void)setOISMouseObj:(CocoaMouse*)obj;
+- (void)observeWindow:(NSWindow*)window;
+- (void)detach;
+- (void)focusLost:(NSNotification*)notification;
+- (void)deliverButton:(MouseButtonID)button pressed:(bool)pressed;
 - (void)capture;
+- (void)refreshCoordinates;
+- (void)seedCoordinates:(NSPoint)point;
+- (void)beginCapture;
+- (void)restoreAssociation;
+- (void)updateMotion:(NSEvent*)theEvent;
 
 @end
 

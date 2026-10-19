@@ -50,6 +50,7 @@ CocoaKeyboard::CocoaKeyboard(InputManager* creator, bool buffered, bool repeat) 
 	[man->_getWindow() makeFirstResponder:mResponder];
 	[mResponder setUseRepeat:repeat];
 	[mResponder setOISKeyboardObj:this];
+	[mResponder observeWindow:man->_getWindow()];
 
 	static_cast<CocoaInputManager*>(mCreator)->_setKeyboardUsed(true);
 }
@@ -59,6 +60,7 @@ CocoaKeyboard::~CocoaKeyboard()
 {
 	if(mResponder)
 	{
+		[mResponder detach];
 		[mResponder release];
 		mResponder = nil;
 	}
@@ -132,6 +134,8 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 		[self populateKeyConversion];
 		memset(&KeyBuffer, 0, 256);
 		prevModMask = 0;
+		memset(deliveredKeys, 0, sizeof(deliveredKeys));
+		memset(releaseKeys, 0, sizeof(releaseKeys));
 	}
 	return self;
 }
@@ -151,24 +155,93 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 	oisKeyboardObj = obj;
 }
 
+- (void)observeWindow:(NSWindow*)window
+{
+	observedWindow = [window retain];
+	NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+	[center addObserver:self selector:@selector(focusLost:) name:NSApplicationDidResignActiveNotification object:nil];
+	if(window)
+		[center addObserver:self selector:@selector(focusLost:) name:NSWindowDidResignKeyNotification object:window];
+}
+
+- (void)detach
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	oisKeyboardObj = 0;
+	pendingEvents.clear();
+	if([observedWindow firstResponder] == self)
+		[observedWindow makeFirstResponder:nil];
+	[observedWindow release];
+	observedWindow = nil;
+}
+
+- (void)dealloc
+{
+	[self detach];
+	[super dealloc];
+}
+
+- (void)focusLost:(NSNotification*)notification
+{
+	if(!oisKeyboardObj)
+		return;
+	// Only controls already delivered to this listener need balancing releases.
+	if(focusListener == oisKeyboardObj->getEventCallback())
+		for(unsigned int key = 0; key != 256; ++key)
+			releaseKeys[key] |= deliveredKeys[key];
+	memset(deliveredKeys, 0, sizeof(deliveredKeys));
+	memset(KeyBuffer, 0, sizeof(KeyBuffer));
+	prevModMask = 0;
+	oisKeyboardObj->_getModifiers() = 0;
+	pendingEvents.clear();
+	++focusGeneration;
+}
+
 - (void)capture
 {
-	// If not buffered just return, we update the unbuffered automatically
-	if(!oisKeyboardObj->buffered() && !oisKeyboardObj->getEventCallback())
+	if(!oisKeyboardObj || capturing)
 		return;
-
-	// Run through our event stack
-	eventStack::iterator cur_it;
-
-	for(cur_it = pendingEvents.begin(); cur_it != pendingEvents.end(); cur_it++)
+	[self retain]; // A listener may destroy its OIS device during capture.
+	capturing = true;
+	KeyListener* listener = oisKeyboardObj->getEventCallback();
+	if(focusListener != listener || !oisKeyboardObj->buffered() || !listener)
 	{
-		if((*cur_it).type() == MAC_KEYDOWN || (*cur_it).type() == MAC_KEYREPEAT)
-			oisKeyboardObj->getEventCallback()->keyPressed((*cur_it).event());
-		else if((*cur_it).type() == MAC_KEYUP)
-			oisKeyboardObj->getEventCallback()->keyReleased((*cur_it).event());
+		memset(deliveredKeys, 0, sizeof(deliveredKeys));
+		memset(releaseKeys, 0, sizeof(releaseKeys));
+		focusListener = listener;
 	}
-
-	pendingEvents.clear();
+	if(!oisKeyboardObj->buffered() || !listener)
+		pendingEvents.clear();
+	else
+	{
+		const unsigned int generation = focusGeneration;
+		for(unsigned int key = 0; key != 256; ++key)
+		{
+			if(releaseKeys[key])
+			{
+				releaseKeys[key] = 0;
+				listener->keyReleased(KeyEvent(oisKeyboardObj, (KeyCode)key, 0));
+				if(!oisKeyboardObj || focusGeneration != generation ||
+					!oisKeyboardObj->buffered() || oisKeyboardObj->getEventCallback() != listener)
+					break;
+			}
+		}
+		size_t remaining = pendingEvents.size();
+		while(remaining-- && oisKeyboardObj && focusGeneration == generation &&
+			oisKeyboardObj->buffered() && oisKeyboardObj->getEventCallback() == listener && !pendingEvents.empty())
+		{
+			CocoaKeyStackEvent event = pendingEvents.front();
+			pendingEvents.pop_front(); // Never keep an iterator across callbacks.
+			const KeyCode key = event.event().key;
+			deliveredKeys[key] = event.type() != MAC_KEYUP;
+			if(event.type() == MAC_KEYUP)
+				listener->keyReleased(event.event());
+			else
+				listener->keyPressed(event.event());
+		}
+	}
+	capturing = false;
+	[self release];
 }
 
 - (void)setUseRepeat:(bool)repeat
@@ -324,6 +397,10 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 
 - (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type eventText:(unsigned int)txt
 {
+	if(!oisKeyboardObj)
+		return;
+	if(type == MAC_KEYUP && !KeyBuffer[kc])
+		return; // Ignore the physical release of a control cleared by focus loss.
 	// set to 1 if this is either a keydown or repeat
 	KeyBuffer[kc] = (type == MAC_KEYUP) ? 0 : 1;
 
@@ -334,6 +411,8 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 #pragma mark Key Event overrides
 - (void)keyDown:(NSEvent*)theEvent
 {
+	if(!oisKeyboardObj)
+		return;
 	unsigned short virtualKey = [theEvent keyCode];
 	unsigned int time		  = (unsigned int)[theEvent timestamp];
 	KeyCode kc				  = keyConversion[virtualKey];
@@ -371,6 +450,8 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 
 - (void)keyUp:(NSEvent*)theEvent
 {
+	if(!oisKeyboardObj)
+		return;
 	unsigned short virtualKey = [theEvent keyCode];
 
 	KeyCode kc = keyConversion[virtualKey];
@@ -379,66 +460,49 @@ void CocoaKeyboard::copyKeyStates(char keys[256]) const
 
 - (void)flagsChanged:(NSEvent*)theEvent
 {
-	NSUInteger mods = [theEvent modifierFlags];
+	if(!oisKeyboardObj)
+		return;
+	// Ignore device-dependent bits and handle every changed portable flag.
+	NSUInteger mods = [theEvent modifierFlags] & NSEventModifierFlagDeviceIndependentFlagsMask;
+	NSUInteger change = prevModMask ^ mods;
+	unsigned int time = (unsigned int)[theEvent timestamp];
 
-	// Find the changed bit
-	NSUInteger change	 = prevModMask ^ mods;
-	MacEventType newstate = ((change & prevModMask) > 0) ? MAC_KEYUP : MAC_KEYDOWN;
-	unsigned int time	 = (unsigned int)[theEvent timestamp];
-
-	//cout << "preMask: " << hex << prevModMask << endl;
-	//cout << "ModMask: " << hex << mods << endl;
-	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
-
-	switch(change)
+	const NSUInteger flags[] = {
+		NSEventModifierFlagShift, NSEventModifierFlagOption,
+		NSEventModifierFlagControl, NSEventModifierFlagCommand,
+		NSEventModifierFlagFunction, NSEventModifierFlagCapsLock,
+		NSEventModifierFlagNumericPad
+	};
+	for(NSUInteger flag : flags)
 	{
-        case(NSEventModifierFlagShift): // shift
-			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Shift : ~OIS::Keyboard::Shift;
-			[self injectEvent:KC_LSHIFT eventTime:time eventType:newstate];
-			break;
+		if(!(change & flag))
+			continue;
 
-        case(NSEventModifierFlagOption): // option (alt)
-			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Alt : -OIS::Keyboard::Alt;
-			[self injectEvent:KC_LMENU eventTime:time eventType:newstate];
-			break;
+		MacEventType newstate = (mods & flag) ? MAC_KEYDOWN : MAC_KEYUP;
+		KeyCode key;
+		unsigned int modifier = 0;
+		switch(flag)
+		{
+			case NSEventModifierFlagShift: key = KC_LSHIFT; modifier = OIS::Keyboard::Shift; break;
+			case NSEventModifierFlagOption: key = KC_LMENU; modifier = OIS::Keyboard::Alt; break;
+			case NSEventModifierFlagControl: key = KC_LCONTROL; modifier = OIS::Keyboard::Ctrl; break;
+			case NSEventModifierFlagCommand: key = KC_LWIN; break;
+			case NSEventModifierFlagFunction: key = KC_APPS; break;
+			case NSEventModifierFlagCapsLock: key = KC_CAPITAL; modifier = OIS::Keyboard::CapsLock; break;
+			case NSEventModifierFlagNumericPad: key = KC_NUMLOCK; modifier = OIS::Keyboard::NumLock; break;
+			default: continue;
+		}
 
-        case(NSEventModifierFlagControl): // Ctrl
-			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
-			[self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
-			break;
-
-        case(NSEventModifierFlagCommand): // apple
-			[self injectEvent:KC_LWIN eventTime:time eventType:newstate];
-			break;
-
-        case(NSEventModifierFlagFunction): // fn key
-			[self injectEvent:KC_APPS eventTime:time eventType:newstate];
-			break;
-
-        case(NSEventModifierFlagCapsLock): // caps lock
-            if(newstate == MAC_KEYDOWN)
-            {
-                if (oisKeyboardObj->_getModifiers()  & OIS::Keyboard::CapsLock)
-                    oisKeyboardObj->_getModifiers()  &= ~OIS::Keyboard::CapsLock;
-                else
-                    oisKeyboardObj->_getModifiers()  |= OIS::Keyboard::CapsLock;
-            }
-			[self injectEvent:KC_CAPITAL eventTime:time eventType:newstate];
-			break;
-        case(NSEventModifierFlagNumericPad): // num lock (rare on apple keyboards? I have no clue.)
-            if(newstate == MAC_KEYDOWN)
-            {
-                if (oisKeyboardObj->_getModifiers()  & OIS::Keyboard::NumLock)
-                    oisKeyboardObj->_getModifiers()  &= ~OIS::Keyboard::NumLock;
-                else
-                    oisKeyboardObj->_getModifiers()  |= OIS::Keyboard::NumLock;
-            }
-            [self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
-            break;
+		// Cocoa reports the active CapsLock/NumericPad flags, not lock toggles.
+		if(newstate == MAC_KEYDOWN)
+			oisKeyboardObj->_getModifiers() |= modifier;
+		else
+			oisKeyboardObj->_getModifiers() &= ~modifier;
+		[self injectEvent:key eventTime:time eventType:newstate];
 	}
 
 	if([theEvent keyCode] == NSClearLineFunctionKey) // numlock
-		[self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
+		[self injectEvent:KC_NUMLOCK eventTime:time eventType:(mods & NSEventModifierFlagNumericPad) ? MAC_KEYDOWN : MAC_KEYUP];
 
 	prevModMask = mods;
 }
