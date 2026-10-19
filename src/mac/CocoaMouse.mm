@@ -23,7 +23,6 @@ following restrictions:
 
     3. This notice may not be removed or altered from any source distribution. 
  */
-// Altered source: focus resets, fractional motion and application canvas coordinates.
 #include "mac/CocoaMouse.h"
 #include "mac/CocoaInputManager.h"
 #include "mac/CocoaHelpers.h"
