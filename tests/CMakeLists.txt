@@ -1,0 +1,12 @@
+add_executable(ois_portable_contracts portable/MouseStateContracts.cpp)
+target_include_directories(ois_portable_contracts PRIVATE "${PROJECT_SOURCE_DIR}/includes")
+target_link_libraries(ois_portable_contracts OIS)
+set_target_properties(ois_portable_contracts PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+add_test(NAME ois_portable_contracts COMMAND ois_portable_contracts)
+
+if(APPLE)
+    add_executable(ois_cocoa_keyboard_modifiers mac/CocoaKeyboardModifiers.mm)
+    target_include_directories(ois_cocoa_keyboard_modifiers PRIVATE "${PROJECT_SOURCE_DIR}/includes")
+    target_link_libraries(ois_cocoa_keyboard_modifiers OIS ${COCOA_LIBRARY})
+    add_test(NAME ois_cocoa_keyboard_modifiers COMMAND ois_cocoa_keyboard_modifiers)
+endif()
