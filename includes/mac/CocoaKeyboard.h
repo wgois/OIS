@@ -27,7 +27,6 @@ following restrictions:
 #ifndef OIS_CocoaKeyboard_H
 #define OIS_CocoaKeyboard_H
 
-// Altered source: reset Cocoa input state on focus loss.
 #include "OISKeyboard.h"
 #include "mac/CocoaHelpers.h"
 

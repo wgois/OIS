@@ -24,7 +24,6 @@ following restrictions:
     3. This notice may not be removed or altered from any source distribution. 
  */
 
-// Altered source: reset Cocoa input state on focus loss.
 #include "mac/CocoaKeyboard.h"
 #include "mac/CocoaInputManager.h"
 #include "mac/CocoaHelpers.h"

@@ -26,7 +26,6 @@ following restrictions:
 #ifndef OIS_CocoaMouse_H
 #define OIS_CocoaMouse_H
 
-// Altered source: reset Cocoa input state on focus loss.
 #include "OISMouse.h"
 #include "mac/CocoaHelpers.h"
 
