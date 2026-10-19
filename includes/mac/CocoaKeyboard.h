@@ -110,9 +110,18 @@ typedef std::list<OIS::CocoaKeyStackEvent> eventStack;
 	// buffered events, fifo stack
 	eventStack pendingEvents;
 	bool useRepeat;
+	NSWindow* observedWindow;
+	char deliveredKeys[256];
+	char releaseKeys[256];
+	KeyListener* focusListener;
+	unsigned int focusGeneration;
+	bool capturing;
 }
 
 - (void)setOISKeyboardObj:(CocoaKeyboard*)obj;
+- (void)observeWindow:(NSWindow*)window;
+- (void)detach;
+- (void)focusLost:(NSNotification*)notification;
 - (void)populateKeyConversion;
 - (void)capture;
 - (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type;

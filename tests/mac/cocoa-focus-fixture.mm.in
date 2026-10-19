@@ -1,0 +1,277 @@
+/*
+The zlib/libpng License
+
+Copyright (c) 2018 Arthur Brainville
+Copyright (c) 2015 Andrew Fenn
+Copyright (c) 2005-2010 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+
+This software is provided 'as-is', without any express or implied warranty. In no
+event will the authors be held liable for any damages arising from the use of this
+software.
+
+Permission is granted to anyone to use this software for any purpose, including
+commercial applications, and to alter it and redistribute it freely, subject to the
+following restrictions:
+
+    1. The origin of this software must not be misrepresented; you must not claim that
+        you wrote the original software. If you use this software in a product,
+        an acknowledgment in the product documentation would be appreciated
+        but is not required.
+
+    2. Altered source versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.
+
+    3. This notice may not be removed or altered from any source distribution.
+ */
+// Altered source regression. Production method bodies are inserted unchanged.
+#import <Cocoa/Cocoa.h>
+#include "mac/CocoaKeyboard.h"
+#include "mac/CocoaInputManager.h"
+#include "OISMouse.h"
+#include <cstdio>
+#include <utility>
+#include <vector>
+#include <functional>
+#include <algorithm>
+using namespace OIS;
+
+static int checks = 0, failures = 0;
+static void check(bool condition, const char* name)
+{
+    ++checks;
+    if(!condition) { ++failures; std::fprintf(stderr, "FAIL: %s\n", name); }
+}
+
+struct Keys : KeyListener
+{
+    std::vector<int> events;
+    std::function<void()> action;
+    bool keyPressed(const KeyEvent& e) override
+    {
+        events.push_back(e.key + 1);
+        if(action) { auto f = action; action = {}; f(); }
+        return true;
+    }
+    bool keyReleased(const KeyEvent& e) override
+    {
+        events.push_back(-e.key - 1);
+        if(action) { auto f = action; action = {}; f(); }
+        return true;
+    }
+};
+struct TestKeyboard : CocoaKeyboard
+{
+    TestKeyboard(InputManager* manager, bool buffered = true) : CocoaKeyboard(manager, buffered, true) {}
+    CocoaKeyboardView* view() { return mResponder; }
+};
+
+// Test plumbing only: real OIS MouseState/events/listener with no NSView constructor.
+namespace OIS
+{
+    class FocusTestMouse : public Mouse
+    {
+    public:
+        FocusTestMouse() : Mouse("headless", true, 0, 0) { mState.clear(); }
+        MouseState* getMouseStatePtr() { return &mState; }
+        void setBuffered(bool buffered) override { mBuffered = buffered; }
+        void capture() override {}
+        void _initialize() override {}
+        Interface* queryInterface(Interface::IType) override { return 0; }
+    };
+}
+typedef OIS::FocusTestMouse CocoaMouse;
+struct Buttons : MouseListener
+{
+    std::vector<int> events;
+    std::vector<MouseState> states;
+    std::function<void()> action;
+    bool mouseMoved(const MouseEvent& e) override { events.push_back(100); states.push_back(e.state); return true; }
+    bool record(const MouseEvent& e, MouseButtonID button, bool pressed)
+    {
+        events.push_back(pressed ? button + 1 : -button - 1);
+        states.push_back(e.state);
+        if(action) { auto f = action; action = {}; f(); }
+        return true;
+    }
+    bool mousePressed(const MouseEvent& e, MouseButtonID b) override { return record(e,b,true); }
+    bool mouseReleased(const MouseEvent& e, MouseButtonID b) override { return record(e,b,false); }
+};
+// Deterministic event values, passed only to extracted production mouse methods.
+@interface TestEvent : NSObject { @public NSEventType kind; double x, y; }
+- (NSEventType)type;
+- (NSEventModifierFlags)modifierFlags;
+- (double)deltaX;
+- (double)deltaY;
+@end
+@implementation TestEvent
+- (NSEventType)type { return kind; }
+- (NSEventModifierFlags)modifierFlags { return 0; }
+- (double)deltaX { return x; }
+- (double)deltaY { return y; }
+@end
+@interface FocusMouse : NSObject {
+@public
+@PRODUCTION_IVARS@
+}
+- (void)observeWindow:(NSWindow*)window;
+- (void)detach;
+- (void)setOISMouseObj:(CocoaMouse*)obj;
+- (void)focusLost:(NSNotification*)notification;
+- (void)deliverButton:(MouseButtonID)button pressed:(bool)pressed;
+- (void)capture;
+- (void)mouseDown:(NSEvent*)event;
+- (void)mouseUp:(NSEvent*)event;
+- (void)rightMouseDown:(NSEvent*)event;
+- (void)rightMouseUp:(NSEvent*)event;
+- (void)otherMouseDown:(NSEvent*)event;
+- (void)otherMouseUp:(NSEvent*)event;
+- (void)mouseMoved:(NSEvent*)event;
+- (void)scrollWheel:(NSEvent*)event;
+@end
+@implementation FocusMouse
+@PRODUCTION_METHODS@
+@end
+struct MouseFixture
+{
+    CocoaMouse mouse;
+    Buttons listener;
+    FocusMouse* view = [FocusMouse new];
+    MouseFixture() { [view setOISMouseObj:&mouse]; [view observeWindow:nil]; mouse.setEventCallback(&listener); }
+    ~MouseFixture() { [view release]; }
+    void button(bool down, int button = 0)
+    {
+        TestEvent* e = [TestEvent new];
+        if(button == 0) { e->kind = down ? NSEventTypeLeftMouseDown : NSEventTypeLeftMouseUp; if(down) [view mouseDown:(NSEvent*)e]; else [view mouseUp:(NSEvent*)e]; }
+        if(button == 1) { e->kind = down ? NSEventTypeRightMouseDown : NSEventTypeRightMouseUp; if(down) [view rightMouseDown:(NSEvent*)e]; else [view rightMouseUp:(NSEvent*)e]; }
+        if(button == 2) { e->kind = down ? NSEventTypeOtherMouseDown : NSEventTypeOtherMouseUp; if(down) [view otherMouseDown:(NSEvent*)e]; else [view otherMouseUp:(NSEvent*)e]; }
+        [e release];
+    }
+};
+static void press(TestKeyboard& key, KeyCode code, MacEventType type = MAC_KEYDOWN)
+{
+    [key.view() injectEvent:code eventTime:0 eventType:type eventText:'x'];
+}
+static void reset(TestKeyboard& key) { [key.view() focusLost:nil]; }
+int main()
+{
+    @autoreleasepool
+    {
+        // The real manager constructor does not initialize HID or create NSApplication.
+        CocoaInputManager manager;
+        {
+            TestKeyboard key(&manager); Keys listener; key.setEventCallback(&listener);
+            press(key, KC_A); press(key, KC_A, MAC_KEYREPEAT);
+            reset(key); key.capture();
+            check(listener.events.empty(), "queued press/repeat discarded");
+            check(!key.isKeyDown(KC_A), "poll key cleared immediately");
+            press(key, KC_A); press(key, KC_LSHIFT); key._getModifiers() = Keyboard::Shift;
+            key.capture();
+            check(listener.events.size() == 2, "fresh input delivered");
+            press(key, KC_A, MAC_KEYREPEAT);
+            reset(key); reset(key);
+            check(key._getModifiers() == 0, "modifier bits cleared");
+            char states[256]; key.copyKeyStates(states);
+            bool empty = true; for(char state : states) empty &= !state;
+            check(empty, "all copied keys cleared");
+            check(listener.events.size() == 2, "reset never calls listener");
+            press(key, KC_B); key.capture();
+            check(listener.events.size() == 5, "exactly two releases and new press");
+            check(listener.events[2] < 0 && listener.events[3] < 0 && listener.events[4] == KC_B+1, "releases precede new press");
+            key.capture(); check(listener.events.size() == 5, "reset releases drain once");
+            press(key, KC_A, MAC_KEYUP); key.capture();
+            check(listener.events.size() == 5, "late physical up not duplicated");
+            listener.action = [&] { reset(key); key.capture(); };
+            press(key, KC_C); press(key, KC_D); key.capture();
+            check(listener.events.back() == KC_C+1, "reentrant reset stops queued presses");
+            key.capture(); check(std::count(listener.events.begin(), listener.events.end(), -KC_C-1) == 1, "reentrant reset releases delivered press later");
+            key.setEventCallback(nullptr); reset(key); key.capture();
+            key.setEventCallback(&listener); key.setBuffered(false); press(key, KC_E); reset(key); key.capture();
+            check(!key.isKeyDown(KC_E), "unbuffered reset clears state");
+            key.setBuffered(true); press(key, KC_F); key.capture();
+            [[NSNotificationCenter defaultCenter] postNotificationName:NSApplicationDidResignActiveNotification object:nil];
+            check(!key.isKeyDown(KC_F), "actual app notification resets keyboard");
+            key.capture(); check(listener.events.back() == -KC_F-1, "app notification defers release");
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:NSApplicationDidResignActiveNotification object:nil];
+        check(true, "keyboard observer removed on destruction");
+        {
+            Keys listener;
+            TestKeyboard* key = new TestKeyboard(&manager);
+            key->setEventCallback(&listener); press(*key, KC_A); key->capture(); reset(*key);
+            listener.action = [&] { delete key; key = nullptr; };
+            key->capture(); check(!key, "device destruction during deferred keyboard release");
+        }
+        {
+            TestKeyboard key(&manager); Keys oldListener, newListener;
+            key.setEventCallback(&oldListener); press(key, KC_A); key.capture(); reset(key);
+            key.setEventCallback(&newListener); key.capture();
+            check(newListener.events.empty(), "keyboard releases never target replacement listener");
+            press(key, KC_B); key.capture(); reset(key); key.setEventCallback(nullptr); key.capture();
+            check(newListener.events.size()==1, "buffered keyboard null listener drops reset releases safely");
+            key.setEventCallback(&newListener);
+            NSEvent* flags = [NSEvent keyEventWithType:NSEventTypeFlagsChanged location:NSZeroPoint modifierFlags:NSEventModifierFlagShift timestamp:0 windowNumber:0 context:nil characters:@"" charactersIgnoringModifiers:@"" isARepeat:NO keyCode:56];
+            [key.view() flagsChanged:flags]; key.capture(); reset(key);
+            [key.view() flagsChanged:flags]; key.capture();
+            check(key.isKeyDown(KC_LSHIFT), "modifier native mask reset accepts a fresh flag transition");
+        }
+        for(int button = 0; button != 3; ++button)
+        {
+            MouseFixture f; MouseState* state = f.mouse.getMouseStatePtr();
+            state->X.abs=23; state->Y.abs=29; state->Z.abs=12; state->width=640; state->height=480;
+            f.button(true,button); check(f.listener.events.size()==1, "normal mouse press immediate");
+            TestEvent* motion = [TestEvent new]; motion->x=7; motion->y=9;
+            [f.view mouseMoved:(NSEvent*)motion]; [f.view scrollWheel:(NSEvent*)motion]; [motion release];
+            state->X.rel=8; [f.view focusLost:nil]; [f.view focusLost:nil];
+            check(state->buttons==0 && state->X.rel==0, "mouse polling cleared immediately");
+            check(state->X.abs==23 && state->Y.abs==29 && state->Z.abs==12 && state->width==640 && state->height==480, "mouse abs and dimensions preserved");
+            check(f.listener.events.size()==1, "mouse reset never calls listener");
+            f.button(false,button); check(f.listener.events.size()==1, "stale mouse up suppressed");
+            f.button(true,button); check(f.listener.events.size()==1, "post-reset native press deferred");
+            check(state->buttonDown((MouseButtonID)button), "fresh mouse polling preserved before capture");
+            [f.view capture];
+            check(f.listener.events==std::vector<int>({button+1,-button-1,button+1}), "mouse release before fresh press");
+            check(f.listener.states[1].buttons==0 && f.listener.states[2].buttonDown((MouseButtonID)button), "copied release and fresh press snapshots");
+            check(state->X.rel==0 && state->Y.rel==0 && state->Z.rel==0 && state->X.abs==23, "old movement not replayed");
+            [f.view capture]; check(f.listener.events.size()==3, "mouse deferred events drain once");
+            f.button(false,button); check(f.listener.events.back()==-button-1, "normal native delivery restored");
+        }
+        {
+            MouseFixture f; f.button(true); [f.view focusLost:nil]; f.button(true,1); [f.view focusLost:nil]; [f.view capture];
+            check(f.listener.events==std::vector<int>({1,-1}), "second reset drops fresh undelivered mouse press");
+            f.button(true); [f.view focusLost:nil];
+            for(int i=0;i!=34;++i) f.button(i%2==0,1);
+            check(f.view->pendingButtons.size()<=32, "post-reset mouse queue bounded");
+            [f.view capture]; check(f.listener.events.back()==-1, "overflow retains original balancing release");
+        }
+        {
+            MouseFixture f;
+            f.button(true);
+            [[NSNotificationCenter defaultCenter] postNotificationName:NSApplicationDidResignActiveNotification object:nil];
+            check(f.mouse.getMouseStatePtr()->buttons==0 && f.listener.events.size()==1, "actual app notification resets extracted mouse without callback");
+            [f.view capture]; check(f.listener.events==std::vector<int>({1,-1}), "mouse observer defers release to capture");
+            f.button(true); [f.view focusLost:nil];
+            Buttons replacement; f.mouse.setEventCallback(&replacement); [f.view capture];
+            check(replacement.events.empty(), "mouse releases never target replacement listener");
+            f.button(true); [f.view focusLost:nil];
+            replacement.action=[&] { [f.view detach]; };
+            [f.view capture];
+            check(!f.view->oisMouseObj, "detachment during deferred mouse release safe");
+            f.button(true); [f.view capture]; [f.view focusLost:nil];
+            check(replacement.events.size()==2, "detached mouse responder ignores later input and reset");
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:NSApplicationDidResignActiveNotification object:nil];
+        check(true, "mouse observer removed on destruction");
+        {
+            MouseFixture f; f.button(true); [f.view focusLost:nil];
+            f.listener.action=[&] { [f.view focusLost:nil]; [f.view capture]; };
+            [f.view capture]; [f.view capture];
+            check(f.listener.events==std::vector<int>({1,-1}), "mouse reentrant reset/capture bounded");
+            f.mouse.setEventCallback(nullptr); [f.view focusLost:nil]; f.button(true); [f.view capture];
+            check(f.listener.events.size()==2, "null mouse callback safe");
+            f.mouse.setEventCallback(&f.listener); f.mouse.setBuffered(false); f.button(true,1); [f.view focusLost:nil]; [f.view capture];
+            check(f.mouse.getMouseStatePtr()->buttons==0 && f.listener.events.size()==2, "unbuffered mouse reset safe");
+        }
+    }
+    std::printf("Cocoa focus: %d checks, %d failures\n", checks, failures);
+    return failures ? 1 : 0;
+}
