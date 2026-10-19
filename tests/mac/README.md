@@ -1,11 +1,13 @@
-# Cocoa focus, motion, and canvas regression tests
+# Regression tests
 
-Configure with CMake and run the registered tests from the build directory:
+From the repository root, configure and build OIS, then run its registered tests:
 
 ```sh
-cmake -S . -B build -DOIS_BUILD_DEMOS=OFF -DBUILD_TESTING=ON
-cmake --build build --parallel 3
-ctest --test-dir build -C Release --output-on-failure
+mkdir -p build
+cd build
+cmake .. -DOIS_BUILD_DEMOS=OFF -DBUILD_TESTING=ON
+cmake --build . --config Release
+ctest -C Release --output-on-failure
 ```
 
-The portable MouseState and canvas-coordinate contract tests are built on every platform. On macOS, CTest builds the headless Objective-C++ production-fragment regression and modifier regression. The generated fixture is refreshed when the production CocoaMouse header or implementation changes. It uses deterministic Foundation values and never creates a window, initializes live input, or calls cursor APIs.
+The portable MouseState contract test is built on every platform. On macOS, CMake also builds and registers the headless Cocoa Objective-C++ regression as a normal target. The generated fixture is refreshed when its production header or implementation changes. It uses deterministic Foundation values and does not create windows or initialize live input.

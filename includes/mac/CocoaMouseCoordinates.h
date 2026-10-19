@@ -23,7 +23,6 @@ following restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
  */
-// Altered source: private Cocoa application canvas coordinate policy.
 #ifndef OIS_CocoaMouseCoordinates_H
 #define OIS_CocoaMouseCoordinates_H
 

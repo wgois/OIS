@@ -23,7 +23,7 @@ following restrictions:
 
     3. This notice may not be removed or altered from any source distribution.
  */
-// Altered source regression. Production method bodies are inserted unchanged.
+// Production method bodies are inserted unchanged during CMake configuration.
 #import <Cocoa/Cocoa.h>
 #ifndef OIS_MOUSE_ONLY
 #include "mac/CocoaKeyboard.h"

@@ -26,7 +26,6 @@ following restrictions:
 #ifndef OIS_CocoaMouse_H
 #define OIS_CocoaMouse_H
 
-// Altered source: focus resets, fractional motion and application canvas coordinates.
 #include "OISMouse.h"
 #include "mac/CocoaHelpers.h"
 #include "mac/CocoaMouseCoordinates.h"
